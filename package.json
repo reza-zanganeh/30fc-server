@@ -4,7 +4,7 @@
   "description": "football manager nodejs  api server",
   "main": "app.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev": "nodemon src/api/v1/app.js"
   },
   "repository": {
     "type": "git",
@@ -25,8 +25,14 @@
     "cors": "^2.8.5",
     "express": "^4.18.1",
     "express-validator": "^6.14.2",
+    "ghasedak": "^0.2.1",
+    "googleapis": "^107.0.0",
     "jsonwebtoken": "^8.5.1",
+    "nodemailer": "^6.7.8",
     "redis": "^4.3.0",
     "socket.io": "^4.5.1"
+  },
+  "devDependencies": {
+    "prisma": "^4.3.1"
   }
 }

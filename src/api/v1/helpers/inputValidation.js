@@ -15,6 +15,24 @@ module.exports.email = (location) => ({
   },
 })
 
+module.exports.phonenumber = (location) => ({
+  in: ["body"],
+  exists: {
+    bail: true,
+    options: {
+      checkFalsy: true,
+      checkNull: true,
+    },
+    errorMessage: "شماره همراه",
+  },
+  custom: {
+    options: (value) => {
+      return /^0[0-9]{10}$/i.test(value)
+    },
+    errorMessage: "mobile",
+  },
+})
+
 module.exports.password = (location) => ({
   in: [location],
   exists: {

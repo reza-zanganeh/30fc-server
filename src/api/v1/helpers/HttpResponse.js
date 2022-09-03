@@ -7,9 +7,11 @@ const HttpStatusCode = {
     statusCode: 201,
     message: `${recordName} با موفقیت ساخته شد`,
   }),
-  BadRequest: () => ({
+  BadRequest: (additionalInfo) => ({
     statusCode: 400,
-    message: "درخواست معتبر نمی باشد لطفا داده های ورودی را کنترل کنید",
+    message: additionalInfo
+      ? additionalInfo
+      : "درخواست معتبر نمی باشد لطفا داده های ورودی را کنترل کنید",
   }),
   Unauthorized: (requestName) => ({
     statusCode: 401,
@@ -23,9 +25,9 @@ const HttpStatusCode = {
     statusCode: 403,
     message: `شما دسترسی لازم برای انجام ${requestName} را ندارید`,
   }),
-  NotFound: (requestName) => ({
+  NotFound: () => ({
     statusCode: 404,
-    message: `درخواست ${requestName} پیدا نشد`,
+    message: "مسیر مورد نظر یافت نشد",
   }),
   TooManyRequests: (requestName) => ({
     statusCode: 429,
@@ -40,6 +42,6 @@ const HttpStatusCode = {
     statusCode: 503,
     message: `سرویس ${serviceName} در دسترس نمی باشد`,
   }),
-};
+}
 
-module.exports = HttpStatusCode;
+module.exports = HttpStatusCode
