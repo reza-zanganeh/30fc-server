@@ -28,10 +28,12 @@ module.exports.createOtpCodeToken = (phonenumber) => {
   )
 }
 
-module.exports.createAuthenticationToken = (id) => {
+module.exports.createAuthenticationToken = (id, level, isBlock) => {
   return createJsonWebToken(
     {
       id,
+      level,
+      isBlock,
     },
     projectConfig.jsonwebtoken.authenticationTokenExpiresTimeInMilisecond
   )
@@ -44,4 +46,8 @@ module.exports.convertSecondToMinAndScond = (time) => {
     minute,
     second,
   }
+}
+
+module.exports.getSkipFromPageAndTakeCount = (page, takeCount) => {
+  return (page - 1) * takeCount
 }

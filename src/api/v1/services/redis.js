@@ -23,7 +23,7 @@ const getFromRedis = async (key) => {
   return await client.get(key)
 }
 
-const removeFromRedis = async (key) => {
+const deleteFromRedis = async (key) => {
   return await client.del(key)
 }
 
@@ -43,8 +43,8 @@ module.exports.getOtpCodeFromRedis = async (phonenumber) => {
   return await getFromRedis(`${OTPCODEKEY}_${phonenumber}`)
 }
 
-module.exports.removeOtpCodeFromRedis = async (phonenumber) => {
-  return await removeFromRedis(`${OTPCODEKEY}_${phonenumber}`)
+module.exports.deleteOtpCodeFromRedis = async (phonenumber) => {
+  return await deleteFromRedis(`${OTPCODEKEY}_${phonenumber}`)
 }
 
 module.exports.getOtpCodeTtlFromRedis = async (phonenumber) => {
@@ -63,8 +63,8 @@ module.exports.getResetPasswordHashFromRedis = async (email) => {
   return await getFromRedis(`${RESETPASSWORD}_${email}`)
 }
 
-module.exports.removeResetPasswordHashFromRedis = async (email) => {
-  return await removeFromRedis(`${RESETPASSWORD}_${email}`)
+module.exports.deleteResetPasswordHashFromRedis = async (email) => {
+  return await deleteFromRedis(`${RESETPASSWORD}_${email}`)
 }
 
 module.exports.getResetPasswordHashTtlFromRedis = async (email) => {

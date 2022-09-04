@@ -15,7 +15,7 @@ const HttpStatusCode = {
   }),
   Unauthorized: (requestName) => ({
     statusCode: 401,
-    message: `انجام ${requestName} نیاز به ورود/ثبت نام دارد`,
+    message: `انجام ${requestName || "این عملیات"} نیاز به ثبت نام / ورود دارد`,
   }),
   PaymentRequired: (requestName) => ({
     statusCode: 402,
@@ -23,7 +23,9 @@ const HttpStatusCode = {
   }),
   Forbidden: (requestName) => ({
     statusCode: 403,
-    message: `شما دسترسی لازم برای انجام ${requestName} را ندارید`,
+    message: `شما دسترسی لازم برای انجام ${
+      requestName || "این عملیات"
+    } را ندارید`,
   }),
   NotFound: () => ({
     statusCode: 404,

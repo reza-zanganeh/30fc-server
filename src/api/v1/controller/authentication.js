@@ -23,11 +23,11 @@ const {
   getOtpCodeFromRedis,
   getOtpCodeTtlFromRedis,
   setOtpCodeOnRedis,
-  removeOtpCodeFromRedis,
+  deleteOtpCodeFromRedis,
   getResetPasswordHashFromRedis,
   getResetPasswordHashTtlFromRedis,
   setResetPasswordHashOnRedis,
-  removeResetPasswordHashFromRedis,
+  deleteResetPasswordHashFromRedis,
 } = require("../services/redis")
 const { sendResetPasswordHash } = require("../services/email")
 const { sendOtpCode } = require("../services/sms")
@@ -114,9 +114,13 @@ module.exports.register = async (req, res, next) => {
 
     const newUser = await createUser(phonenumber, email, fullname, password)
 
-    const token = createAuthenticationToken(newUser.id)
+    const token = createAuthenticationToken(
+      newUser.id,
+      newUser.level,
+      newUser.isBlock
+    )
 
-    removeOtpCodeFromRedis(phonenumber)
+    deleteOtpCodeFromRedis(phonenumber)
 
     resposeHandler(
       res,
@@ -160,7 +164,7 @@ module.exports.login = async (req, res, next) => {
       return next(createError(BadRequest("رمز عبور یا ایمیل اشتباه است")))
     }
     // if true create and send token
-    const token = createAuthenticationToken(user.id)
+    const token = createAuthenticationToken(user.id, user.level, user.isBlock)
     // 7. send token in response
     resposeHandler(
       res,
@@ -252,7 +256,7 @@ module.exports.resetPassword = async (req, res, next) => {
 
     await updateUserByUserId(userId, { password: newPassword })
 
-    removeResetPasswordHashFromRedis(email)
+    deleteResetPasswordHashFromRedis(email)
 
     resposeHandler(res, {}, Ok("بازیابی رمز عبور"))
   } catch (error) {
