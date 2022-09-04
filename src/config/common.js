@@ -45,16 +45,21 @@ const nodemailer = {
   pass: "09391825987",
 }
 
-const arvanCloud = {
+const cloud = {
   secretKey: "214c0c80b812f5f915dce03c635e85eb9406c9f4c594d9d343da3996085942f4",
   accessKey: "27c2f3e2-5c70-4323-ae89-e13e04f839c4",
   endPointUrl: "https://s3.ir-thr-at1.arvanstorage.com",
-  bucket: "hellow-chat",
-  expiresTime: 600, //second
+  bucket: {
+    playerFacePicture: "football-manager-player-face-picture",
+    userProfilePicture: "football-manager-user-profile-picture",
+  },
+  expiresTime: 240, //second
+  maximumFileSize: 128000,
 }
 
 const paginationTakeItemsCount = {
   reservedTeamName: 40,
+  playerFacePicture: 10,
 }
 
 module.exports = {
@@ -62,7 +67,7 @@ module.exports = {
   ghasedak,
   otpCode,
   redisExpireTime,
-  arvanCloud,
+  cloud,
   nodemailer,
   google,
   paginationTakeItemsCount,

@@ -4,6 +4,7 @@ const { isAuthenticate } = require("../middleware/athentication")
 const { isAdmin } = require("../middleware/isAdmin")
 const { authenticationRouter } = require("./authentication")
 const { reservedTeamNameRouter } = require("./reservedTeamName")
+const { playerFacePictureRouter } = require("./playerFacePicture")
 module.exports.registerRoutes = (app) => {
   //#region add routes
   app.use(`/api/${appVersion}/authentication`, authenticationRouter)
@@ -12,6 +13,12 @@ module.exports.registerRoutes = (app) => {
     isAuthenticate,
     isAdmin,
     reservedTeamNameRouter
+  )
+  app.use(
+    `/api/${appVersion}/player-face-picture`,
+    isAuthenticate,
+    isAdmin,
+    playerFacePictureRouter
   )
   //#endregion
   app.use("*", notFoundResponse)

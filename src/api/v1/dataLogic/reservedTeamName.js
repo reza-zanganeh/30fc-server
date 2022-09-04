@@ -2,7 +2,7 @@ const { PrismaClient } = require("@prisma/client")
 const { reservedTeamName } = new PrismaClient()
 const projectConfig = require("../../../config/index")
 const { getSkipFromPageAndTakeCount } = require("../helpers/Functions")
-module.exports.createReservedName = async (name) => {
+module.exports.createReservedTeamName = async (name) => {
   try {
     const newReservedTeamName = await reservedTeamName.create({
       data: { name },
@@ -14,7 +14,7 @@ module.exports.createReservedName = async (name) => {
   }
 }
 
-module.exports.readReservedName = async (id, page = 1) => {
+module.exports.readReservedTeamName = async (id, page = 1) => {
   try {
     let result
     if (id) result = await reservedTeamName.findFirst({ where: { id: +id } })

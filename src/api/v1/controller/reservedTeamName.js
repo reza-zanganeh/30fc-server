@@ -7,16 +7,16 @@ const {
   BadRequest,
 } = require("../helpers/HttpResponse")
 const {
-  createReservedName,
+  createReservedTeamName,
   deleteReservedTeamName,
-  readReservedName,
+  readReservedTeamName,
   updateReservedTeamName,
 } = require("../dataLogic/reservedTeamName")
 module.exports.createReservedTeamName = async (req, res, next) => {
   try {
     const { name } = req.body
 
-    const newReservedTeamName = await createReservedName(name)
+    const newReservedTeamName = await createReservedTeamName(name)
 
     resposeHandler(res, newReservedTeamName, Created("نام تیم رزرو شده"))
   } catch (error) {
@@ -26,7 +26,7 @@ module.exports.createReservedTeamName = async (req, res, next) => {
 module.exports.readReservedTeamName = async (req, res, next) => {
   try {
     const { id, page } = req.query
-    const reservedTeamName = await readReservedName(id, page || 1)
+    const reservedTeamName = await readReservedTeamName(id, page || 1)
     resposeHandler(res, reservedTeamName, Ok("خواندن نام تیم رزرو شده"))
   } catch (error) {
     next(createError(InternalServerError()))

@@ -23,13 +23,13 @@ module.exports.phonenumber = (location) => ({
       checkFalsy: true,
       checkNull: true,
     },
-    errorMessage: "شماره همراه",
+    errorMessage: empty("شماره همراه"),
   },
   custom: {
     options: (value) => {
       return /^0[0-9]{10}$/i.test(value)
     },
-    errorMessage: "mobile",
+    errorMessage: invalid("شماره همراه"),
   },
 })
 
@@ -59,5 +59,64 @@ module.exports.required = (fieldName, location) => ({
     },
     errorMessage: empty(fieldName),
     checkNull: true,
+  },
+})
+
+module.exports.fileType = (location) => ({
+  in: [location],
+  exists: {
+    bail: true,
+    options: {
+      checkFalsy: true,
+      checkNull: true,
+    },
+    errorMessage: empty("نوع فایل"),
+  },
+  custom: {
+    options: (value) => {
+      return value === "jpeg" || value === "png"
+    },
+    errorMessage: "فقط از فایل با نوع jpeg | png پشتیبانی می کنیم",
+  },
+})
+
+module.exports.fileSize = (location) => ({
+  in: [location],
+  exists: {
+    bail: true,
+    options: {
+      checkFalsy: true,
+      checkNull: true,
+    },
+    errorMessage: empty("سایز فایل"),
+  },
+  custom: {
+    options: (value) => {
+      return value < 128
+    },
+    errorMessage: "سایز فایل حداکثر باید 128 کیلوبایت باشد",
+  },
+})
+
+module.exports.fileName = (location) => ({
+  in: [location],
+  exists: {
+    bail: true,
+    options: {
+      checkFalsy: true,
+      checkNull: true,
+    },
+    errorMessage: empty("نام فایل"),
+  },
+  custom: {
+    options: (value, { req }) => {
+      if (
+        (req.body.fileType === "jpeg" || req.body.fileType === "png") &&
+        value.endsWith("." + req.body.fileType)
+      )
+        return true
+      else return false
+    },
+    errorMessage: "( jpeg || png ) نام فایل باید بهمراه نوع ان باشد",
   },
 })
