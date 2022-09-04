@@ -53,6 +53,10 @@ const arvanCloud = {
   expiresTime: 600, //second
 }
 
+const paginationTakeItemsCount = {
+  reservedTeamName: 40,
+}
+
 module.exports = {
   jsonwebtoken,
   ghasedak,
@@ -61,4 +65,5 @@ module.exports = {
   arvanCloud,
   nodemailer,
   google,
+  paginationTakeItemsCount,
 }
