@@ -72,6 +72,13 @@ module.exports.isBoolean = (fieldName, location) => ({
     errorMessage: empty(fieldName),
     checkNull: true,
   },
+  isBoolean: {
+    bail: true,
+    errorMessage: invalid(fieldName),
+    options: {
+      strict: true,
+    },
+  },
 })
 
 module.exports.fileType = (location) => ({
