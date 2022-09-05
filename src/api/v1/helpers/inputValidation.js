@@ -62,6 +62,18 @@ module.exports.required = (fieldName, location) => ({
   },
 })
 
+module.exports.isBoolean = (fieldName, location) => ({
+  in: [location],
+  exists: {
+    bail: true,
+    options: {
+      checkNull: true,
+    },
+    errorMessage: empty(fieldName),
+    checkNull: true,
+  },
+})
+
 module.exports.fileType = (location) => ({
   in: [location],
   exists: {
