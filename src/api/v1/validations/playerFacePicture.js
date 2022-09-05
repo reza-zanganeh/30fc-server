@@ -10,7 +10,3 @@ module.exports.createPlayerFacePictureSchemaValidation = {
   fileType: fileType("body"),
   fileName: fileName("body"),
 }
-
-module.exports.deletePlayerFacePictureSchemaValidation = {
-  id: required("شناسه تصویر چهره بازیکن", "params"),
-}

@@ -5,7 +5,6 @@ const { expressValidationResultHandler } = require("../helpers/responseHandler")
 const {
   createReservedTeamNameSchemaValidation,
   updateReservedTeamNameSchemaValidation,
-  deleteReservedTeamNameSchemaValidation,
 } = require("../validations/reservedTeamName")
 const {
   createController: createReservedTeamName,
@@ -31,10 +30,6 @@ reservedTeamNameRouter.patch(
   expressValidationResultHandler,
   updateReservedTeamName.bind(null, ["name"])
 )
-reservedTeamNameRouter.delete(
-  "/:id",
-  checkSchema(deleteReservedTeamNameSchemaValidation),
-  deleteReservedTeamName
-)
+reservedTeamNameRouter.delete("/:id", deleteReservedTeamName)
 
 module.exports.reservedTeamNameRouter = reservedTeamNameRouter

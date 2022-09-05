@@ -26,7 +26,7 @@ module.exports.requestToResetPasswordValidationSchema = {
 }
 
 module.exports.resetPasswordValidationSchema = {
-  userId: required("ایدی کاربر", "params"),
+  userId: required("شناسه کاربر", "params"),
   hash: required("کد هش بازیابی رمز عبور", "params"),
   newPassword: password("body"),
   confirmNewPassword: password("body"),

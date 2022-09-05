@@ -6,6 +6,8 @@ const { authenticationRouter } = require("./authentication")
 const { reservedTeamNameRouter } = require("./reservedTeamName")
 const { playerFacePictureRouter } = require("./playerFacePicture")
 const { compositionRouter } = require("./composition")
+const { primitivePlayerNameRouter } = require("./primitivePlayerName")
+const { primitivePlayerAgeRouter } = require("./PrimitivePlayerAge")
 module.exports.registerRoutes = (app) => {
   //#region add routes
   app.use(`/api/${appVersion}/authentication`, authenticationRouter)
@@ -26,6 +28,18 @@ module.exports.registerRoutes = (app) => {
     isAuthenticate,
     isAdmin,
     compositionRouter
+  )
+  app.use(
+    `/api/${appVersion}/primitive-player-name`,
+    isAuthenticate,
+    isAdmin,
+    primitivePlayerNameRouter
+  )
+  app.use(
+    `/api/${appVersion}/primitive-player-age`,
+    isAuthenticate,
+    isAdmin,
+    primitivePlayerAgeRouter
   )
   //#endregion
   app.use("*", notFoundResponse)

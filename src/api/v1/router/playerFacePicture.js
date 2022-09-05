@@ -4,7 +4,6 @@ const { checkSchema } = require("express-validator")
 const { expressValidationResultHandler } = require("../helpers/responseHandler")
 const {
   createPlayerFacePictureSchemaValidation,
-  deletePlayerFacePictureSchemaValidation,
 } = require("../validations/playerFacePicture")
 const {
   createPlayerFacePicture,
@@ -27,10 +26,6 @@ playerFacePictureRouter.post(
 )
 playerFacePictureRouter.get("/", readPlayerFacePicture)
 
-playerFacePictureRouter.delete(
-  "/:id",
-  checkSchema(deletePlayerFacePictureSchemaValidation),
-  deletePlayerFacePicture
-)
+playerFacePictureRouter.delete("/:id", deletePlayerFacePicture)
 
 module.exports.playerFacePictureRouter = playerFacePictureRouter

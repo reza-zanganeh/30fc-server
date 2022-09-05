@@ -1,0 +1,23 @@
+const { required } = require("../helpers/inputValidation")
+module.exports.createPrimitivePlayerAgeSchemaValidation = {
+  one: required("سن بازیکن اول", "body"),
+  two: required("سن بازیکن دوم", "body"),
+  three: required("سن بازیکن سوم", "body"),
+  four: required("سن بازیکن چهارم", "body"),
+  five: required("سن بازیکن پنجم", "body"),
+  six: required("سن بازیکن ششم", "body"),
+  seven: required("سن بازیکن هفتم", "body"),
+  eight: required("سن بازیکن هشتم", "body"),
+  nine: required("سن بازیکن نهم", "body"),
+  ten: required("سن بازیکن دهم", "body"),
+  eleven: required("سن بازیکن یازدهم", "body"),
+  twelve: required("سن بازیکن دوازدهم", "body"),
+  thirteen: required("سن بازیکن سیزدهم", "body"),
+  fourteen: required("سن بازیکن چهاردهم", "body"),
+  fifteen: required("سن بازیکن پانزدهم", "body"),
+  sixteen: required("سن بازیکن شانزدهم", "body"),
+  seventeen: required("سن بازیکن هفدهم", "body"),
+  eighteen: required("سن بازیکن هجدهم", "body"),
+  nineteen: required("سن بازیکن نونزدهم", "body"),
+  twenty: required("سن بازیکن بیستم", "body"),
+}

@@ -61,6 +61,8 @@ const paginationTakeItemsCount = {
   reservedTeamName: 40,
   playerFacePicture: 10,
   composition: 10,
+  primitivePlayerName: 40,
+  primitivePlayerAge: 10,
 }
 
 module.exports = {

@@ -18,7 +18,3 @@ module.exports.createCompositionSchemaValidation = {
   rightAttacker: isBoolean("مهاجم سمت راست", "body"),
   score: isBoolean("امتیاز ترکیب"),
 }
-
-module.exports.deleteCompositionSchemaValidation = {
-  id: required("شناسه ترکیب", "params"),
-}

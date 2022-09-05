@@ -4,7 +4,6 @@ const { checkSchema } = require("express-validator")
 const { expressValidationResultHandler } = require("../helpers/responseHandler")
 const {
   createCompositionSchemaValidation,
-  deleteCompositionSchemaValidation,
 } = require("../validations/composition")
 const { createComposition } = require("../controller/composition")
 const { deleteController: deleteComposition, readController: readComposition } =
@@ -22,11 +21,6 @@ compositionRouter.post(
 )
 compositionRouter.get("/", readComposition)
 
-compositionRouter.delete(
-  "/:id",
-  checkSchema(deleteCompositionSchemaValidation),
-  expressValidationResultHandler,
-  deleteComposition
-)
+compositionRouter.delete("/:id", deleteComposition)
 
 module.exports.compositionRouter = compositionRouter
