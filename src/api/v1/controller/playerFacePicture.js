@@ -51,22 +51,3 @@ module.exports.readPlayerFacePicture = async (req, res, next) => {
     next(createError(InternalServerError()))
   }
 }
-
-module.exports.deletePlayerFacePicture = async (req, res, next) => {
-  try {
-    const { id } = req.params
-    const deletedPlayerFacePicture = await remove(MODELNAME, { id: +id })
-
-    deletePlayerFacePictureFromCloud(deletedPlayerFacePicture.pictureUrl)
-
-    resposeHandler(
-      res,
-      deletedPlayerFacePicture,
-      Created("حذف تصویر چهره بازیکن")
-    )
-  } catch (error) {
-    if (error.code === "P2025")
-      next(createError(BadRequest("چهره بازیکن با این شناسه وجود ندارد")))
-    else next(createError(InternalServerError()))
-  }
-}

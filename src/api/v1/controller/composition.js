@@ -86,24 +86,3 @@ module.exports.createComposition = async (req, res, next) => {
     next(createError(InternalServerError()))
   }
 }
-module.exports.readComposition = async (req, res, next) => {
-  try {
-    const { id, page } = req.query
-    const composition = await read(MODELNAME, { id: +id }, page || 1)
-    resposeHandler(res, composition, Ok("خواندن ترکیب"))
-  } catch (error) {
-    next(createError(InternalServerError()))
-  }
-}
-
-module.exports.deleteComposition = async (req, res, next) => {
-  try {
-    const { id } = req.params
-    const deletedComposition = await remove({ id: +id })
-    resposeHandler(res, deletedComposition, Created("حذف ترکیب"))
-  } catch (error) {
-    if (error.code === "P2025")
-      next(createError(BadRequest("ترکیب با این شناسه وجود ندارد")))
-    else next(createError(InternalServerError()))
-  }
-}

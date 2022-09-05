@@ -4,7 +4,7 @@ module.exports.createReservedTeamNameSchemaValidation = {
 }
 module.exports.updateReservedTeamNameSchemaValidation = {
   id: required("ایدی اسم تیم رزرو شده", "params"),
-  newName: required("اسم جدید تیم رزرو شده", "body"),
+  name: required("اسم جدید تیم رزرو شده", "body"),
 }
 module.exports.deleteReservedTeamNameSchemaValidation = {
   id: required("ایدی اسم تیم رزرو شده", "params"),

@@ -8,25 +8,28 @@ const {
   deleteReservedTeamNameSchemaValidation,
 } = require("../validations/reservedTeamName")
 const {
-  createReservedTeamName,
-  readReservedTeamName,
-  updateReservedTeamName,
-  deleteReservedTeamName,
-} = require("../controller/reservedTeamName")
+  createController: createReservedTeamName,
+  readController: readReservedTeamName,
+  updateConrtoller: updateReservedTeamName,
+  deleteController: deleteReservedTeamName,
+} = require("../helpers/controllerCRUDoperation")({
+  english: "reservedTeamName",
+  persian: "نام تیم رزرو شده",
+})
 const reservedTeamNameRouter = express.Router()
 
 reservedTeamNameRouter.post(
   "/",
   checkSchema(createReservedTeamNameSchemaValidation),
   expressValidationResultHandler,
-  createReservedTeamName
+  createReservedTeamName.bind(null, ["name"])
 )
 reservedTeamNameRouter.get("/", readReservedTeamName)
 reservedTeamNameRouter.patch(
   "/:id",
   checkSchema(updateReservedTeamNameSchemaValidation),
   expressValidationResultHandler,
-  updateReservedTeamName
+  updateReservedTeamName.bind(null, ["name"])
 )
 reservedTeamNameRouter.delete(
   "/:id",

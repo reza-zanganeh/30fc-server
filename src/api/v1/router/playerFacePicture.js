@@ -9,8 +9,14 @@ const {
 const {
   createPlayerFacePicture,
   readPlayerFacePicture,
-  deletePlayerFacePicture,
 } = require("../controller/playerFacePicture")
+
+const { deleteController: deletePlayerFacePicture } =
+  require("../helpers/controllerCRUDoperation")({
+    english: "playerFacePicture",
+    persian: "تصویر چهره بازیکن",
+  })
+
 const playerFacePictureRouter = express.Router()
 
 playerFacePictureRouter.post(

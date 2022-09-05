@@ -6,11 +6,12 @@ const {
   createCompositionSchemaValidation,
   deleteCompositionSchemaValidation,
 } = require("../validations/composition")
-const {
-  createComposition,
-  deleteComposition,
-  readComposition,
-} = require("../controller/composition")
+const { createComposition } = require("../controller/composition")
+const { deleteController: deleteComposition, readController: readComposition } =
+  require("../helpers/controllerCRUDoperation")({
+    english: "composition",
+    persian: "ترکیب",
+  })
 const compositionRouter = express.Router()
 
 compositionRouter.post(
