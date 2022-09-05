@@ -10,12 +10,9 @@ const {
   getPresignedUrlToUploadPlayerFacePiture,
   deletePlayerFacePictureFromCloud,
 } = require("../services/cloud")
-const {
-  createPlayerFacePicture,
-  deletePlayerFacePicture,
-  readPlayerFacePicture,
-} = require("../dataLogic/playerFacePicture")
+const { create, read, remove } = require("../helpers/prismaCRUDoperation")
 const projectConfig = require("../../../config/index")
+const MODELNAME = "playerFacePicture"
 module.exports.createPlayerFacePicture = async (req, res, next) => {
   try {
     const { fileName } = req.body
@@ -23,7 +20,7 @@ module.exports.createPlayerFacePicture = async (req, res, next) => {
       fileName
     )
 
-    const newPlayerFacePicture = await createPlayerFacePicture(Key)
+    const newPlayerFacePicture = await create(MODELNAME, { pictureUrl: Key })
 
     resposeHandler(
       res,
@@ -37,7 +34,7 @@ module.exports.createPlayerFacePicture = async (req, res, next) => {
 module.exports.readPlayerFacePicture = async (req, res, next) => {
   try {
     const { id, page } = req.query
-    const playerFacePicture = await readPlayerFacePicture(id, page || 1)
+    const playerFacePicture = await read(MODELNAME, { id: +id }, page || 1)
     const baseUrl =
       projectConfig.cloud.endPointUrl +
       "/" +
@@ -58,7 +55,7 @@ module.exports.readPlayerFacePicture = async (req, res, next) => {
 module.exports.deletePlayerFacePicture = async (req, res, next) => {
   try {
     const { id } = req.params
-    const deletedPlayerFacePicture = await deletePlayerFacePicture(id)
+    const deletedPlayerFacePicture = await remove(MODELNAME, { id: +id })
 
     deletePlayerFacePictureFromCloud(deletedPlayerFacePicture.pictureUrl)
 
@@ -68,7 +65,6 @@ module.exports.deletePlayerFacePicture = async (req, res, next) => {
       Created("حذف تصویر چهره بازیکن")
     )
   } catch (error) {
-    console.log(error)
     if (error.code === "P2025")
       next(createError(BadRequest("چهره بازیکن با این شناسه وجود ندارد")))
     else next(createError(InternalServerError()))

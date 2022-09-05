@@ -6,11 +6,8 @@ const {
   Ok,
   BadRequest,
 } = require("../helpers/HttpResponse")
-const {
-  createComposition,
-  deleteComposition,
-  readComposition,
-} = require("../dataLogic/composition")
+const { create, read, remove } = require("../helpers/prismaCRUDoperation")
+const MODELNAME = "composition"
 module.exports.createComposition = async (req, res, next) => {
   try {
     const {
@@ -64,7 +61,7 @@ module.exports.createComposition = async (req, res, next) => {
         )
       )
 
-    const newComposition = await createComposition({
+    const newComposition = await create(MODELNAME, {
       goalKeaper,
       leftDefender,
       middle1Defender,
@@ -92,7 +89,7 @@ module.exports.createComposition = async (req, res, next) => {
 module.exports.readComposition = async (req, res, next) => {
   try {
     const { id, page } = req.query
-    const composition = await readComposition(id, page || 1)
+    const composition = await read(MODELNAME, { id: +id }, page || 1)
     resposeHandler(res, composition, Ok("خواندن ترکیب"))
   } catch (error) {
     next(createError(InternalServerError()))
@@ -102,7 +99,7 @@ module.exports.readComposition = async (req, res, next) => {
 module.exports.deleteComposition = async (req, res, next) => {
   try {
     const { id } = req.params
-    const deletedComposition = await deleteComposition(id)
+    const deletedComposition = await remove({ id: +id })
     resposeHandler(res, deletedComposition, Created("حذف ترکیب"))
   } catch (error) {
     if (error.code === "P2025")

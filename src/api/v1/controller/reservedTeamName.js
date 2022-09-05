@@ -6,17 +6,21 @@ const {
   Ok,
   BadRequest,
 } = require("../helpers/HttpResponse")
+
 const {
-  createReservedTeamName,
-  deleteReservedTeamName,
-  readReservedTeamName,
-  updateReservedTeamName,
-} = require("../dataLogic/reservedTeamName")
+  create,
+  read,
+  update,
+  remove,
+} = require("../helpers/prismaCRUDoperation")
+
+const MODELNAME = "reservedTeamName"
+
 module.exports.createReservedTeamName = async (req, res, next) => {
   try {
     const { name } = req.body
 
-    const newReservedTeamName = await createReservedTeamName(name)
+    const newReservedTeamName = await create(MODELNAME, { name })
 
     resposeHandler(res, newReservedTeamName, Created("نام تیم رزرو شده"))
   } catch (error) {
@@ -26,7 +30,8 @@ module.exports.createReservedTeamName = async (req, res, next) => {
 module.exports.readReservedTeamName = async (req, res, next) => {
   try {
     const { id, page } = req.query
-    const reservedTeamName = await readReservedTeamName(id, page || 1)
+    const where = id ? { id: +id } : null
+    const reservedTeamName = await read(MODELNAME, where, page || 1)
     resposeHandler(res, reservedTeamName, Ok("خواندن نام تیم رزرو شده"))
   } catch (error) {
     next(createError(InternalServerError()))
@@ -36,7 +41,11 @@ module.exports.updateReservedTeamName = async (req, res, next) => {
   try {
     const { id } = req.params
     const { newName } = req.body
-    const updatedReservedTeamName = await updateReservedTeamName(id, newName)
+    const updatedReservedTeamName = await update(
+      MODELNAME,
+      { id: +id },
+      { name: newName }
+    )
     resposeHandler(
       res,
       updatedReservedTeamName,
@@ -51,7 +60,7 @@ module.exports.updateReservedTeamName = async (req, res, next) => {
 module.exports.deleteReservedTeamName = async (req, res, next) => {
   try {
     const { id } = req.params
-    const deletedReservedTeamName = await deleteReservedTeamName(id)
+    const deletedReservedTeamName = await remove(MODELNAME, { id: +id })
     resposeHandler(
       res,
       deletedReservedTeamName,

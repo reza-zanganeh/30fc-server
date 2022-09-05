@@ -216,7 +216,6 @@ module.exports.requestToResetPassword = async (req, res, next) => {
     resposeHandler(res, {}, Ok("درخواست بازیابی رمز عبور"))
   } catch (error) {
     // send email to admin to check for this error
-    console.log(error)
     return next(createError(InternalServerError()))
   }
 }
@@ -260,7 +259,6 @@ module.exports.resetPassword = async (req, res, next) => {
 
     resposeHandler(res, {}, Ok("بازیابی رمز عبور"))
   } catch (error) {
-    console.log(error)
     next(createError(InternalServerError()))
   }
 }
