@@ -63,6 +63,7 @@ const paginationTakeItemsCount = {
   composition: 10,
   primitivePlayerName: 40,
   primitivePlayerAge: 10,
+  playerPosition: 20,
 }
 
 module.exports = {
