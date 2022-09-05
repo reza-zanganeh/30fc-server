@@ -183,13 +183,18 @@ model ReservedPlayerName {
   name String
 }
 
+model PrimitivePlayerName{
+  id   Int    @id @default(autoincrement())
+  name String
+}
+
 model PlayerFacePicture {
   id         Int      @id @default(autoincrement())
   players    Player[]
   pictureUrl String
 }
 
-model PlayerAge {
+model PrimitivePlayerAge {
   id        Int @id @default(autoincrement())
   one       Int
   two       Int
