@@ -9,6 +9,7 @@ const { compositionRouter } = require("./composition")
 const { primitivePlayerNameRouter } = require("./primitivePlayerName")
 const { primitivePlayerAgeRouter } = require("./PrimitivePlayerAge")
 const { playerPositionRouter } = require("./playerPosition")
+const { primitivePlayerPowerRouter } = require("./primitivePlayerPower")
 module.exports.registerRoutes = (app) => {
   //#region add routes
   app.use(`/api/${appVersion}/authentication`, authenticationRouter)
@@ -47,6 +48,12 @@ module.exports.registerRoutes = (app) => {
     isAuthenticate,
     isAdmin,
     playerPositionRouter
+  )
+  app.use(
+    `/api/${appVersion}/primitive-player-power`,
+    isAuthenticate,
+    isAdmin,
+    primitivePlayerPowerRouter
   )
   //#endregion
   app.use("*", notFoundResponse)
