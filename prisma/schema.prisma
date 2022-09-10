@@ -27,50 +27,52 @@ model User {
 }
 
 model Team {
-  id                         Int           @id @default(autoincrement())
-  name                       String
-  coinCount                  Int           @default(0)
+  id                         Int                     @id @default(autoincrement())
+  name                       String                  @unique
+  coinCount                  Int                     @default(0)
   // owner
-  owner                      User          @relation(fields: [ownerId], references: [id])
+  owner                      User                    @relation(fields: [ownerId], references: [id])
   ownerId                    Int
   // total
-  totalScore                 Int           @default(0)
-  totalWinCount              Int           @default(0)
-  totalLoseCount             Int           @default(0)
-  totalEqualCount            Int           @default(0)
+  totalScore                 Int                     @default(0)
+  totalWinCount              Int                     @default(0)
+  totalLoseCount             Int                     @default(0)
+  totalEqualCount            Int                     @default(0)
   // league
-  scoreInLeague              Int           @default(0)
-  winCountInLeague           Int           @default(0)
-  loseCountInLeague          Int           @default(0)
-  equalCountInLeague         Int           @default(0)
-  firstTeamInLeagueCupCount  Int           @default(0)
-  secondTeamInLeagueCupCount Int           @default(0)
-  thirdTeamInLeagueCupCount  Int           @default(0)
+  scoreInLeague              Int                     @default(0)
+  winCountInLeague           Int                     @default(0)
+  loseCountInLeague          Int                     @default(0)
+  equalCountInLeague         Int                     @default(0)
+  firstTeamInLeagueCupCount  Int                     @default(0)
+  secondTeamInLeagueCupCount Int                     @default(0)
+  thirdTeamInLeagueCupCount  Int                     @default(0)
   // 
   logo                       Logo?
-  type                       TeamType      @default(NORMAL)
-  friendlyGameCount          Int           @default(0)
-  isUsedEnergyProducer       Boolean       @default(false)
-  isUsedPsychologist         Int           @default(0)
-  isUsedDoctor               Int           @default(0)
-  endOfSpecialType           DateTime      @default(now())
-  composition                Composition   @relation(fields: [compositionId], references: [id])
+  friendlyGameCount          Int                     @default(0)
+  isUsedEnergyProducer       Boolean                 @default(false)
+  isUsedPsychologist         Int                     @default(0)
+  isUsedDoctor               Int                     @default(0)
+  endOfSpecialType           DateTime                @default(now())
+  composition                Composition             @relation(fields: [compositionId], references: [id])
   compositionId              Int
   technique                  Technique
   strategy                   Strategy
-  Spirit                     Int           @default(100)
+  Spirit                     Int                     @default(100)
   players                    Player[]
-  gym                        Gym?          @relation(fields: [gymId], references: [id])
+  gym                        Gym?                    @relation(fields: [gymId], references: [id])
   gymId                      Int?
-  usedGymCount               Int           @default(0)
-  coach                      Coach?        @relation(fields: [coachId], references: [id])
+  usedGymCount               Int                     @default(0)
+  coach                      Coach?                  @relation(fields: [coachId], references: [id])
   coachId                    Int?
-  stadium                    Stadium?      @relation(fields: [stadiumId], references: [id])
+  stadium                    Stadium?                @relation(fields: [stadiumId], references: [id])
   stadiumId                  Int?
-  doctor                     Doctor?       @relation(fields: [doctorId], references: [id])
+  doctor                     Doctor?                 @relation(fields: [doctorId], references: [id])
   doctorId                   Int?
-  psychologist               Psychologist? @relation(fields: [psychologistId], references: [id])
+  psychologist               Psychologist?           @relation(fields: [psychologistId], references: [id])
   psychologistId             Int?
+  status                     TeamStatus              @default(NORMAL)
+  RequestToCreatePlayer      RequestToCreatePlayer[]
+  playerCount                Int                     @default(20)
 }
 
 model Logo {
@@ -86,25 +88,25 @@ model ReservedTeamName {
 }
 
 model Composition {
-  id                Int     @id @default(autoincrement())
-  teams             Team[]
-  goalKeaper        Boolean @default(false)
-  leftDefender      Boolean @default(false)
-  middle1Defender   Boolean @default(false)
-  middle2Defender   Boolean @default(false)
-  middle3Defender   Boolean @default(false)
-  rightDefender     Boolean @default(false)
-  leftMidfielder    Boolean @default(false)
-  middle1Midfielder Boolean @default(false)
-  middle2Midfielder Boolean @default(false)
-  middle3Midfielder Boolean @default(false)
-  rightMidfielder   Boolean @default(false)
-  leftAttacker      Boolean @default(false)
-  middle1Attacker   Boolean @default(false)
-  middle2Attacker   Boolean @default(false)
-  middle3Attacker   Boolean @default(false)
-  rightAttacker     Boolean @default(false)
-  score             Int
+  id               Int     @id @default(autoincrement())
+  teams            Team[]
+  GOALKEAPER_NO    Boolean @default(false)
+  DEFENDER_LEFT    Boolean @default(false)
+  DEFENDER_ONE     Boolean @default(false)
+  DEFENDER_TWO     Boolean @default(false)
+  DEFENDER_THREE   Boolean @default(false)
+  DEFENDER_RIGHT   Boolean @default(false)
+  MIDFIELDER_LEFT  Boolean @default(false)
+  MIDFIELDER_ONE   Boolean @default(false)
+  MIDFIELDER_TWO   Boolean @default(false)
+  MIDFIELDER_THREE Boolean @default(false)
+  MIDFIELDER_RIGHT Boolean @default(false)
+  ATTACKER_LEFT    Boolean @default(false)
+  ATTACKER_ONE     Boolean @default(false)
+  ATTACKER_TWO     Boolean @default(false)
+  ATTACKER_THREE   Boolean @default(false)
+  ATTACKER_RIGHT   Boolean @default(false)
+  score            Int
 }
 
 model Gym {
@@ -155,27 +157,39 @@ model ENERGY {
 }
 
 model Player {
-  id                          Int               @id @default(autoincrement())
-  team                        Team              @relation(fields: [teamId], references: [id])
-  teamId                      Int
+  id                          Int                    @id @default(autoincrement())
+  team                        Team?                  @relation(fields: [teamId], references: [id])
+  teamId                      Int?
   name                        String
-  facePicture                 PlayerFacePicture @relation(fields: [facePictureId], references: [id])
+  facePicture                 PlayerFacePicture      @relation(fields: [facePictureId], references: [id])
   facePictureId               Int
   age                         Int
-  isRetirement                Boolean           @default(false)
-  position                    PlayerPosition    @relation(name: "playerPosition", fields: [positionId], references: [id])
+  position                    PlayerPosition         @relation(name: "playerPosition", fields: [positionId], references: [id])
   positionId                  Int
-  inMainComposition           Boolean           @default(false)
-  positionInMainComposition   PlayerPosition    @relation(name: "playerPositionInMainComposition", fields: [positionInMainCompositionId], references: [id])
-  positionInMainCompositionId Int
-  nationality                 String
-  energy                      Int               @default(100)
-  injury                      Int               @default(0)
+  inMainComposition           Boolean                @default(false)
+  positionInMainComposition   PlayerPosition?        @relation(name: "playerPositionInMainComposition", fields: [positionInMainCompositionId], references: [id])
+  positionInMainCompositionId Int?
+  nationality                 String                 @default("ایران")
+  energy                      Int                    @default(100)
+  injury                      Int                    @default(0)
+  // power
+  spead                       Int                    @default(0)
+  controll                    Int                    @default(0)
+  pass                        Int                    @default(0)
+  flexibility                 Int                    @default(0)
+  stamina                     Int                    @default(0)
+  technique                   Int                    @default(0)
+  shoot                       Int                    @default(0)
+  drible                      Int                    @default(0)
+  focus                       Int                    @default(0)
+  experience                  Int                    @default(0)
+  totalPower                  Int
+  // end power
+  goalCount                   Int                    @default(0)
+  status                      PlayerStatus           @default(INTEAM)
   salary                      Int
-  power                       PlayerPower?
-  powerId                     Int
-  goalCount                   Int               @default(0)
-  isPracticed                 Boolean           @default(false)
+  price                       Int                    @default(0)
+  RequestToCreatePlayer       RequestToCreatePlayer?
 }
 
 model ReservedPlayerName {
@@ -183,7 +197,7 @@ model ReservedPlayerName {
   name String
 }
 
-model PrimitivePlayerName{
+model PrimitivePlayerName {
   id   Int    @id @default(autoincrement())
   name String
 }
@@ -192,6 +206,7 @@ model PlayerFacePicture {
   id         Int      @id @default(autoincrement())
   players    Player[]
   pictureUrl String
+  isSpecial  Boolean  @default(false)
 }
 
 model PrimitivePlayerAge {
@@ -226,22 +241,6 @@ model PlayerPosition {
   manor                           ManorPostion
 }
 
-model PlayerPower {
-  id          Int    @id @default(autoincrement())
-  player      Player @relation(fields: [playerId], references: [id])
-  playerId    Int    @unique
-  spead       Int    @default(0)
-  controll    Int    @default(0)
-  pass        Int    @default(0)
-  flexibility Int    @default(0)
-  stamina     Int    @default(0)
-  technique   Int    @default(0)
-  shoot       Int    @default(0)
-  drible      Int    @default(0)
-  focus       Int    @default(0)
-  experience  Int    @default(0)
-}
-
 model PrimitivePlayerPower {
   id          Int @id @default(autoincrement())
   spead       Int @default(0)
@@ -256,6 +255,29 @@ model PrimitivePlayerPower {
   experience  Int @default(0)
 }
 
+model CoinPlan {
+  id                Int  @id @default(autoincrement())
+  amount            Int
+  discountInPercent Int?
+  price             Int
+}
+
+model RequestToCreatePlayer {
+  id            Int                        @id @default(autoincrement())
+  status        RequestToCreatePlayerSatus @default(PENDING)
+  team          Team                       @relation(fields: [teamId], references: [id])
+  teamId        Int
+  player        Player?                    @relation(fields: [playerId], references: [id])
+  playerId      Int?                       @unique
+  adminResponse String?
+}
+
+enum RequestToCreatePlayerSatus {
+  PENDING
+  CONFIRM
+  REJECT
+}
+
 // enum
 enum UserLevel {
   // level1 = admin
@@ -265,13 +287,6 @@ enum UserLevel {
   LEVEL4
   // normal user
   LEVEL5
-}
-
-enum TeamType {
-  NORMAL
-  BRONZE
-  SILVER
-  GOLD
 }
 
 enum Technique {
@@ -301,4 +316,22 @@ enum ManorPostion {
   TWO
   THREE
   RIGHT
+  MIDDLE
+  NO
+}
+
+enum PlayerStatus {
+  INTEAM
+  INMARKET
+  PRACTICEDINTEAM
+  RETIREMENT
+  INREQUEST
+}
+
+enum TeamStatus {
+  BLOCKED
+  NORMAL
+  BRONZE
+  SILVER
+  GOLD
 }

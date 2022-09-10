@@ -2,6 +2,7 @@ const appVersion = "v1"
 const { errorHandler, notFoundResponse } = require("../helpers/responseHandler")
 const { isAuthenticate } = require("../middleware/athentication")
 const { isAdmin } = require("../middleware/isAdmin")
+const { checkUserNotBlocked } = require("../middleware/checkUserNotBlocked")
 const { authenticationRouter } = require("./authentication")
 const { reservedTeamNameRouter } = require("./reservedTeamName")
 const { playerFacePictureRouter } = require("./playerFacePicture")
@@ -10,6 +11,11 @@ const { primitivePlayerNameRouter } = require("./primitivePlayerName")
 const { primitivePlayerAgeRouter } = require("./PrimitivePlayerAge")
 const { playerPositionRouter } = require("./playerPosition")
 const { primitivePlayerPowerRouter } = require("./primitivePlayerPower")
+const { playerRouter } = require("./player")
+const { teamRouter } = require("./team")
+const {
+  requestToCreatePlayerRouter,
+} = require("../router/requestToCreatePlayer")
 module.exports.registerRoutes = (app) => {
   //#region add routes
   app.use(`/api/${appVersion}/authentication`, authenticationRouter)
@@ -54,6 +60,24 @@ module.exports.registerRoutes = (app) => {
     isAuthenticate,
     isAdmin,
     primitivePlayerPowerRouter
+  )
+  app.use(
+    `/api/${appVersion}/team`,
+    isAuthenticate,
+    checkUserNotBlocked,
+    teamRouter
+  )
+  app.use(
+    `/api/${appVersion}/player`,
+    isAuthenticate,
+    checkUserNotBlocked,
+    playerRouter
+  )
+  app.use(
+    `/api/${appVersion}/request-to-create-player`,
+    isAuthenticate,
+    checkUserNotBlocked,
+    requestToCreatePlayerRouter
   )
   //#endregion
   app.use("*", notFoundResponse)

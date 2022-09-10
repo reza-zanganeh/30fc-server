@@ -6,47 +6,48 @@ const {
   Ok,
   BadRequest,
 } = require("../helpers/HttpResponse")
-const { create, read, remove } = require("../helpers/prismaCRUDoperation")
-const MODELNAME = "composition"
+const { create } = require("../helpers/prisma")
+const { modelName } = require("../../../config/Constant")
+const { compositionModelName } = modelName
 module.exports.createComposition = async (req, res, next) => {
   try {
     const {
-      goalKeaper,
-      leftDefender,
-      middle1Defender,
-      middle2Defender,
-      middle3Defender,
-      rightDefender,
-      leftMidfielder,
-      middle1Midfielder,
-      middle2Midfielder,
-      middle3Midfielder,
-      rightMidfielder,
-      leftAttacker,
-      middle1Attacker,
-      middle2Attacker,
-      middle3Attacker,
-      rightAttacker,
+      GOALKEAPER_NO,
+      DEFENDER_LEFT,
+      DEFENDER_ONE,
+      DEFENDER_TWO,
+      DEFENDER_THREE,
+      DEFENDER_RIGHT,
+      MIDFIELDER_LEFT,
+      MIDFIELDER_ONE,
+      MIDFIELDER_TWO,
+      MIDFIELDER_THREE,
+      MIDFIELDER_RIGHT,
+      ATTACKER_LEFT,
+      ATTACKER_ONE,
+      ATTACKER_TWO,
+      ATTACKER_THREE,
+      ATTACKER_RIGHT,
       score,
     } = req.body
 
     const positions = {
-      goalKeaper,
-      leftDefender,
-      middle1Defender,
-      middle2Defender,
-      middle3Defender,
-      rightDefender,
-      leftMidfielder,
-      middle1Midfielder,
-      middle2Midfielder,
-      middle3Midfielder,
-      rightMidfielder,
-      leftAttacker,
-      middle1Attacker,
-      middle2Attacker,
-      middle3Attacker,
-      rightAttacker,
+      GOALKEAPER_NO,
+      DEFENDER_LEFT,
+      DEFENDER_ONE,
+      DEFENDER_TWO,
+      DEFENDER_THREE,
+      DEFENDER_RIGHT,
+      MIDFIELDER_LEFT,
+      MIDFIELDER_ONE,
+      MIDFIELDER_TWO,
+      MIDFIELDER_THREE,
+      MIDFIELDER_RIGHT,
+      ATTACKER_LEFT,
+      ATTACKER_ONE,
+      ATTACKER_TWO,
+      ATTACKER_THREE,
+      ATTACKER_RIGHT,
     }
     let playerCount = 0
 
@@ -54,30 +55,28 @@ module.exports.createComposition = async (req, res, next) => {
       if (position) playerCount++
     }
 
-    if (playerCount > 11)
+    if (playerCount !== 11)
       return next(
-        createError(
-          BadRequest("تعداد بازیکنان داخل ترکیب باید کمتر از 11 باشد")
-        )
+        createError(BadRequest("تعداد بازیکنان داخل ترکیب باید برابر 11 باشد"))
       )
 
-    const newComposition = await create(MODELNAME, {
-      goalKeaper,
-      leftDefender,
-      middle1Defender,
-      middle2Defender,
-      middle3Defender,
-      rightDefender,
-      leftMidfielder,
-      middle1Midfielder,
-      middle2Midfielder,
-      middle3Midfielder,
-      rightMidfielder,
-      leftAttacker,
-      middle1Attacker,
-      middle2Attacker,
-      middle3Attacker,
-      rightAttacker,
+    const newComposition = await create(compositionModelName.english, {
+      GOALKEAPER_NO,
+      DEFENDER_LEFT,
+      DEFENDER_ONE,
+      DEFENDER_TWO,
+      DEFENDER_THREE,
+      DEFENDER_RIGHT,
+      MIDFIELDER_LEFT,
+      MIDFIELDER_ONE,
+      MIDFIELDER_TWO,
+      MIDFIELDER_THREE,
+      MIDFIELDER_RIGHT,
+      ATTACKER_LEFT,
+      ATTACKER_ONE,
+      ATTACKER_TWO,
+      ATTACKER_THREE,
+      ATTACKER_RIGHT,
       score,
     })
 

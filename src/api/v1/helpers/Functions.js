@@ -24,7 +24,7 @@ module.exports.createOtpCodeToken = (phonenumber) => {
     {
       phonenumber,
     },
-    projectConfig.otpCode.expiresTimeInMilisecond
+    projectConfig.otpCode.expiresTimeInMinute
   )
 }
 
@@ -35,7 +35,7 @@ module.exports.createAuthenticationToken = (id, level, isBlock) => {
       level,
       isBlock,
     },
-    projectConfig.jsonwebtoken.authenticationTokenExpiresTimeInMilisecond
+    projectConfig.jsonwebtoken.authenticationTokenExpiresTimeInMinute
   )
 }
 
@@ -50,4 +50,11 @@ module.exports.convertSecondToMinAndScond = (time) => {
 
 module.exports.getSkipFromPageAndTakeCount = (page, takeCount) => {
   return (page - 1) * takeCount
+}
+
+module.exports.sumOfArrayElements = (numbers) => {
+  return numbers.reduce(
+    (previousValue, currentValue) => previousValue + currentValue,
+    0
+  )
 }

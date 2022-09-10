@@ -29,6 +29,7 @@ const otpCode = {
     max: 100000,
   },
   expiresTimeInMilisecond: OTPCODEEXPIRESTIMEINMINUTE * 60 * 1000,
+  expiresTimeInMinute: OTPCODEEXPIRESTIMEINMINUTE,
 }
 
 const google = {
@@ -57,16 +58,6 @@ const cloud = {
   maximumFileSize: 128000,
 }
 
-const paginationTakeItemsCount = {
-  reservedTeamName: 40,
-  playerFacePicture: 10,
-  composition: 10,
-  primitivePlayerName: 40,
-  primitivePlayerAge: 10,
-  playerPosition: 20,
-  primitivePlayerPower: 20,
-}
-
 module.exports = {
   jsonwebtoken,
   ghasedak,
@@ -75,5 +66,4 @@ module.exports = {
   cloud,
   nodemailer,
   google,
-  paginationTakeItemsCount,
 }

@@ -10,17 +10,24 @@ const {
   getPresignedUrlToUploadPlayerFacePiture,
   deletePlayerFacePictureFromCloud,
 } = require("../services/cloud")
-const { create, read, remove } = require("../helpers/prismaCRUDoperation")
+const { create, readWithPaginationOrId } = require("../helpers/prisma")
 const projectConfig = require("../../../config/index")
-const MODELNAME = "playerFacePicture"
+const { modelName } = require("../../../config/Constant")
+const { playerFacePictureModelName } = modelName
 module.exports.createPlayerFacePicture = async (req, res, next) => {
   try {
-    const { fileName } = req.body
+    const { fileName, isSpecial } = req.body
     const { url, fields, Key } = await getPresignedUrlToUploadPlayerFacePiture(
       fileName
     )
 
-    const newPlayerFacePicture = await create(MODELNAME, { pictureUrl: Key })
+    const newPlayerFacePicture = await create(
+      playerFacePictureModelName.english,
+      {
+        pictureUrl: Key,
+        isSpecial,
+      }
+    )
 
     resposeHandler(
       res,
@@ -34,7 +41,11 @@ module.exports.createPlayerFacePicture = async (req, res, next) => {
 module.exports.readPlayerFacePicture = async (req, res, next) => {
   try {
     const { id, page } = req.query
-    const playerFacePicture = await read(MODELNAME, { id: +id }, page || 1)
+    const playerFacePicture = await readWithPaginationOrId(
+      playerFacePictureModelName.english,
+      +id,
+      page
+    )
     const baseUrl =
       projectConfig.cloud.endPointUrl +
       "/" +

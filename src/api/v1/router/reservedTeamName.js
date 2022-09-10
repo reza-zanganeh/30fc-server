@@ -1,5 +1,7 @@
 // get information with token
 const express = require("express")
+const { modelName } = require("../../../config/Constant")
+const { reservedTeamNameModelName } = modelName
 const { checkSchema } = require("express-validator")
 const { expressValidationResultHandler } = require("../helpers/responseHandler")
 const {
@@ -11,10 +13,7 @@ const {
   readController: readReservedTeamName,
   updateConrtoller: updateReservedTeamName,
   deleteController: deleteReservedTeamName,
-} = require("../helpers/controllerCRUDoperation")({
-  english: "reservedTeamName",
-  persian: "نام تیم رزرو شده",
-})
+} = require("../helpers/controllerCRUDoperation")(reservedTeamNameModelName)
 const reservedTeamNameRouter = express.Router()
 
 reservedTeamNameRouter.post(

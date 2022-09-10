@@ -1,5 +1,7 @@
 // get information with token
 const express = require("express")
+const { modelName } = require("../../../config/Constant")
+const { primitivePlayerNameModelName } = modelName
 const { checkSchema } = require("express-validator")
 const { expressValidationResultHandler } = require("../helpers/responseHandler")
 const {
@@ -11,10 +13,7 @@ const {
   readController: readPrimitivePlayerName,
   updateConrtoller: updatePrimitivePlayerName,
   deleteController: deletePrimitivePlayerName,
-} = require("../helpers/controllerCRUDoperation")({
-  english: "reservedTeamName",
-  persian: "نام اولیه بازیکن",
-})
+} = require("../helpers/controllerCRUDoperation")(primitivePlayerNameModelName)
 const primitivePlayerNameRouter = express.Router()
 
 primitivePlayerNameRouter.post(

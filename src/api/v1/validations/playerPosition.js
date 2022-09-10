@@ -1,5 +1,18 @@
-const { required } = require("../helpers/inputValidation")
+const { inArray } = require("../helpers/inputValidation")
 module.exports.createPlayerPositionSchemaValidation = {
-  major: required("موقعیت اصلی بازیکن", "body"),
-  manor: required("موقعیت جزیی بازیکن", "body"),
+  major: inArray("موقعیت اصلی بازیکن", "body", [
+    "GOALKEAPER",
+    "DEFENDER",
+    "MIDFIELDER",
+    "ATTACKER",
+  ]),
+  manor: inArray("موقعیت جزیی بازیکن", "body", [
+    "LEFT",
+    "ONE",
+    "TWO",
+    "THREE",
+    "RIGHT",
+    "MIDDLE",
+    "NO",
+  ]),
 }

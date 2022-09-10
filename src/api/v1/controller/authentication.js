@@ -62,10 +62,12 @@ module.exports.requestOtp = async (req, res, next) => {
       )
     }
 
-    const randomNumber = createRandomNumber(
-      projectConfig.otpCode.length.min,
-      projectConfig.otpCode.length.max
-    )
+    // TODO email to admin to check redis
+    // const randomNumber = createRandomNumber(
+    //   projectConfig.otpCode.length.min,
+    //   projectConfig.otpCode.length.max
+    // )
+    const randomNumber = "12345"
 
     const saveOtpOnRedisResult = await setOtpCodeOnRedis(
       phonenumber,
@@ -77,7 +79,8 @@ module.exports.requestOtp = async (req, res, next) => {
       return next(createError(InternalServerError()))
     }
 
-    sendOtpCode(phonenumber, randomNumber)
+    // TODO uncomment this line when buy ghasedak account
+    // sendOtpCode(phonenumber, randomNumber)
 
     const token = createOtpCodeToken(phonenumber)
 

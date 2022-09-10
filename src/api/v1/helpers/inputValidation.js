@@ -1,4 +1,5 @@
 const { empty, invalid, limitLegth } = require("./validationMessage")
+const { readOne } = require("../helpers/prisma")
 module.exports.email = (location) => ({
   in: [location],
   exists: {
@@ -137,5 +138,66 @@ module.exports.fileName = (location) => ({
       else return false
     },
     errorMessage: "( jpeg || png ) نام فایل باید بهمراه نوع ان باشد",
+  },
+})
+
+module.exports.inArray = (fieldName, location, array) => ({
+  in: [location],
+  exists: {
+    bail: true,
+    options: {
+      checkNull: true,
+    },
+    errorMessage: empty(fieldName),
+    checkNull: true,
+  },
+  custom: {
+    options: (value) => array.includes(value),
+    errorMessage: `باشد [ ${array.join(" , ")} ] ${fieldName} باید جزو `,
+  },
+})
+
+module.exports.between = (fieldName, location, min, max) => ({
+  in: [location],
+  exists: {
+    bail: true,
+    options: {
+      checkNull: true,
+    },
+    errorMessage: empty(fieldName),
+    checkNull: true,
+  },
+  custom: {
+    options: (value) => value >= min && value <= max,
+    errorMessage: `مقدار ${fieldName} باید بین ${min} و ${max} باشد`,
+  },
+})
+
+module.exports.checkExistsObjectWithIdInDb = (
+  MODELNAME,
+  location,
+  addDataToBody,
+  select = {}
+) => ({
+  in: [location],
+  exists: {
+    bail: true,
+    options: {
+      checkFalsy: true,
+      checkNull: true,
+    },
+    errorMessage: empty(MODELNAME.persian),
+  },
+  custom: {
+    options: async (id, { req }) => {
+      const object = await readOne(
+        MODELNAME.english,
+        { id: +id },
+        { id: true, ...select }
+      )
+      if (!object)
+        return Promise.reject(`${MODELNAME.persian} انتخابی شما معتبر نمی باشد`)
+      if (addDataToBody) req[MODELNAME.english] = object
+    },
   },
 })

@@ -1,5 +1,7 @@
 // get information with token
 const express = require("express")
+const { modelName } = require("../../../config/Constant")
+const { playerPositionModelName } = modelName
 const { checkSchema } = require("express-validator")
 const { expressValidationResultHandler } = require("../helpers/responseHandler")
 const {
@@ -9,10 +11,7 @@ const {
   createController: createplayerPosition,
   readController: readplayerPosition,
   deleteController: deleteplayerPosition,
-} = require("../helpers/controllerCRUDoperation")({
-  english: "playerPosition",
-  persian: "موقعیت بازیکن",
-})
+} = require("../helpers/controllerCRUDoperation")(playerPositionModelName)
 const playerPositionRouter = express.Router()
 
 playerPositionRouter.post(

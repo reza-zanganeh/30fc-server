@@ -1,5 +1,7 @@
 // get information with token
 const express = require("express")
+const { modelName } = require("../../../config/Constant")
+const { playerFacePictureModelName } = modelName
 const { checkSchema } = require("express-validator")
 const { expressValidationResultHandler } = require("../helpers/responseHandler")
 const {
@@ -11,10 +13,7 @@ const {
 } = require("../controller/playerFacePicture")
 
 const { deleteController: deletePlayerFacePicture } =
-  require("../helpers/controllerCRUDoperation")({
-    english: "playerFacePicture",
-    persian: "تصویر چهره بازیکن",
-  })
+  require("../helpers/controllerCRUDoperation")(playerFacePictureModelName)
 
 const playerFacePictureRouter = express.Router()
 
