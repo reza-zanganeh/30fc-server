@@ -17,14 +17,14 @@ module.exports.createPlayer = async ({
   shoot,
   spead,
   stamina,
-  facePictureId,
+  facePictureUrl,
   positionId,
   teamId,
   nationality,
   status,
+  price,
   inMainComposition,
   positionInMainCompositionId,
-  price,
 }) => {
   const totalPower =
     controll +
@@ -56,9 +56,11 @@ module.exports.createPlayer = async ({
         stamina,
         totalPower,
         // end of power
-        facePicture: { connect: { id: facePictureId } },
+        facePicture: {
+          create: { pictureUrl: facePictureUrl, isSpecial: true },
+        },
         position: { connect: { id: positionId } },
-        team: { connect: { id: teamId } },
+        ...(teamId && { team: { connect: { id: teamId } } }),
         nationality,
         status,
         ...(price && { price }),
