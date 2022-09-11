@@ -11,7 +11,11 @@ const {
   Ok,
 } = require("../helpers/HttpResponse")
 const { readOne, count, getNthRecord, readAll } = require("../helpers/prisma")
-const { createTeam, getPlayers } = require("../dataLogic/team")
+const {
+  createTeam,
+  getPlayers,
+  changeComposition,
+} = require("../dataLogic/team")
 const { modelName } = require("../../../config/Constant")
 const {
   compositionModelName,
@@ -22,6 +26,7 @@ const {
   playerFacePictureModelName,
   userModelName,
   playerPositionModelName,
+  playerModelName,
 } = modelName
 module.exports.createTeam = async (req, res, next) => {
   try {
@@ -301,6 +306,90 @@ module.exports.getPlayers = async (req, res, next) => {
 
     resposeHandler(res, players, Ok("خواندن بازیکنان تیم"))
   } catch (error) {
+    next(createError(InternalServerError()))
+  }
+}
+
+module.exports.changeComposition = async (req, res, next) => {
+  try {
+    const { compositionId } = req.body
+    const { id: teamId } = req.team
+    const newComposition = req[compositionModelName.english]
+    delete newComposition.id
+    const players = await readAll(
+      playerModelName.english,
+      { teamId: +teamId, inMainComposition: true },
+      {
+        id: true,
+        positionInMainComposition: true,
+      }
+    )
+
+    const positionInMainCompositionToIdPlayerMap = {}
+
+    players.forEach((player) => {
+      positionInMainCompositionToIdPlayerMap[
+        `${player.positionInMainComposition.major}_${player.positionInMainComposition.manor}`
+      ] = player.id
+    })
+
+    const updatedPlayer = []
+
+    // positionId
+    const positions = await readAll(playerPositionModelName.english)
+    const positionsMap = {}
+    positions.forEach((position) => {
+      positionsMap[`${position.major}_${position.manor}`] = position.id
+    })
+
+    for (const [position, havePlayer] of Object.entries(newComposition)) {
+      if (havePlayer) {
+        if (positionInMainCompositionToIdPlayerMap[position]) {
+          delete positionInMainCompositionToIdPlayerMap[position]
+        } else {
+          const major = position.split("_")[0]
+          let playerId
+          if (positionInMainCompositionToIdPlayerMap[`${major}_LEFT`]) {
+            playerId = positionInMainCompositionToIdPlayerMap[`${major}_LEFT`]
+            delete positionInMainCompositionToIdPlayerMap[`${major}_LEFT`]
+          } else if (positionInMainCompositionToIdPlayerMap[`${major}_ONE`]) {
+            playerId = positionInMainCompositionToIdPlayerMap[`${major}_ONE`]
+            delete positionInMainCompositionToIdPlayerMap[`${major}_ONE`]
+          } else if (positionInMainCompositionToIdPlayerMap[`${major}_TWO`]) {
+            playerId = positionInMainCompositionToIdPlayerMap[`${major}_TWO`]
+            delete positionInMainCompositionToIdPlayerMap[`${major}_TWO`]
+          } else if (positionInMainCompositionToIdPlayerMap[`${major}_THREE`]) {
+            playerId = positionInMainCompositionToIdPlayerMap[`${major}_THREE`]
+            delete positionInMainCompositionToIdPlayerMap[`${major}_THREE`]
+          } else if (positionInMainCompositionToIdPlayerMap[`${major}_RIGHT`]) {
+            playerId = positionInMainCompositionToIdPlayerMap[`${major}_RIGHT`]
+            delete positionInMainCompositionToIdPlayerMap[`${major}_RIGHT`]
+          }
+
+          if (playerId) {
+            updatedPlayer.push({
+              id: +playerId,
+              positionInMainCompositionId: positionsMap[position],
+            })
+          } else {
+            updatedPlayer.push({
+              id: +Object.values(positionInMainCompositionToIdPlayerMap)[0],
+              positionInMainCompositionId: positionsMap[position],
+            })
+          }
+        }
+      }
+    }
+
+    const updatedTeam = await changeComposition(
+      +teamId,
+      +compositionId,
+      updatedPlayer
+    )
+
+    resposeHandler(res, updatedTeam, Ok("تغییر ترکیب"))
+  } catch (error) {
+    console.log(error)
     next(createError(InternalServerError()))
   }
 }

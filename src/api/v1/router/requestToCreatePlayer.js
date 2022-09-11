@@ -18,12 +18,13 @@ const {
 } = require("../validations/requestToCreatePlayer")
 const { isAdmin } = require("../middleware/isAdmin")
 const { isMyTeam } = require("../middleware/isMyTeam")
+const { isMyTeamOrAdmin } = require("../middleware/isMyTeamOrAdmin")
 const requestToCreatePlayerRouter = express.Router()
 
 requestToCreatePlayerRouter.get(
   "/",
   isAdmin,
-  isMyTeam,
+  isMyTeamOrAdmin,
   getRequestToCreatePlayer
 )
 

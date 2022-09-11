@@ -58,6 +58,8 @@ module.exports.getPlayers = async (teamId) => {
               },
             },
             injury: true,
+            inMainComposition: true,
+            positionInMainComposition: true,
             // power
             totalPower: true,
             energy: true,
@@ -68,6 +70,36 @@ module.exports.getPlayers = async (teamId) => {
     })
 
     return players
+  } catch (error) {
+    throw error
+  }
+}
+
+module.exports.changeComposition = async (
+  teamId,
+  compositionId,
+  newPlayerPosition
+) => {
+  try {
+    const updatedTeam = await team.update({
+      where: {
+        id: teamId,
+      },
+      data: {
+        composition: {
+          connect: { id: compositionId },
+        },
+        players: {
+          updateMany: newPlayerPosition.map((player) => ({
+            where: { id: player.id },
+            data: {
+              positionInMainCompositionId: player.positionInMainCompositionId,
+            },
+          })),
+        },
+      },
+    })
+    return updatedTeam
   } catch (error) {
     throw error
   }

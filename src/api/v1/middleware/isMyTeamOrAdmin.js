@@ -4,12 +4,18 @@ const { Forbidden, BadRequest } = require("../helpers/HttpResponse")
 const { createError } = require("../helpers/Functions")
 const { readOne } = require("../helpers/prisma")
 
-module.exports.isMyTeam = async (req, res, next) => {
+module.exports.isMyTeamOrAdmin = async (req, res, next) => {
   try {
-    const { id } = req.user
+    const { id, level } = req.user
+
+    // LEVEL1 = admin
+    if (level === "LEVEL1") return next()
 
     let { teamId } = req.body
     if (!teamId) teamId = req.params.id
+
+    if (!teamId)
+      return next(createError(BadRequest("مقدار شناسه تیم ارسال نشده است")))
 
     const team = await readOne(
       teamModelName.english,
