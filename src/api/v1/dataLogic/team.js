@@ -104,3 +104,40 @@ module.exports.changeComposition = async (
     throw error
   }
 }
+
+module.exports.changeTwoPlayerPosition = async (
+  teamId,
+  playerOne,
+  playerTwo
+) => {
+  try {
+    const result = await team.update({
+      where: {
+        id: teamId,
+      },
+      data: {
+        players: {
+          updateMany: [
+            {
+              where: { id: +playerOne.id },
+              data: {
+                positionInMainCompositionId:
+                  playerTwo.positionInMainCompositionId,
+              },
+            },
+            {
+              where: { id: +playerTwo.id },
+              data: {
+                positionInMainCompositionId:
+                  playerOne.positionInMainCompositionId,
+              },
+            },
+          ],
+        },
+      },
+    })
+    return result
+  } catch (error) {
+    throw error
+  }
+}

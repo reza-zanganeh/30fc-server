@@ -43,3 +43,9 @@ module.exports.changeCompositionSchemaValidation = {
     }
   ),
 }
+
+module.exports.changeTwoPlayerPositionSchemaValidation = {
+  playerOneId: required("شناسه بازیکن اول", "body"),
+  playerTwoId: required("شناسه بازیکن دوم", "body"),
+  teamId: required("شناسه تیم", "body"),
+}

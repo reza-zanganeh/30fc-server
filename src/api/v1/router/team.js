@@ -6,11 +6,13 @@ const { expressValidationResultHandler } = require("../helpers/responseHandler")
 const {
   createTeamSchemaValidation,
   changeCompositionSchemaValidation,
+  changeTwoPlayerPositionSchemaValidation,
 } = require("../validations/team")
 const {
   createTeam,
   getPlayers,
   changeComposition,
+  changeTwoPlayerPosition,
 } = require("../controller/team")
 const { isMyTeam } = require("../middleware/isMyTeam")
 const { isMyTeamOrAdmin } = require("../middleware/isMyTeamOrAdmin")
@@ -36,6 +38,14 @@ teamRouter.patch(
   expressValidationResultHandler,
   isMyTeam,
   changeComposition
+)
+
+teamRouter.patch(
+  "/change-two-player-position",
+  checkSchema(changeTwoPlayerPositionSchemaValidation),
+  expressValidationResultHandler,
+  isMyTeam,
+  changeTwoPlayerPosition
 )
 
 module.exports.teamRouter = teamRouter

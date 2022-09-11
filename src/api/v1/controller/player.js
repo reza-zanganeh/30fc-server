@@ -117,7 +117,6 @@ module.exports.chnageTShirtNumber = async (req, res, next) => {
 
     resposeHandler(res, updatedPalyer, Ok("تغییر شماره پیراهن بازیکن"))
   } catch (error) {
-    console.log(error)
     next(createError(InternalServerError()))
   }
 }

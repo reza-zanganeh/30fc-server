@@ -15,6 +15,7 @@ const {
   createTeam,
   getPlayers,
   changeComposition,
+  changeTwoPlayerPosition,
 } = require("../dataLogic/team")
 const { modelName } = require("../../../config/Constant")
 const {
@@ -388,6 +389,45 @@ module.exports.changeComposition = async (req, res, next) => {
     )
 
     resposeHandler(res, updatedTeam, Ok("تغییر ترکیب"))
+  } catch (error) {
+    console.log(error)
+    next(createError(InternalServerError()))
+  }
+}
+
+module.exports.changeTwoPlayerPosition = async (req, res, next) => {
+  try {
+    const { playerOneId, playerTwoId } = req.body
+    const { id: teamId } = req.team
+
+    const playerOne = await readOne(
+      playerModelName.english,
+      {
+        id: +playerOneId,
+        teamId: +teamId,
+      },
+      { positionInMainCompositionId: true, name: true, id: true }
+    )
+
+    const playerTwo = await readOne(
+      playerModelName.english,
+      {
+        id: +playerTwoId,
+        teamId: +teamId,
+      },
+      { positionInMainCompositionId: true, name: true, id: true }
+    )
+
+    if (!playerOne || !playerTwo)
+      return next(createError(BadRequest("بازیکنان متعلق به تیم شما نیست")))
+
+    const result = await changeTwoPlayerPosition(+teamId, playerOne, playerTwo)
+
+    resposeHandler(
+      res,
+      result,
+      Ok(`تعویض ${playerOne.name} با ${playerTwo.name}`)
+    )
   } catch (error) {
     console.log(error)
     next(createError(InternalServerError()))
