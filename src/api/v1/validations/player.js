@@ -26,5 +26,12 @@ module.exports.createPlayerByAdminSchemaValidation = {
   drible: required("دریبل بازیکن", "body"),
   focus: required("تمرکز بازیکن", "body"),
   experience: required("تجربه بازیکن", "body"),
+  tShirtNumber: required("شماره پیراهن بازیکن", "body"),
   price: required("قیمت بازیکن", "body"),
+}
+
+module.exports.changeTShirtNumberSchemaValidation = {
+  teamId: required("شناسه تیم", "body"),
+  playerId: required("شناسه بازیکن", "body"),
+  tShirtNumber: required("شماره پیراهن بازیکن", "body"),
 }

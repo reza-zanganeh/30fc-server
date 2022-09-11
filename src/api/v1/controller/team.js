@@ -192,6 +192,10 @@ module.exports.createTeam = async (req, res, next) => {
 
     const players = []
 
+    // t shirt number
+    let startT_ShirtNumber = 3
+    let rangeT_ShirtNumber = 4
+
     for (let counter = 1; counter <= 20; ++counter) {
       // name
       const name =
@@ -232,6 +236,17 @@ module.exports.createTeam = async (req, res, next) => {
 
       const position = playerPositionsOnTeam[counter - 1]
       const positionId = positionsMap[position]
+
+      let tShirtNumber
+      if (counter < 3) tShirtNumber = counter
+      else {
+        tShirtNumber = createRandomNumber(
+          startT_ShirtNumber,
+          startT_ShirtNumber + rangeT_ShirtNumber - 1
+        )
+        startT_ShirtNumber += rangeT_ShirtNumber
+      }
+
       players[counter - 1] = {
         name,
         age,
@@ -240,6 +255,7 @@ module.exports.createTeam = async (req, res, next) => {
         totalPower: sumOfArrayElements(Object.values(power)),
         salary,
         positionId,
+        tShirtNumber,
       }
     }
 

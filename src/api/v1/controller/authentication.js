@@ -139,7 +139,7 @@ module.exports.register = async (req, res, next) => {
       return next(
         createError(
           BadRequest(
-            "این شماره همراه قبلا ثبت شده است لطفا در صورتی که رمز عبور خود را فراموش کرده اید از قسمت فراموشی رمز عبور ان را بازیابی کنید"
+            "این اطلاعات قبلا ثبت شده است لطفا در صورتی که رمز عبور خود را فراموش کرده اید از قسمت فراموشی رمز عبور ان را بازیابی کنید"
           )
         )
       )
@@ -155,6 +155,8 @@ module.exports.login = async (req, res, next) => {
     const user = await findUser({
       email,
     })
+
+    if (!user) return next(createError(BadRequest("حساب کاربری شما یافت نشد")))
 
     const password = user.password
 

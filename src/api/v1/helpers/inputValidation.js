@@ -34,6 +34,7 @@ module.exports.phonenumber = (location) => ({
   },
 })
 
+// TODO strong password regex
 module.exports.password = (location) => ({
   in: [location],
   exists: {

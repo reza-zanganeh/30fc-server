@@ -22,6 +22,7 @@ module.exports.createRequestToCreatePlayerSchecmaValidation = {
   age: between("سن بازیکن", "body", 16, 38),
   positionId: checkExistsObjectWithIdInDb(playerPositionModelName, "body"),
   nationality: required("ملیت بازیکن", "body"),
+  tShirtNumber: required("شماره پیراهن بازیکن", "body"),
   spead: between("سرعت بازیکن", "body", 0, 300),
   controll: between("قدرت کنترل بازیکن", "body", 0, 300),
   pass: between("دقت پاس بازیکن", "body", 0, 300),

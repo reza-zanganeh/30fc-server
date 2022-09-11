@@ -33,6 +33,7 @@ module.exports.createRequestToCreatePlayer = async (req, res, next) => {
       age,
       positionId,
       nationality,
+      tShirtNumber,
       spead,
       controll,
       pass,
@@ -101,6 +102,7 @@ module.exports.createRequestToCreatePlayer = async (req, res, next) => {
       pictureUrl: Key,
       positionId,
       nationality,
+      tShirtNumber: +tShirtNumber,
     })
 
     resposeHandler(

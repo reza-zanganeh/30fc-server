@@ -48,6 +48,7 @@ module.exports.getPlayers = async (teamId) => {
       select: {
         players: {
           select: {
+            id: true,
             name: true,
             age: true,
             position: {
@@ -60,6 +61,7 @@ module.exports.getPlayers = async (teamId) => {
             // power
             totalPower: true,
             energy: true,
+            tShirtNumber: true,
           },
         },
       },

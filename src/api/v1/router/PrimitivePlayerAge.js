@@ -12,9 +12,7 @@ const {
   createController: createPrimitivePlayerAge,
   readController: readPrimitivePlayerAge,
   deleteController: deletePrimitivePlayerAge,
-} = require("../helpers/controllerCRUDoperation")({
-  primitivePlayerAgeModelName,
-})
+} = require("../helpers/controllerCRUDoperation")(primitivePlayerAgeModelName)
 const primitivePlayerAgeRouter = express.Router()
 
 primitivePlayerAgeRouter.post(

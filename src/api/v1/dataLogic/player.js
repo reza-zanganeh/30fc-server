@@ -22,6 +22,7 @@ module.exports.createPlayer = async ({
   teamId,
   nationality,
   status,
+  tShirtNumber,
   price,
   inMainComposition,
   positionInMainCompositionId,
@@ -55,6 +56,7 @@ module.exports.createPlayer = async ({
         spead,
         stamina,
         totalPower,
+        tShirtNumber,
         // end of power
         facePicture: {
           create: { pictureUrl: facePictureUrl, isSpecial: true },

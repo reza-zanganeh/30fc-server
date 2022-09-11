@@ -161,6 +161,7 @@ model Player {
   team                        Team?                  @relation(fields: [teamId], references: [id])
   teamId                      Int?
   name                        String
+  tShirtNumber                Int
   facePicture                 PlayerFacePicture      @relation(fields: [facePictureId], references: [id])
   facePictureId               Int
   age                         Int

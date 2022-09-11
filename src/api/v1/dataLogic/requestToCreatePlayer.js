@@ -20,6 +20,7 @@ module.exports.createRequestToCreatePlayer = async (teamId, player) => {
       pictureUrl,
       positionId,
       nationality,
+      tShirtNumber,
     } = player
     const totalPower =
       controll +
@@ -61,6 +62,7 @@ module.exports.createRequestToCreatePlayer = async (teamId, player) => {
             position: { connect: { id: positionId } },
             nationality,
             status: "INREQUEST",
+            tShirtNumber,
           },
         },
       },
