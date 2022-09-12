@@ -80,11 +80,13 @@ const deleteController = async (MODELNAME, req, res, next) => {
     resposeHandler(res, deletedRecord, Created(`حذف ${MODELNAME.persian}`))
   } catch (error) {
     if (error.code === "P2025")
-      next(
+      return next(
         createError(BadRequest(`${MODELNAME.persian} با این شناسه وجود ندارد`))
       )
     if (error.code === "P2003")
-      next(createError(BadRequest(`${MODELNAME.persian} درحال استفاده است`)))
+      return next(
+        createError(BadRequest(`${MODELNAME.persian} درحال استفاده است`))
+      )
     else next(createError(InternalServerError()))
   }
 }

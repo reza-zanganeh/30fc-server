@@ -1,6 +1,6 @@
 const express = require("express")
 const { modelName } = require("../../../config/Constant")
-const { coinPlan } = modelName
+const { coinPlanModelName } = modelName
 const { checkSchema } = require("express-validator")
 const { expressValidationResultHandler } = require("../helpers/responseHandler")
 const { createCoinPlanSchemaValidation } = require("../validations/coinPlan")
@@ -9,7 +9,7 @@ const {
   createController: createCoinPlan,
   readController: getCoinPlan,
   deleteController: deleteCoinPlan,
-} = require("../helpers/controllerCRUDoperation")(coinPlan)
+} = require("../helpers/controllerCRUDoperation")(coinPlanModelName)
 
 const coinPlanRouter = express.Router()
 

@@ -390,7 +390,6 @@ module.exports.changeComposition = async (req, res, next) => {
 
     resposeHandler(res, updatedTeam, Ok("تغییر ترکیب"))
   } catch (error) {
-    console.log(error)
     next(createError(InternalServerError()))
   }
 }
@@ -429,7 +428,6 @@ module.exports.changeTwoPlayerPosition = async (req, res, next) => {
       Ok(`تعویض ${playerOne.name} با ${playerTwo.name}`)
     )
   } catch (error) {
-    console.log(error)
     next(createError(InternalServerError()))
   }
 }

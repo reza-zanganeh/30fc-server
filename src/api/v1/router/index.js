@@ -15,6 +15,7 @@ const { playerRouter } = require("./player")
 const { teamRouter } = require("./team")
 const { userRouter } = require("./user")
 const { coinPlanRouter } = require("./coinPlan")
+const { gymRouter } = require("./gym")
 const {
   requestToCreatePlayerRouter,
 } = require("../router/requestToCreatePlayer")
@@ -83,6 +84,7 @@ module.exports.registerRoutes = (app) => {
   )
   app.use(`/api/${appVersion}/user`, isAuthenticate, userRouter)
   app.use(`/api/${appVersion}/coin-plan`, isAuthenticate, coinPlanRouter)
+  app.use(`/api/${appVersion}/gym`, isAuthenticate, gymRouter)
   //#endregion
   app.use("*", notFoundResponse)
   app.use(errorHandler)

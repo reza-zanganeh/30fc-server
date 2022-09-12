@@ -32,7 +32,6 @@ module.exports.isMyTeamOrAdmin = async (req, res, next) => {
     req.team = team
     next()
   } catch (error) {
-    console.log(error)
     next(createError(Forbidden()))
   }
 }
