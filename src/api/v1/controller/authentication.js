@@ -1,10 +1,9 @@
 const bcrypt = require("bcrypt")
 const crypto = require("crypto")
-const {
-  createUser,
-  findUser,
-  updateUserByUserId,
-} = require("../dataLogic/user")
+const { createUser, updateUserByUserId } = require("../dataLogic/user")
+const { readOne } = require("../helpers/prisma")
+const { modelName } = require("../../../config/Constant")
+const { userModelName } = modelName
 const {
   createError,
   createRandomNumber,
@@ -37,7 +36,7 @@ module.exports.requestOtp = async (req, res, next) => {
   try {
     const { phonenumber } = req.body
 
-    const userIsExists = await findUser({ phonenumber })
+    const userIsExists = await readOne(userModelName.english, { phonenumber })
 
     if (userIsExists)
       return next(
@@ -152,7 +151,7 @@ module.exports.login = async (req, res, next) => {
   try {
     const { email, password: inputPassword } = req.body
 
-    const user = await findUser({
+    const user = await readOne(userModelName.english, {
       email,
     })
 
@@ -190,7 +189,7 @@ module.exports.requestToResetPassword = async (req, res, next) => {
     const redirectUrl = req.body?.redirectUrl
     const { email } = req.body
     // check email to not regsitered before
-    const user = await findUser({ email })
+    const user = await readOne(userModelName.english, { email })
     if (!user)
       return next(createError(BadRequest("کاربری با این ایمیل وجود ندارد")))
 
@@ -229,7 +228,7 @@ module.exports.resetPassword = async (req, res, next) => {
   try {
     const { userId, hash } = req.params
 
-    const user = await findUser({ id: +userId })
+    const user = await readOne(userModelName.english, { id: +userId })
 
     if (!user)
       return next(createError(BadRequest("کاربری با این id وجود ندارد")))

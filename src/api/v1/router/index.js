@@ -13,6 +13,7 @@ const { playerPositionRouter } = require("./playerPosition")
 const { primitivePlayerPowerRouter } = require("./primitivePlayerPower")
 const { playerRouter } = require("./player")
 const { teamRouter } = require("./team")
+const { userRouter } = require("./user")
 const {
   requestToCreatePlayerRouter,
 } = require("../router/requestToCreatePlayer")
@@ -79,6 +80,7 @@ module.exports.registerRoutes = (app) => {
     checkUserNotBlocked,
     requestToCreatePlayerRouter
   )
+  app.use(`/api/${appVersion}/user`, isAuthenticate, userRouter)
   //#endregion
   app.use("*", notFoundResponse)
   app.use(errorHandler)

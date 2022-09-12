@@ -1,18 +1,6 @@
 const bcrypt = require("bcrypt")
 const { PrismaClient } = require("@prisma/client")
-const { Result } = require("express-validator")
 const { user } = new PrismaClient()
-
-module.exports.findUser = async (filter) => {
-  try {
-    const findedUser = await user.findFirst({
-      where: filter,
-    })
-    return findedUser
-  } catch (error) {
-    throw error
-  }
-}
 
 module.exports.createUser = async (phonenumber, email, fullname, password) => {
   try {
