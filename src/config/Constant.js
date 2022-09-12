@@ -6,6 +6,7 @@ const paginationTakeItemsCount = {
   primitivePlayerAge: 10,
   playerPosition: 20,
   primitivePlayerPower: 20,
+  coinPlan: 20,
 }
 
 const gameSettings = {
@@ -60,6 +61,10 @@ const modelName = {
   playerModelName: {
     english: "player",
     persian: "بازیکن",
+  },
+  coinPlan: {
+    english: "coinPlan",
+    persian: "طرح های سکه",
   },
 }
 

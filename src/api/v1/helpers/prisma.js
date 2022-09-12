@@ -1,7 +1,4 @@
-const {
-  paginationTakeItemsCount,
-  modelName,
-} = require("../../../config/Constant")
+const { paginationTakeItemsCount } = require("../../../config/Constant")
 const { getSkipFromPageAndTakeCount } = require("./Functions")
 const { PrismaClient } = require("@prisma/client")
 const prisma = new PrismaClient()

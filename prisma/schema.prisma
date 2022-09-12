@@ -257,9 +257,9 @@ model PrimitivePlayerPower {
 }
 
 model CoinPlan {
-  id                Int  @id @default(autoincrement())
+  id                Int @id @default(autoincrement())
   amount            Int
-  discountInPercent Int?
+  discountInPercent Int @default(0)
   price             Int
 }
 

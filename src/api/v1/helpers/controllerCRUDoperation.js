@@ -19,7 +19,8 @@ const createController = async (MODELNAME, dataSchema, req, res, next) => {
   try {
     const data = {}
     dataSchema.forEach((item) => {
-      if (!isFinite(req.body[item]) && typeof req.body[item] === "string")
+      if (isFinite(req.body[item])) data[item] = +req.body[item]
+      else if (typeof req.body[item] === "string")
         data[item] = req.body[item].trim()
       else data[item] = req.body[item]
     })
