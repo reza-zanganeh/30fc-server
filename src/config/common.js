@@ -6,8 +6,8 @@ const jsonwebtoken = {
   refreshTokenKey:
     "666da5bdcf537baf674db0727e0084318b39a7d164034d796c4b917f8d2d3197",
   salt: "f8eae0e5536f33650bc5",
-  authenticationTokenExpiresTimeInMinute: 60,
-  authenticationTokenExpiresTimeInMilisecond: 3600000,
+  authenticationTokenExpiresTimeInMinute: 1440,
+  authenticationTokenExpiresTimeInMilisecond: 86400000,
 }
 
 const ghasedak = {

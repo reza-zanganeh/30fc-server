@@ -64,6 +64,10 @@ module.exports.getPlayers = async (teamId) => {
             totalPower: true,
             energy: true,
             tShirtNumber: true,
+            spead: true,
+          },
+          orderBy: {
+            id: "asc",
           },
         },
       },

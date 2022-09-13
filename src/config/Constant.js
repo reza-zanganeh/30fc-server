@@ -71,6 +71,10 @@ const modelName = {
     english: "gym",
     persian: "باشگاه تمرین",
   },
+  coachModelName: {
+    english: "coach",
+    persian: "مربی تمرین",
+  },
 }
 
 module.exports = {

@@ -13,17 +13,14 @@ module.exports.isMyTeamOrAdmin = async (req, res, next) => {
 
     let { teamId } = req.body
     if (!teamId) teamId = req.params.id
+    if (!teamId) teamId = req.query.id
 
     if (!teamId)
       return next(createError(BadRequest("مقدار شناسه تیم ارسال نشده است")))
 
-    const team = await readOne(
-      teamModelName.english,
-      {
-        id: +teamId,
-      },
-      { id: true, ownerId: true, playerCount: true }
-    )
+    const team = await readOne(teamModelName.english, {
+      id: +teamId,
+    })
     if (!team)
       return next(createError(BadRequest("تیم انتخابی شما معتبر نمی باشد")))
 

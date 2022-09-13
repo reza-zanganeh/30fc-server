@@ -1,5 +1,5 @@
 const { empty, invalid, limitLegth } = require("./validationMessage")
-const { readOne } = require("../helpers/prisma")
+const { readOne, count } = require("../helpers/prisma")
 module.exports.email = (location) => ({
   in: [location],
   exists: {
@@ -199,6 +199,29 @@ module.exports.checkExistsObjectWithIdInDb = (
       if (!object)
         return Promise.reject(`${MODELNAME.persian} انتخابی شما معتبر نمی باشد`)
       if (addDataToBody) req[MODELNAME.english] = object
+    },
+  },
+})
+
+module.exports.checkAssetInUseWithTeam = (MODELNAME, location) => ({
+  in: [location],
+  exists: {
+    bail: true,
+    options: {
+      checkFalsy: true,
+      checkNull: true,
+    },
+    errorMessage: empty(MODELNAME.persian),
+  },
+  custom: {
+    options: async (id, { req }) => {
+      const where = {}
+      where[`${MODELNAME.english}Id`] = +id
+      const teamCountUseThisAsset = await count("team", where)
+      if (teamCountUseThisAsset > 0)
+        return Promise.reject(
+          `${MODELNAME.persian} در حال استفاده توسط ${teamCountUseThisAsset} تیم می باشد`
+        )
     },
   },
 })

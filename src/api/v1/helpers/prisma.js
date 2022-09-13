@@ -85,15 +85,26 @@ module.exports.remove = async (modelName, where, select) => {
   }
 }
 
-module.exports.count = async (modelName) => {
+module.exports.count = async (modelName, where) => {
   try {
-    const count = (
-      await prisma[modelName].aggregate({
-        _count: {
-          id: true,
-        },
-      })
-    )._count.id
+    let count
+    if (where)
+      count = (
+        await prisma[modelName].aggregate({
+          _count: {
+            id: true,
+          },
+          where,
+        })
+      )._count.id
+    else
+      count = (
+        await prisma[modelName].aggregate({
+          _count: {
+            id: true,
+          },
+        })
+      )._count.id
     return count
   } catch (error) {
     throw error

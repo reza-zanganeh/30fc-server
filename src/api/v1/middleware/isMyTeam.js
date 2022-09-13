@@ -11,13 +11,9 @@ module.exports.isMyTeam = async (req, res, next) => {
     let { teamId } = req.body
     if (!teamId) teamId = req.params.id
 
-    const team = await readOne(
-      teamModelName.english,
-      {
-        id: +teamId,
-      },
-      { id: true, ownerId: true, playerCount: true }
-    )
+    const team = await readOne(teamModelName.english, {
+      id: +teamId,
+    })
     if (!team)
       return next(createError(BadRequest("تیم انتخابی شما معتبر نمی باشد")))
 
