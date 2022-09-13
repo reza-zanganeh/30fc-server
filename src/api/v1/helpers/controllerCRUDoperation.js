@@ -13,6 +13,7 @@ const {
   update,
   remove,
   readOne,
+  readAll,
 } = require("./prisma")
 
 const createController = async (MODELNAME, dataSchema, req, res, next) => {
@@ -98,10 +99,86 @@ const deleteController = async (MODELNAME, req, res, next) => {
   }
 }
 
+const getTeamAssetsWithPriceForUpgrade = async (MODELNAME, req, res, next) => {
+  try {
+    const { level } = req.user
+    const records = await readAll(MODELNAME.english)
+    let correctedRecords = records
+    if (req.team?.[`${MODELNAME.english}Id`] && level !== "LEVEL1") {
+      const assetId = req.team[`${MODELNAME.english}Id`]
+      const currentAsset = await readOne(MODELNAME.english, {
+        id: +assetId,
+      })
+      correctedRecords = records.filter((record) => {
+        if (record.level > currentAsset.level) {
+          record.priceToUpgrade = record.price - currentAsset.price
+          return true
+        } else return false
+      })
+    }
+
+    resposeHandler(res, correctedRecords, Ok(`خواندن ${MODELNAME.persian}`))
+  } catch (error) {
+    next(createError(InternalServerError()))
+  }
+}
+
+const buyTeamAsset = async (MODELNAME, req, res, next) => {
+  try {
+    const { id: teamId, coinCount } = req.team
+    const prevAssetId = req.team[`${MODELNAME.english}Id`]
+    const { id: newAssetId, price: newAssetPrice } = req[MODELNAME.english]
+    let coinCountToPay
+    if (prevAssetId) {
+      const prevAsset = await readOne(MODELNAME.english, { id: +prevAssetId })
+      coinCountToPay = newAssetPrice - prevAsset.price
+    } else {
+      coinCountToPay = newAssetPrice
+    }
+
+    if (coinCountToPay <= 0)
+      return next(
+        createError(
+          BadRequest(
+            `سطح ${MODELNAME.persian} از سطح ${MODELNAME.persian} مورد نظر بالاتر یا برابر می باشد`
+          )
+        )
+      )
+
+    if (coinCountToPay > coinCount)
+      return next(
+        createError(
+          BadRequest(
+            `موجودی سکه شما کافی نمی باشد . برای این خرید شما نیاز به ${
+              coinCount - coinCountToPay
+            } سکه بیشتر دارید`
+          )
+        )
+      )
+
+    const newCoinCount = coinCount - coinCountToPay
+
+    const updatedTeamData = { coinCount: newCoinCount }
+    updatedTeamData[`${MODELNAME.english}Id`] = +newAssetId
+    await update("team", { id: +teamId }, updatedTeamData)
+
+    const resposeData = { coinCountToPay }
+    resposeData[`${MODELNAME.english}Id`] = newAssetId
+    resposeHandler(res, resposeData, Ok(`خرید ${MODELNAME.persian} جدید`))
+  } catch (error) {
+    next(createError(InternalServerError()))
+  }
+}
+
 module.exports = (MODELNAME) => ({
   createController: createController.bind(null, MODELNAME),
   readController: readController.bind(null, MODELNAME),
   updateConrtoller: updateConrtoller.bind(null, MODELNAME),
   deleteController: deleteController.bind(null, MODELNAME),
   readWithIdController: readWithIdController.bind(null, MODELNAME),
+  getTeamAssetsWithPriceForUpgrade: getTeamAssetsWithPriceForUpgrade.bind(
+    null,
+    MODELNAME
+  ),
+  buyTeamAsset: buyTeamAsset.bind(null, MODELNAME),
 })

@@ -75,6 +75,10 @@ const modelName = {
     english: "coach",
     persian: "مربی تمرین",
   },
+  doctorModelName: {
+    english: "doctor",
+    persian: "پزشک",
+  },
 }
 
 module.exports = {

@@ -8,7 +8,7 @@ module.exports.hasAccessToTeam = async (req, res, next) => {
   try {
     const { id } = req.user
 
-    const teamId = req.body?.id || req.params?.id || req.query?.id
+    const teamId = req.body?.teamId || req.params?.id || req.query?.id
 
     if (!teamId)
       return next(createError(BadRequest("مقدار شناسه تیم ارسال نشده است")))
@@ -23,6 +23,8 @@ module.exports.hasAccessToTeam = async (req, res, next) => {
     if (team.ownerId !== id) next(createError(Forbidden()))
 
     req[teamModelName.english] = team
+
+    next()
   } catch (error) {
     next(createError(Forbidden()))
   }

@@ -37,6 +37,7 @@ module.exports.hasAccessToPlayer = async (req, res, next) => {
       next(createError(Forbidden()))
 
     req[teamModelName.english] = team
+    next()
   } catch (error) {
     next(createError(Forbidden()))
   }

@@ -9,9 +9,13 @@ const {
   deleteGymSchemaValidation,
   useGymSchemaValidation,
 } = require("../validations/gym")
-const { createController: createGym, deleteController: deleteGym } =
-  require("../helpers/controllerCRUDoperation")(gymModelName)
-const { buyGym, getGym, useGym } = require("../controller/gym")
+const {
+  createController: createGym,
+  deleteController: deleteGym,
+  getTeamAssetsWithPriceForUpgrade: getGym,
+  buyTeamAsset: buyGym,
+} = require("../helpers/controllerCRUDoperation")(gymModelName)
+const { useGym } = require("../controller/gym")
 const {
   hasAccessToAdminOperation,
   hasAccessToTeam,

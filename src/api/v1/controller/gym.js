@@ -7,80 +7,18 @@ const {
 const { modelName } = require("../../../config/Constant")
 const { gymModelName, teamModelName, coachModelName, playerModelName } =
   modelName
-const { readOne, update, readAll } = require("../helpers/prisma")
+const { readOne, update } = require("../helpers/prisma")
 const { resposeHandler } = require("../helpers/responseHandler")
-
-module.exports.getGym = async (req, res, next) => {
-  try {
-    const { level } = req.user
-    const gyms = await readAll(gymModelName.english)
-    let correctedGyms = gyms
-    if (req.team?.gymId && level !== "LEVEL1") {
-      const { gymId } = req.team
-      const currentGym = await readOne(gymModelName.english, { id: +gymId })
-      correctedGyms = gyms.filter((gym) => {
-        if (gym.level > currentGym.level) {
-          gym.priceToUpgrade = gym.price - currentGym.price
-          return true
-        } else return false
-      })
-    }
-
-    resposeHandler(res, correctedGyms, Ok("خواندن باشگاه ها"))
-  } catch (error) {
-    next(createError(InternalServerError()))
-  }
-}
-
-module.exports.buyGym = async (req, res, next) => {
-  try {
-    const { id: teamId, coinCount, gymId: prevGymId } = req.team
-    const { id: newGymId, price: newGymPrice } = req[gymModelName.english]
-    let coinCountToPay
-    if (prevGymId) {
-      const prevGym = await readOne(gymModelName.english, { id: +prevGymId })
-      coinCountToPay = newGymPrice - prevGym.price
-    } else {
-      coinCountToPay = newGymPrice
-    }
-
-    if (coinCountToPay <= 0)
-      return next(
-        createError(
-          BadRequest(
-            "سطح باشگاه شما از باشگاه مورد نظر بالاتر با برابر می باشد"
-          )
-        )
-      )
-
-    if (coinCountToPay > coinCount)
-      return next(
-        createError(
-          BadRequest(
-            `موجودی سکه شما کافی نمی باشد . برای این خرید شما نیاز به ${
-              coinCount - coinCountToPay
-            } سکه بیشتر دارید`
-          )
-        )
-      )
-
-    const newCoinCount = coinCount - coinCountToPay
-    await update(
-      teamModelName.english,
-      { id: +teamId },
-      { coinCount: newCoinCount, gymId: +newGymId }
-    )
-
-    resposeHandler(res, { coinCountToPay, newGymId }, Ok("خرید باشگاه جدید"))
-  } catch (error) {
-    next(createError(InternalServerError()))
-  }
-}
 
 module.exports.useGym = async (req, res, next) => {
   try {
     const { playerId, power } = req.body
-    const { id: teamId, gymId, coachId, usedGymCount } = req.team
+    const {
+      id: teamId,
+      gymId,
+      coachId,
+      usedGymCount,
+    } = req[teamModelName.english]
 
     if (!gymId)
       return next(
