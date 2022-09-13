@@ -9,27 +9,31 @@ const {
   deleteGymSchemaValidation,
   useGymSchemaValidation,
 } = require("../validations/gym")
-const { isAdmin } = require("../middleware/isAdmin")
-const { isMyTeam } = require("../middleware/isMyTeam")
-const { isMyTeamOrAdmin } = require("../middleware/isMyTeamOrAdmin")
 const { createController: createGym, deleteController: deleteGym } =
   require("../helpers/controllerCRUDoperation")(gymModelName)
 const { buyGym, getGym, useGym } = require("../controller/gym")
+const {
+  hasAccessToAdminOperation,
+  hasAccessToTeam,
+  hasAccessToPlayWithApp,
+  hasAccessToPlayer,
+} = require("../middleware/accessControl")
 const gymRouter = express.Router()
 
 gymRouter.post(
   "/",
-  isAdmin,
+  hasAccessToAdminOperation,
   checkSchema(createGymSchemaValidation),
   expressValidationResultHandler,
   createGym.bind(null, ["level", "price", "capacity"])
 )
 
-gymRouter.get("/", isMyTeamOrAdmin, getGym)
+gymRouter.get("/admin", hasAccessToAdminOperation, getGym)
+gymRouter.get("/", hasAccessToPlayWithApp, hasAccessToTeam, getGym)
 
 gymRouter.delete(
   "/:id",
-  isAdmin,
+  hasAccessToAdminOperation,
   checkSchema(deleteGymSchemaValidation),
   expressValidationResultHandler,
   deleteGym
@@ -37,17 +41,19 @@ gymRouter.delete(
 
 gymRouter.post(
   "/buy",
+  hasAccessToPlayWithApp,
   checkSchema(buyGymSchemaValidation),
   expressValidationResultHandler,
-  isMyTeam,
+  hasAccessToTeam,
   buyGym
 )
 
 gymRouter.post(
   "/use",
+  hasAccessToPlayWithApp,
   checkSchema(useGymSchemaValidation),
   expressValidationResultHandler,
-  isMyTeam,
+  hasAccessToPlayer,
   useGym
 )
 

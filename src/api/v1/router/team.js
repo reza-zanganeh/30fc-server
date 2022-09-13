@@ -4,6 +4,10 @@ const { modelName } = require("../../../config/Constant")
 const { teamModelName } = modelName
 const { expressValidationResultHandler } = require("../helpers/responseHandler")
 const {
+  hasAccessToAdminOperation,
+  hasAccessToTeam,
+} = require("../middleware/accessControl/index")
+const {
   createTeamSchemaValidation,
   changeCompositionSchemaValidation,
   changeTwoPlayerPositionSchemaValidation,
@@ -14,16 +18,16 @@ const {
   changeComposition,
   changeTwoPlayerPosition,
 } = require("../controller/team")
-const { isMyTeam } = require("../middleware/isMyTeam")
-const { isMyTeamOrAdmin } = require("../middleware/isMyTeamOrAdmin")
 const { readWithIdController: getTeam } =
   require("../helpers/controllerCRUDoperation")(teamModelName)
 
 const teamRouter = express.Router()
 
-teamRouter.get("/:id", isMyTeamOrAdmin, getTeam)
+teamRouter.get("/:id", hasAccessToTeam, getTeam)
+teamRouter.get("/admin/:id", hasAccessToAdminOperation, getTeam)
 
-teamRouter.get("/:id/players", isMyTeamOrAdmin, getPlayers)
+teamRouter.get("/:id/players", hasAccessToTeam, getPlayers)
+teamRouter.get("/admin/:id/players", hasAccessToAdminOperation, getPlayers)
 
 teamRouter.post(
   "/",
@@ -36,7 +40,7 @@ teamRouter.patch(
   "/composition",
   checkSchema(changeCompositionSchemaValidation),
   expressValidationResultHandler,
-  isMyTeam,
+  hasAccessToTeam,
   changeComposition
 )
 
@@ -44,7 +48,7 @@ teamRouter.patch(
   "/change-two-player-position",
   checkSchema(changeTwoPlayerPositionSchemaValidation),
   expressValidationResultHandler,
-  isMyTeam,
+  hasAccessToTeam,
   changeTwoPlayerPosition
 )
 

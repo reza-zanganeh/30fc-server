@@ -16,29 +16,31 @@ const {
   rejectRequestToCreatePlayerSchecmaValidation,
   deleteRequestToCreatePlayerSchecmaValidation,
 } = require("../validations/requestToCreatePlayer")
-const { isAdmin } = require("../middleware/isAdmin")
-const { isMyTeam } = require("../middleware/isMyTeam")
-const { isMyTeamOrAdmin } = require("../middleware/isMyTeamOrAdmin")
+const {
+  hasAccessToAdminOperation,
+  hasAccessToTeam,
+} = require("../middleware/accessControl/index")
 const requestToCreatePlayerRouter = express.Router()
 
 requestToCreatePlayerRouter.get(
-  "/",
-  isAdmin,
-  isMyTeamOrAdmin,
+  "/admin",
+  hasAccessToAdminOperation,
   getRequestToCreatePlayer
 )
+
+requestToCreatePlayerRouter.get("/", hasAccessToTeam, getRequestToCreatePlayer)
 
 requestToCreatePlayerRouter.post(
   "/",
   checkSchema(createRequestToCreatePlayerSchecmaValidation),
   expressValidationResultHandler,
-  isMyTeam,
+  hasAccessToTeam,
   createRequestToCreatePlayer
 )
 
 requestToCreatePlayerRouter.patch(
   "/confirm",
-  isAdmin,
+  hasAccessToAdminOperation,
   checkSchema(confirmRequestToCreatePlayerSchecmaValidation),
   expressValidationResultHandler,
   confirmRequestToCreatePlayer
@@ -46,7 +48,7 @@ requestToCreatePlayerRouter.patch(
 
 requestToCreatePlayerRouter.patch(
   "/reject",
-  isAdmin,
+  hasAccessToAdminOperation,
   checkSchema(rejectRequestToCreatePlayerSchecmaValidation),
   expressValidationResultHandler,
   rejectRequestToCreatePlayer
@@ -56,7 +58,7 @@ requestToCreatePlayerRouter.patch(
   "/reactive",
   checkSchema(reactiveRequestToCreatePlayerSchecmaValidation),
   expressValidationResultHandler,
-  isMyTeam,
+  hasAccessToTeam,
   reactivationRequestToCreatePlayer
 )
 
@@ -64,7 +66,7 @@ requestToCreatePlayerRouter.delete(
   "/:id",
   checkSchema(deleteRequestToCreatePlayerSchecmaValidation),
   expressValidationResultHandler,
-  isMyTeam,
+  hasAccessToTeam,
   deleteRequestToCreatePlayer
 )
 

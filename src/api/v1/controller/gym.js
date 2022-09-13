@@ -116,15 +116,6 @@ module.exports.useGym = async (req, res, next) => {
       teamId: +teamId,
     })
 
-    if (!player)
-      return next(
-        createError(
-          BadRequest(
-            "شناسه بازیکن معتبر نمی باشد یا بازیکن متعاق به تیم شما نیست"
-          )
-        )
-      )
-
     if (player.status === "PRACTICEDINTEAM")
       return next(
         createError(

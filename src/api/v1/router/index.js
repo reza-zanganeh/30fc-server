@@ -1,8 +1,11 @@
 const appVersion = "v1"
 const { errorHandler, notFoundResponse } = require("../helpers/responseHandler")
 const { isAuthenticate } = require("../middleware/athentication")
-const { isAdmin } = require("../middleware/isAdmin")
-const { checkUserNotBlocked } = require("../middleware/checkUserNotBlocked")
+const {
+  hasAccessToAdminOperation,
+  hasAccessToPlayWithApp,
+} = require("../middleware/accessControl/index")
+//#region import routers
 const { authenticationRouter } = require("./authentication")
 const { reservedTeamNameRouter } = require("./reservedTeamName")
 const { playerFacePictureRouter } = require("./playerFacePicture")
@@ -20,67 +23,68 @@ const { coachRouter } = require("./coach")
 const {
   requestToCreatePlayerRouter,
 } = require("../router/requestToCreatePlayer")
+//#endregion
 module.exports.registerRoutes = (app) => {
   //#region add routes
   app.use(`/api/${appVersion}/authentication`, authenticationRouter)
   app.use(
-    `/api/${appVersion}/reserved-team-name`,
+    `/api/${appVersion}/admin/reserved-team-name`,
     isAuthenticate,
-    isAdmin,
+    hasAccessToAdminOperation,
     reservedTeamNameRouter
   )
   app.use(
-    `/api/${appVersion}/player-face-picture`,
+    `/api/${appVersion}/admin/player-face-picture`,
     isAuthenticate,
-    isAdmin,
+    hasAccessToAdminOperation,
     playerFacePictureRouter
   )
   app.use(
-    `/api/${appVersion}/composition`,
+    `/api/${appVersion}/admin/composition`,
     isAuthenticate,
-    isAdmin,
+    hasAccessToAdminOperation,
     compositionRouter
   )
   app.use(
-    `/api/${appVersion}/primitive-player-name`,
+    `/api/${appVersion}/admin/primitive-player-name`,
     isAuthenticate,
-    isAdmin,
+    hasAccessToAdminOperation,
     primitivePlayerNameRouter
   )
   app.use(
-    `/api/${appVersion}/primitive-player-age`,
+    `/api/${appVersion}/admin/primitive-player-age`,
     isAuthenticate,
-    isAdmin,
+    hasAccessToAdminOperation,
     primitivePlayerAgeRouter
   )
   app.use(
-    `/api/${appVersion}/player-position`,
+    `/api/${appVersion}/admin/player-position`,
     isAuthenticate,
-    isAdmin,
+    hasAccessToAdminOperation,
     playerPositionRouter
   )
   app.use(
-    `/api/${appVersion}/primitive-player-power`,
+    `/api/${appVersion}/admin/primitive-player-power`,
     isAuthenticate,
-    isAdmin,
+    hasAccessToAdminOperation,
     primitivePlayerPowerRouter
   )
   app.use(
     `/api/${appVersion}/team`,
     isAuthenticate,
-    checkUserNotBlocked,
+    hasAccessToPlayWithApp,
     teamRouter
   )
   app.use(
     `/api/${appVersion}/player`,
     isAuthenticate,
-    checkUserNotBlocked,
+    hasAccessToPlayWithApp,
     playerRouter
   )
   app.use(
     `/api/${appVersion}/request-to-create-player`,
     isAuthenticate,
-    checkUserNotBlocked,
+    hasAccessToPlayWithApp,
     requestToCreatePlayerRouter
   )
   app.use(`/api/${appVersion}/user`, isAuthenticate, userRouter)

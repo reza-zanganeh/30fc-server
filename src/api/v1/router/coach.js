@@ -8,27 +8,30 @@ const {
   createCoachSchemaValidation,
   deleteCoachSchemaValidation,
 } = require("../validations/coach")
-const { isAdmin } = require("../middleware/isAdmin")
-const { isMyTeam } = require("../middleware/isMyTeam")
-const { isMyTeamOrAdmin } = require("../middleware/isMyTeamOrAdmin")
 const { createController: createCoach, deleteController: deleteCoach } =
   require("../helpers/controllerCRUDoperation")(coachModelName)
 const { buyCoach, getCoach } = require("../controller/coach")
+const {
+  hasAccessToAdminOperation,
+  hasAccessToTeam,
+  hasAccessToPlayWithApp,
+} = require("../middleware/accessControl")
 const coachRouter = express.Router()
 
 coachRouter.post(
   "/",
-  isAdmin,
+  hasAccessToAdminOperation,
   checkSchema(createCoachSchemaValidation),
   expressValidationResultHandler,
   createCoach.bind(null, ["level", "price", "ability"])
 )
 
-coachRouter.get("/", isMyTeamOrAdmin, getCoach)
+coachRouter.get("/admin", hasAccessToAdminOperation, getCoach)
+coachRouter.get("/", hasAccessToPlayWithApp, hasAccessToTeam, getCoach)
 
 coachRouter.delete(
   "/:id",
-  isAdmin,
+  hasAccessToAdminOperation,
   checkSchema(deleteCoachSchemaValidation),
   expressValidationResultHandler,
   deleteCoach
@@ -36,9 +39,10 @@ coachRouter.delete(
 
 coachRouter.post(
   "/buy",
+  hasAccessToPlayWithApp,
   checkSchema(buyCoachSchemaValidation),
   expressValidationResultHandler,
-  isMyTeam,
+  hasAccessToTeam,
   buyCoach
 )
 

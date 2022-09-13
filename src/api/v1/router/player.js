@@ -9,13 +9,15 @@ const {
   createPlayerByAdminSchemaValidation,
   changeTShirtNumberSchemaValidation,
 } = require("../validations/player")
-const { isAdmin } = require("../middleware/isAdmin")
-const { isMyTeam } = require("../middleware/isMyTeam")
+const {
+  hasAccessToAdminOperation,
+  hasAccessToPlayer,
+} = require("../middleware/accessControl/index")
 const playerRouter = express.Router()
 
 playerRouter.post(
   "/",
-  isAdmin,
+  hasAccessToAdminOperation,
   checkSchema(createPlayerByAdminSchemaValidation),
   expressValidationResultHandler,
   createPlayerByAdmin
@@ -25,7 +27,7 @@ playerRouter.patch(
   "/tshirt-number",
   checkSchema(changeTShirtNumberSchemaValidation),
   expressValidationResultHandler,
-  isMyTeam,
+  hasAccessToPlayer,
   chnageTShirtNumber
 )
 

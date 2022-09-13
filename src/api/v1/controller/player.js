@@ -84,17 +84,6 @@ module.exports.chnageTShirtNumber = async (req, res, next) => {
       { id: true, tShirtNumber: true }
     )
 
-    const player = players.find((player) => player.id == playerId)
-
-    if (!player) {
-      return next(
-        createError(
-          BadRequest(
-            "شناسه بازیکن معتبر نمی باشد یا این بازیکن در تیم شما نیست"
-          )
-        )
-      )
-    }
     const playerWithSameSelectedTShirtNumber = players.find(
       (player) => player.tShirtNumber == tShirtNumber
     )

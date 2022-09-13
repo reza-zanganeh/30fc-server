@@ -1,10 +1,9 @@
-const { BadRequest } = require("../helpers/HttpResponse")
-const { createError } = require("../helpers/Functions")
+const { BadRequest } = require("../../helpers/HttpResponse")
+const { createError } = require("../../helpers/Functions")
 
-module.exports.checkUserNotBlocked = (req, res, next) => {
+module.exports.hasAccessToPlayWithApp = (req, res, next) => {
   const { isBlock } = req?.user
-  if (!isBlock) next()
-  else
+  if (isBlock)
     return next(
       createError(
         BadRequest(
@@ -12,4 +11,6 @@ module.exports.checkUserNotBlocked = (req, res, next) => {
         )
       )
     )
+
+  next()
 }

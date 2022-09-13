@@ -4,7 +4,10 @@ const { coinPlanModelName } = modelName
 const { checkSchema } = require("express-validator")
 const { expressValidationResultHandler } = require("../helpers/responseHandler")
 const { createCoinPlanSchemaValidation } = require("../validations/coinPlan")
-const { isAdmin } = require("../middleware/isAdmin")
+const {
+  hasAccessToAdminOperation,
+  hasAccessToPlayWithApp,
+} = require("../middleware/accessControl")
 const {
   createController: createCoinPlan,
   readController: getCoinPlan,
@@ -15,14 +18,14 @@ const coinPlanRouter = express.Router()
 
 coinPlanRouter.post(
   "/",
-  isAdmin,
+  hasAccessToAdminOperation,
   checkSchema(createCoinPlanSchemaValidation),
   expressValidationResultHandler,
   createCoinPlan.bind(null, ["amount", "price", "discountInPercent"])
 )
 
-coinPlanRouter.get("/", getCoinPlan)
+coinPlanRouter.get("/", hasAccessToPlayWithApp, getCoinPlan)
 
-coinPlanRouter.delete("/:id", isAdmin, deleteCoinPlan)
+coinPlanRouter.delete("/:id", hasAccessToAdminOperation, deleteCoinPlan)
 
 module.exports.coinPlanRouter = coinPlanRouter

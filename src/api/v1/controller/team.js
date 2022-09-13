@@ -418,7 +418,7 @@ module.exports.changeTwoPlayerPosition = async (req, res, next) => {
     )
 
     if (!playerOne || !playerTwo)
-      return next(createError(BadRequest("بازیکنان متعلق به تیم شما نیست")))
+      return next(createError(BadRequest("بازیکنان متعلق به تیم شما نیستند")))
 
     const result = await changeTwoPlayerPosition(+teamId, playerOne, playerTwo)
 
