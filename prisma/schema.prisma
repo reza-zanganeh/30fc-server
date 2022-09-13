@@ -51,7 +51,6 @@ model Team {
   friendlyGameCount          Int                     @default(0)
   isUsedEnergyProducer       Boolean                 @default(false)
   isUsedPsychologist         Int                     @default(0)
-  isUsedDoctor               Int                     @default(0)
   endOfSpecialType           DateTime                @default(now())
   composition                Composition             @relation(fields: [compositionId], references: [id])
   compositionId              Int
@@ -68,6 +67,7 @@ model Team {
   stadiumId                  Int?
   doctor                     Doctor?                 @relation(fields: [doctorId], references: [id])
   doctorId                   Int?
+  isUsedDoctor               Boolean                 @default(false)
   psychologist               Psychologist?           @relation(fields: [psychologistId], references: [id])
   psychologistId             Int?
   status                     TeamStatus              @default(NORMAL)
