@@ -50,13 +50,12 @@ model Team {
   logo                       Logo?
   friendlyGameCount          Int                     @default(0)
   isUsedEnergyProducer       Boolean                 @default(false)
-  isUsedPsychologist         Int                     @default(0)
   endOfSpecialType           DateTime                @default(now())
   composition                Composition             @relation(fields: [compositionId], references: [id])
   compositionId              Int
   technique                  Technique
   strategy                   Strategy
-  Spirit                     Int                     @default(100)
+  spirit                     Int                     @default(100)
   players                    Player[]
   gym                        Gym?                    @relation(fields: [gymId], references: [id])
   gymId                      Int?
@@ -70,6 +69,7 @@ model Team {
   isUsedDoctor               Boolean                 @default(false)
   psychologist               Psychologist?           @relation(fields: [psychologistId], references: [id])
   psychologistId             Int?
+  isUsedPsychologist         Boolean                 @default(false)
   status                     TeamStatus              @default(NORMAL)
   RequestToCreatePlayer      RequestToCreatePlayer[]
   playerCount                Int                     @default(20)
@@ -149,7 +149,7 @@ model Psychologist {
   ability Int
 }
 
-model ENERGY {
+model EnergyProducer {
   id      Int @id @default(autoincrement())
   level   Int @unique
   price   Int

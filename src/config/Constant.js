@@ -79,6 +79,14 @@ const modelName = {
     english: "doctor",
     persian: "پزشک",
   },
+  psychologistModelName: {
+    english: "psychologist",
+    persian: "روانپزشک",
+  },
+  energyProducerModelName: {
+    english: "energyProducer",
+    persian: "انرژی زا",
+  },
 }
 
 module.exports = {

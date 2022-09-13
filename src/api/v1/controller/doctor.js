@@ -6,7 +6,7 @@ const {
 } = require("../helpers/HttpResponse")
 const { modelName } = require("../../../config/Constant")
 const { doctorModelName, teamModelName, playerModelName } = modelName
-const { readOne, update, readAll } = require("../helpers/prisma")
+const { readOne, readAll } = require("../helpers/prisma")
 const { resposeHandler } = require("../helpers/responseHandler")
 const { updateTeamPlayers } = require("../dataLogic/team")
 module.exports.useDoctor = async (req, res, next) => {
@@ -54,7 +54,6 @@ module.exports.useDoctor = async (req, res, next) => {
 
     resposeHandler(res, updatedPlayersData, Ok("مداوا بازیکنان تیم"))
   } catch (error) {
-    console.log(error)
     next(createError(InternalServerError()))
   }
 }

@@ -8,9 +8,12 @@ const {
   createCoachSchemaValidation,
   deleteCoachSchemaValidation,
 } = require("../validations/coach")
-const { createController: createCoach, deleteController: deleteCoach } =
-  require("../helpers/controllerCRUDoperation")(coachModelName)
-const { buyCoach, getCoach } = require("../controller/coach")
+const {
+  createController: createCoach,
+  deleteController: deleteCoach,
+  getTeamAssetsWithPriceForUpgrade: getCoach,
+  buyTeamAsset: buyCoach,
+} = require("../helpers/controllerCRUDoperation")(coachModelName)
 const {
   hasAccessToAdminOperation,
   hasAccessToTeam,
