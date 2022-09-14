@@ -23,6 +23,7 @@ const { coachRouter } = require("./coach")
 const { doctorRouter } = require("./doctor")
 const { psychologistRouter } = require("./psychologist")
 const { energyProducerRouter } = require("./energyProducer")
+const { stadiumRouter } = require("./stadium")
 const {
   requestToCreatePlayerRouter,
 } = require("../router/requestToCreatePlayer")
@@ -96,6 +97,7 @@ module.exports.registerRoutes = (app) => {
   app.use(`/api/${appVersion}/coach`, isAuthenticate, coachRouter)
   app.use(`/api/${appVersion}/doctor`, isAuthenticate, doctorRouter)
   app.use(`/api/${appVersion}/doctor`, isAuthenticate, psychologistRouter)
+  app.use(`/api/${appVersion}/stadium`, isAuthenticate, stadiumRouter)
   app.use(
     `/api/${appVersion}/energy-producer`,
     isAuthenticate,
