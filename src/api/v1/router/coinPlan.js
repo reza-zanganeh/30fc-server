@@ -3,17 +3,21 @@ const { modelName } = require("../../../config/Constant")
 const { coinPlanModelName } = modelName
 const { checkSchema } = require("express-validator")
 const { expressValidationResultHandler } = require("../helpers/responseHandler")
-const { createCoinPlanSchemaValidation } = require("../validations/coinPlan")
+const {
+  createCoinPlanSchemaValidation,
+  buyCoinSchemaValdation,
+} = require("../validations/coinPlan")
 const {
   hasAccessToAdminOperation,
   hasAccessToPlayWithApp,
+  hasAccessToTeam,
 } = require("../middleware/accessControl")
 const {
   createController: createCoinPlan,
   readController: getCoinPlan,
   deleteController: deleteCoinPlan,
 } = require("../helpers/controllerCRUDoperation")(coinPlanModelName)
-
+const { buyCoin, completeBuy } = require("../controller/coinPlan")
 const coinPlanRouter = express.Router()
 
 coinPlanRouter.post(
@@ -27,5 +31,16 @@ coinPlanRouter.post(
 coinPlanRouter.get("/", hasAccessToPlayWithApp, getCoinPlan)
 
 coinPlanRouter.delete("/:id", hasAccessToAdminOperation, deleteCoinPlan)
+
+coinPlanRouter.post(
+  "/buy",
+  hasAccessToPlayWithApp,
+  checkSchema(buyCoinSchemaValdation),
+  expressValidationResultHandler,
+  hasAccessToTeam,
+  buyCoin
+)
+
+coinPlanRouter.get("/complete-buy", completeBuy)
 
 module.exports.coinPlanRouter = coinPlanRouter

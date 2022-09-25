@@ -31,13 +31,14 @@ const HttpStatusCode = {
     statusCode: 404,
     message: "مسیر مورد نظر یافت نشد",
   }),
-  TooManyRequests: (requestName) => ({
+  TooManyRequests: () => ({
     statusCode: 429,
     message: "تعداد درخواست های شما زیاد است",
   }),
-  InternalServerError: () => ({
+  InternalServerError: (message) => ({
     statusCode: 500,
     message:
+      message ||
       "سرور دچار مشکل داخلی شده است . لطفا صبور باشید در حال حل مشکل هستیم",
   }),
   ServiceUnavailable: (serviceName) => ({

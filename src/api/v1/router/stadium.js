@@ -19,7 +19,6 @@ const {
   hasAccessToAdminOperation,
   hasAccessToTeam,
   hasAccessToPlayWithApp,
-  hasAccessToPlayer,
 } = require("../middleware/accessControl")
 const stadiumRouter = express.Router()
 

@@ -87,6 +87,14 @@ const modelName = {
     english: "energyProducer",
     persian: "انرژی زا",
   },
+  stadiumModelName: {
+    english: "stadium",
+    persian: "استادیوم",
+  },
+  coinPurchaseInvoice: {
+    english: "coinPurchaseInvoice",
+    persian: "فاکتور های خرید سکه",
+  },
 }
 
 module.exports = {

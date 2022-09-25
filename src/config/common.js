@@ -58,6 +58,13 @@ const cloud = {
   maximumFileSize: 128000,
 }
 
+const zarinPall = {
+  paymentRequestUrl: "https://api.zarinpal.com/pg/v4/payment/request.json",
+  verifyPaymentUrl: "https://api.zarinpal.com/pg/v4/payment/verify.json",
+  MerchantID: "f5ab7c6e-6bb4-11e8-b4ed-005056a205be",
+  callbackUrl: "http://localhost:3000/api/v1/coin-plan/complete-buy",
+}
+
 module.exports = {
   jsonwebtoken,
   ghasedak,
@@ -66,4 +73,5 @@ module.exports = {
   cloud,
   nodemailer,
   google,
+  zarinPall,
 }
