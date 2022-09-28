@@ -29,6 +29,15 @@ model User {
   level               UserRole              @default(Normal)
   teams               Team[]
   CoinPurchaseInvoice CoinPurchaseInvoice[]
+  // market
+  // admin
+  sellableTeam        AdminSellableTeam[]   @relation(name: "seller")
+  sellablePlayer      AdminSellablePlayer[]
+  // 
+  purchasedTeams      AdminSellableTeam[]   @relation(name: "buyer")
+  // follower fallowing
+  fallowers           FollowerFallowing[]   @relation(name: "followers")
+  fallowing           FollowerFallowing[]   @relation(name: "fallowing")
 }
 
 enum UserRole {
@@ -40,6 +49,15 @@ enum UserRole {
 enum Gender {
   Male
   Female
+}
+
+model FollowerFallowing {
+  id          Int      @id @default(autoincrement())
+  date        DateTime
+  follower    User     @relation(name: "followers", fields: [followerId], references: [id])
+  followerId  Int
+  fallowing   User     @relation(name: "fallowing", fields: [fallowingId], references: [id])
+  fallowingId Int
 }
 
 model Team {
@@ -57,8 +75,8 @@ model Team {
   technique                     Technique
   strategy                      Strategy
   // owner
-  owner                         User                         @relation(fields: [ownerId], references: [id])
-  ownerId                       Int
+  owner                         User?                        @relation(fields: [ownerId], references: [id])
+  ownerId                       Int?
   // total
   totalScore                    Int                          @default(0)
   totalWinCount                 Int                          @default(0)
@@ -89,7 +107,8 @@ model Team {
   psychologist                  Psychologist?                @relation(fields: [psychologistId], references: [id])
   psychologistId                Int?
   isUsedPsychologist            Boolean                      @default(false)
-  teamMembershipType            TeamMembershipType           @default(Normal)
+  teamMembershipType            TeamMembershipType           @relation(fields: [teamMembershipTypeId], references: [id])
+  teamMembershipTypeId          Int
   endOfTeamMemberShipType       DateTime                     @default(now())
   dateOfEstablishment           DateTime                     @default(now())
   RequestToCreatePlayer         RequestToCreatePlayer[]
@@ -117,6 +136,7 @@ model Team {
   secondTeamInLeagueCupCount    Int                          @default(0)
   thirdTeamInLeagueCupCount     Int                          @default(0)
   leauge                        TeamsOfLeague[]
+  tournaments                   TeamsOfTournaments[]
   // comminiucation
   privateChatsTeamOne           PrivateChat[]                @relation(name: "teamOne")
   privateChatsTeamTwo           PrivateChat[]                @relation(name: "teamTwo")
@@ -127,6 +147,11 @@ model Team {
   groupPostLikes                GroupPost[]                  @relation(name: "like")
   groupPostDisLikes             GroupPost[]                  @relation(name: "disLike")
   chatRooms                     ChatRoomMember[]
+  // market
+  AdminTeamSalesContract        AdminSellableTeam?
+  purchasedAdminPlayer          AdminSellablePlayer[]
+  purchasedPlayer               playerTransfers[]            @relation(name: "buyer")
+  PlayersOnSale                 playerTransfers[]            @relation(name: "seller")
 }
 
 enum Technique {
@@ -143,7 +168,14 @@ enum Strategy {
   KeepBall
 }
 
-enum TeamMembershipType {
+model TeamMembershipType {
+  id           Int                    @id @default(autoincrement())
+  name         TeamMembershipTypeName @unique
+  priceInToman Int
+  teams        Team[]
+}
+
+enum TeamMembershipTypeName {
   Normal
   Silver
   Golden
@@ -255,8 +287,6 @@ model Player {
   // end power
   status                                         PlayerStatus           @default(InTeam)
   salary                                         Int
-  minimumPrice                                   Int                    @default(0)
-  maximumPrice                                   Int                    @default(0)
   RequestToCreatePlayer                          RequestToCreatePlayer?
   // golden cup
   goldenCupGameBestPlayer                        GoldenCupGame[]        @relation(name: "bestPlayer")
@@ -279,6 +309,9 @@ model Player {
   leagueGamePlayerTwoHasReceivedYellowCart       LeagueGame[]           @relation(name: "playerTwoHasReceivedYellowCart")
   leagueGamePlayerHasReceivedRedCart             LeagueGame[]           @relation(name: "playerHasReceivedRedCart")
   leagueGameGoals                                LeagueGame[]           @relation(name: "scorerPlayer")
+  // market
+  adminPlayerSalesContract                       AdminSellablePlayer?
+  playerSalesContract                            playerTransfers?
 }
 
 enum PlayerStatus {
@@ -536,6 +569,39 @@ enum teamStatusInLeague {
   Remove
 }
 
+model Tournament {
+  id                                Int                  @id @default(autoincrement())
+  name                              String
+  startDate                         DateTime
+  endDate                           DateTime
+  winOfficialGameCoinCount          Int
+  equalOfficialGameCoinCount        Int
+  winFriendlyGameCoinCount          Int
+  equalFriendlyGameCoinCount        Int
+  firstTeamInLeagueCoinCount        Int
+  secondTeamInLeageCoinCount        Int
+  thirdTeamInLeagueCoinCount        Int
+  firstTeamInGoldCupCoinCount       Int
+  secondTeamInGoldCupCoinCount      Int
+  firstTeamInChampionsCupCoinCount  Int
+  secondTeamInChampionsCupCoinCount Int
+  playGameCoinCount                 Int
+  buyCoinCoinCount                  Int
+  buySilverMembershipCoinCount      Int
+  buyGoldenMembershipCoinCount      Int
+  buyDiamondMembershipCoinCount     Int
+  teams                             TeamsOfTournaments[]
+}
+
+model TeamsOfTournaments {
+  id           Int        @id @default(autoincrement())
+  score        Int        @default(0)
+  team         Team       @relation(fields: [teamId], references: [id])
+  teamId       Int
+  tournament   Tournament @relation(fields: [tournamentId], references: [id])
+  tournamentId Int
+}
+
 //  friendly
 enum GameResult {
   hostTeam
@@ -579,7 +645,7 @@ model Sponser {
 model AdminNews {
   id      Int    @id @default(autoincrement())
   // TODO
-  context String
+  context Json
 }
 
 enum AdminNewsType {
@@ -763,14 +829,49 @@ model ChatRoomMember {
 // end comminiucation
 
 // market
-model MarketProduct {
-  id                Int               @id @default(autoincrement())
-  priceInCoinCpount Int
-  type              MarketProductTyep
-  sellerId          Int
+model AdminSellableTeam {
+  id               Int           @id @default(autoincrement())
+  priceInCoinCount Int
+  team             Team          @relation(fields: [teamId], references: [id])
+  teamId           Int           @unique
+  sellerAdmin      User          @relation(name: "seller", fields: [sellerAdminId], references: [id])
+  sellerAdminId    Int           @unique
+  buyerUser        User          @relation(name: "buyer", fields: [buyerUserId], references: [id])
+  buyerUserId      Int           @unique
+  date             DateTime
+  description      String
+  status           ProductStatus
 }
 
-enum MarketProductTyep {
-  Player
-  Team
+model AdminSellablePlayer {
+  id               Int           @id @default(autoincrement())
+  priceInCoinCount Int
+  player           Player        @relation(fields: [playerId], references: [id])
+  playerId         Int           @unique
+  sellerAdmin      User          @relation(fields: [sellerAdminId], references: [id])
+  sellerAdminId    Int           @unique
+  buyerTeam        Team          @relation(fields: [buyerTeamId], references: [id])
+  buyerTeamId      Int           @unique
+  date             DateTime
+  description      String
+  status           ProductStatus
+}
+
+model playerTransfers {
+  id               Int           @id @default(autoincrement())
+  priceInCoinCount Int
+  player           Player        @relation(fields: [playerId], references: [id])
+  playerId         Int           @unique
+  sellerTeam       Team          @relation(name: "seller", fields: [sellerTeamId], references: [id])
+  sellerTeamId     Int           @unique
+  buyerTeam        Team          @relation(name: "buyer", fields: [buyerTeamId], references: [id])
+  buyerTeamId      Int           @unique
+  date             DateTime
+  description      String
+  status           ProductStatus
+}
+
+enum ProductStatus {
+  OnSale
+  SoldOut
 }
