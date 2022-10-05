@@ -19,7 +19,6 @@ const { useDoctor } = require("../controller/doctor")
 const {
   hasAccessToAdminOperation,
   hasAccessToTeam,
-  hasAccessToPlayWithApp,
 } = require("../middleware/accessControl")
 const doctorRouter = express.Router()
 
@@ -32,7 +31,7 @@ doctorRouter.post(
 )
 
 doctorRouter.get("/admin", hasAccessToAdminOperation, getDoctor)
-doctorRouter.get("/", hasAccessToPlayWithApp, hasAccessToTeam, getDoctor)
+doctorRouter.get("/", hasAccessToTeam, getDoctor)
 
 doctorRouter.delete(
   "/:id",
@@ -44,7 +43,6 @@ doctorRouter.delete(
 
 doctorRouter.post(
   "/buy",
-  hasAccessToPlayWithApp,
   checkSchema(buyDoctorSchemaValidation),
   expressValidationResultHandler,
   hasAccessToTeam,
@@ -53,7 +51,6 @@ doctorRouter.post(
 
 doctorRouter.post(
   "/use",
-  hasAccessToPlayWithApp,
   checkSchema(useDoctorSchemaValidation),
   expressValidationResultHandler,
   hasAccessToTeam,

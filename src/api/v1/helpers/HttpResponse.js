@@ -27,6 +27,12 @@ const HttpStatusCode = {
       requestName || "این عملیات"
     } را ندارید`,
   }),
+  ForbiddenBlockUser: (reason) => ({
+    statusCode: 403,
+    message: `کاربر گرامی حساب کاربری شما ${
+      reason ? `به علت ${reason} مسدود شده است` : "مسدود شده است"
+    } . برای رفع مسدودیت از طریق فرم ارتباط باما برای پشتیبان پیام بگذارید`,
+  }),
   NotFound: () => ({
     statusCode: 404,
     message: "مسیر مورد نظر یافت نشد",

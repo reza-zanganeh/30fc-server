@@ -1,15 +1,3 @@
-const paginationTakeItemsCount = {
-  reservedTeamName: 40,
-  playerFacePicture: 10,
-  composition: 10,
-  primitivePlayerName: 40,
-  primitivePlayerAge: 10,
-  playerPosition: 20,
-  primitivePlayerPower: 20,
-  coinPlan: 20,
-  gym: 10,
-}
-
 const gameSettings = {
   AverageAgeOfPlayers: 23,
   minimumPrimitiveAgeOfPalyer: 20,
@@ -27,17 +15,9 @@ const modelName = {
     english: "playerFacePicture",
     persian: "تصویر بازیکن",
   },
-  primitivePlayerAgeModelName: {
-    english: "primitivePlayerAge",
-    persian: "سن اولیه بازیکنان",
-  },
   primitivePlayerNameModelName: {
     english: "primitivePlayerName",
     persian: "نام اولیه بازیکن",
-  },
-  primitivePlayerPowerModelName: {
-    english: "primitivePlayerPower",
-    persian: "قدرت اولیه بازیکن",
   },
   playerPositionModelName: {
     english: "playerPosition",
@@ -95,10 +75,13 @@ const modelName = {
     english: "coinPurchaseInvoice",
     persian: "فاکتور های خرید سکه",
   },
+  gameFactorModelName: {
+    english: "gameFactor",
+    persian: "ضریب بازی",
+  },
 }
 
 module.exports = {
-  paginationTakeItemsCount,
   gameSettings,
   modelName,
 }

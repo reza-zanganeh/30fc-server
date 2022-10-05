@@ -3,7 +3,6 @@ const { resposeHandler } = require("../helpers/responseHandler")
 const {
   InternalServerError,
   Created,
-  Ok,
   BadRequest,
 } = require("../helpers/HttpResponse")
 const { create } = require("../helpers/prisma")
@@ -12,47 +11,55 @@ const { compositionModelName } = modelName
 module.exports.createComposition = async (req, res, next) => {
   try {
     const {
-      GOALKEAPER_NO,
-      DEFENDER_LEFT,
-      DEFENDER_ONE,
-      DEFENDER_TWO,
-      DEFENDER_THREE,
-      DEFENDER_RIGHT,
-      MIDFIELDER_LEFT,
-      MIDFIELDER_ONE,
-      MIDFIELDER_TWO,
-      MIDFIELDER_THREE,
-      MIDFIELDER_RIGHT,
-      ATTACKER_LEFT,
-      ATTACKER_ONE,
-      ATTACKER_TWO,
-      ATTACKER_THREE,
-      ATTACKER_RIGHT,
-      score,
+      Goalkeaper_No,
+      Defender_Left,
+      Defender_One,
+      Defender_Two,
+      Defender_Three,
+      Defender_Right,
+      Midfielder_Left,
+      Midfielder_One,
+      Midfielder_Two,
+      Midfielder_Three,
+      Midfielder_Right,
+      Attacker_Left,
+      Attacker_One,
+      Attacker_Two,
+      Attacker_Three,
+      Attacker_Right,
     } = req.body
 
     const positions = {
-      GOALKEAPER_NO,
-      DEFENDER_LEFT,
-      DEFENDER_ONE,
-      DEFENDER_TWO,
-      DEFENDER_THREE,
-      DEFENDER_RIGHT,
-      MIDFIELDER_LEFT,
-      MIDFIELDER_ONE,
-      MIDFIELDER_TWO,
-      MIDFIELDER_THREE,
-      MIDFIELDER_RIGHT,
-      ATTACKER_LEFT,
-      ATTACKER_ONE,
-      ATTACKER_TWO,
-      ATTACKER_THREE,
-      ATTACKER_RIGHT,
+      Goalkeaper_No,
+      Defender_Left,
+      Defender_One,
+      Defender_Two,
+      Defender_Three,
+      Defender_Right,
+      Midfielder_Left,
+      Midfielder_One,
+      Midfielder_Two,
+      Midfielder_Three,
+      Midfielder_Right,
+      Attacker_Left,
+      Attacker_One,
+      Attacker_Two,
+      Attacker_Three,
+      Attacker_Right,
     }
-    let playerCount = 0
+    const playerCount = {
+      total: 0,
+      DEFENDER: 0,
+      MIDFIELDER: 0,
+      ATTACKER: 0,
+    }
 
     for (const position of Object.values(positions)) {
-      if (position) playerCount++
+      if (position) {
+        playerCount.total++
+        const major = position.split("_")[0]
+        playerCount[major]++
+      }
     }
 
     if (playerCount !== 11)
@@ -61,23 +68,23 @@ module.exports.createComposition = async (req, res, next) => {
       )
 
     const newComposition = await create(compositionModelName.english, {
-      GOALKEAPER_NO,
-      DEFENDER_LEFT,
-      DEFENDER_ONE,
-      DEFENDER_TWO,
-      DEFENDER_THREE,
-      DEFENDER_RIGHT,
-      MIDFIELDER_LEFT,
-      MIDFIELDER_ONE,
-      MIDFIELDER_TWO,
-      MIDFIELDER_THREE,
-      MIDFIELDER_RIGHT,
-      ATTACKER_LEFT,
-      ATTACKER_ONE,
-      ATTACKER_TWO,
-      ATTACKER_THREE,
-      ATTACKER_RIGHT,
-      score,
+      Goalkeaper_No,
+      Defender_Left,
+      Defender_One,
+      Defender_Two,
+      Defender_Three,
+      Defender_Right,
+      Midfielder_Left,
+      Midfielder_One,
+      Midfielder_Two,
+      Midfielder_Three,
+      Midfielder_Right,
+      Attacker_Left,
+      Attacker_One,
+      Attacker_Two,
+      Attacker_Three,
+      Attacker_Right,
+      name: `${playerCount.DEFENDER}-${playerCount.MIDFIELDER}-${playerCount.DEFENDER}`,
     })
 
     resposeHandler(res, newComposition, Created("ترکیب"))

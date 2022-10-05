@@ -1,5 +1,3 @@
-const { paginationTakeItemsCount } = require("../../../config/Constant")
-const { getSkipFromPageAndTakeCount } = require("./Functions")
 const { PrismaClient } = require("@prisma/client")
 const prisma = new PrismaClient()
 module.exports.create = async (modelName, data) => {
@@ -18,8 +16,7 @@ module.exports.readWithPaginationOrId = async (modelName, id, page = 1) => {
     let result
     if (id) result = await prisma[modelName].findFirst({ where: { id } })
     else {
-      const take = paginationTakeItemsCount[modelName]
-      const skip = getSkipFromPageAndTakeCount(page, take)
+      const skip = (page - 1) * 20
       result = await prisma[modelName].findMany({ skip, take })
     }
     return result

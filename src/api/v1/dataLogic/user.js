@@ -1,38 +1,17 @@
 const bcrypt = require("bcrypt")
-const { PrismaClient } = require("@prisma/client")
-const { user } = new PrismaClient()
-
-module.exports.createUser = async (phonenumber, email, fullname, password) => {
+module.exports.hashUserPassword = async (password) => {
   try {
     const hashedPass = await bcrypt.hash(password, 10)
-    const newUser = await user.create({
-      data: {
-        email,
-        phonenumber,
-        fullname,
-        password: hashedPass,
-      },
-    })
-
-    return newUser
+    return hashedPass
   } catch (error) {
     throw error
   }
 }
 
-module.exports.updateUserByUserId = async (userId, data) => {
+module.exports.compareUserPassword = async (passOne, passTwo) => {
   try {
-    if (data.hasOwnProperty("password")) {
-      data.password = await bcrypt.hash(data.password, 10)
-    }
-    const updatedUser = await user.update({
-      where: {
-        id: +userId,
-      },
-      data,
-    })
-
-    return updatedUser
+    const resultOfcomparePassword = await bcrypt.compare(passOne, passTwo)
+    return resultOfcomparePassword
   } catch (error) {
     throw error
   }

@@ -1,3 +1,7 @@
+const { appendFile } = require("fs")
+const { join } = require("path")
+const persianDate = require("persian-date").toLocale("fa")
+
 const { validationResult } = require("express-validator")
 const {
   InternalServerError,
@@ -5,14 +9,24 @@ const {
   NotFound,
   BadRequest,
 } = require("./HttpResponse")
+const { createError } = require("./Functions")
 module.exports.errorHandler = (err, req, res, next) => {
-  const {
-    message: internalServerErrorMessage,
-    statusCode: internalServerErrorStatusCode,
-  } = InternalServerError()
-  res.status(err.statusCode || internalServerErrorStatusCode).json({
-    message: err.message || internalServerErrorMessage,
-  })
+  const { statusCode, message } = err
+  res.status(statusCode).json({ message })
+}
+
+module.exports.internalServerErrorHandler = (next, error) => {
+  const date = new persianDate().format()
+  appendFile(
+    join(__dirname, "..", "log", "internalServerError.log"),
+    `\n ================== ${date} ================== \n` + error.message ||
+      JSON.stringify(error),
+    (error) => {
+      if (error) console.log(error)
+    }
+  )
+  // send sms to programmer
+  if (next) next(createError(InternalServerError()))
 }
 
 module.exports.resposeHandler = (res, data, { statusCode, message }) => {

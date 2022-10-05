@@ -9,7 +9,6 @@ const {
 } = require("../validations/coinPlan")
 const {
   hasAccessToAdminOperation,
-  hasAccessToPlayWithApp,
   hasAccessToTeam,
 } = require("../middleware/accessControl")
 const {
@@ -28,13 +27,12 @@ coinPlanRouter.post(
   createCoinPlan.bind(null, ["amount", "price", "discountInPercent"])
 )
 
-coinPlanRouter.get("/", hasAccessToPlayWithApp, getCoinPlan)
+coinPlanRouter.get("/", getCoinPlan)
 
 coinPlanRouter.delete("/:id", hasAccessToAdminOperation, deleteCoinPlan)
 
 coinPlanRouter.post(
   "/buy",
-  hasAccessToPlayWithApp,
   checkSchema(buyCoinSchemaValdation),
   expressValidationResultHandler,
   hasAccessToTeam,

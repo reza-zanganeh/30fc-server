@@ -11,33 +11,28 @@ datasource db {
 }
 
 model User {
-  id                  Int                   @id @default(autoincrement())
-  fullname            String
-  email               String                @unique
-  phonenumber         String                @unique @db.VarChar(11)
-  password            String
-  lastTimeSeen        DateTime              @default(now())
-  birthday            DateTime?
-  isBlock             Boolean               @default(false)
-  createdTeamCount    String                @default("0") @db.VarChar(1)
-  teamCount           Int                   @default(0)
-  gender              Gender?
-  city                String?
-  state               String?
-  country             String?
+  id               Int                   @id @default(autoincrement())
+  fullname         String
+  email            String?               @unique
+  phonenumber      String                @unique @db.VarChar(11)
+  password         String
+  lastTimeSeen     DateTime              @default(now())
+  birthday         DateTime?
+  isBlock          Boolean               @default(false)
+  createdTeamCount String                @default("0") @db.VarChar(1)
+  teamCount        Int                   @default(0)
+  gender           Gender?
+  city             String?
+  state            String?
+  country          String?
   // user level
-  level               UserRole              @default(Normal)
-  teams               Team[]
-  CoinPurchaseInvoice CoinPurchaseInvoice[]
-  // market
+  role             UserRole              @default(Normal)
+  teams            Team[]
   // admin
-  sellableTeam        AdminSellableTeam[]   @relation(name: "seller")
-  sellablePlayer      AdminSellablePlayer[]
+  sellableTeam     AdminSellableTeam[]   @relation(name: "seller")
+  sellablePlayer   AdminSellablePlayer[]
   // 
-  purchasedTeams      AdminSellableTeam[]   @relation(name: "buyer")
-  // follower fallowing
-  fallowers           FollowerFallowing[]   @relation(name: "followers")
-  fallowing           FollowerFallowing[]   @relation(name: "fallowing")
+  purchasedTeams   AdminSellableTeam[]   @relation(name: "buyer")
 }
 
 enum UserRole {
@@ -51,107 +46,135 @@ enum Gender {
   Female
 }
 
+model Team {
+  id                                 Int                                 @id @default(autoincrement())
+  // owner
+  owner                              User?                               @relation(fields: [ownerId], references: [id])
+  ownerId                            Int?
+  // 
+  name                               String                              @unique
+  coinCount                          Int                                 @default(0)
+  logoUrl                            String?
+  profilePictureUrl                  String?
+  fanSatisfaction                    Int                                 @default(50)
+  isOnline                           Boolean                             @default(false)
+  lastTimeSeen                       DateTime                            @default(now())
+  dateOfStablishment                 DateTime                            @default(now())
+  spirit                             Int                                 @default(100)
+  isBlock                            Boolean                             @default(false)
+  technique                          Technique
+  strategy                           Strategy
+  AdminTeamSalesContract             AdminSellableTeam?
+  // 
+  composition                        Composition                         @relation(fields: [compositionId], references: [id])
+  compositionId                      Int
+  players                            Player[]
+  playerCount                        Int                                 @default(21)
+  teamMembershipType                 TeamMembershipTypeName              @default(Normal)
+  endOfTeamMemberShipType            DateTime                            @default(now())
+  dateOfEstablishment                DateTime                            @default(now())
+  // team competitions
+  leauges                            TeamsOfLeague[]
+  leagueGamesHostTeam                LeagueGame[]                        @relation("hostTeam")
+  leagueGamesVisitingTeam            LeagueGame[]                        @relation("visitingTeam")
+  // golden cup
+  goldenCups                         TeamsOfGoldenCups[]
+  goldenCupGamesHostTeam             GoldenCupGame[]                     @relation("hostTeam")
+  goldenCupGamesVisitingTeam         GoldenCupGame[]                     @relation("visitingTeam")
+  // champions cup
+  championsCups                      TeamsOfChampionsCups[]
+  championsCupGamesHostTeam          ChampionsCupGame[]                  @relation("hostTeam")
+  championsCupGamesVisitingTeam      ChampionsCupGame[]                  @relation("visitingTeam")
+  // friendly game
+  friendlyGamesHostTeam              FriendlyGame[]                      @relation("hostTeam")
+  friendlyGamesVisitingTeam          FriendlyGame[]                      @relation("visitingTeam")
+  friendlyGameRequestIsOn            Boolean                             @default(true)
+  friendlyGameCount                  Int                                 @default(0)
+  // end of team competitions
+  teamScores                         TeamScores?
+  tournaments                        TeamsOfTournaments[]
+  RequestToCreatePlayer              RequestToCreatePlayer[]
+  sponser                            Sponser?                            @relation(fields: [sponserId], references: [id])
+  sponserId                          Int?
+  teamAssets                         TeamAssets?
+  // teamComminiucations 
+  privateChatIsOn                    Boolean                             @default(true)
+  privateChatsTeamOne                PrivateChat[]                       @relation(name: "teamOne")
+  privateChatsTeamTwo                PrivateChat[]                       @relation(name: "teamTwo")
+  tickets                            Ticket[]
+  publicAdminMessages                PublicAdminMessagesOfTeams[]
+  groups                             GroupMember[]
+  groupPostComments                  GroupPostComment[]
+  groupPostLikes                     GroupPost[]                         @relation(name: "like")
+  groupPostDisLikes                  GroupPost[]                         @relation(name: "disLike")
+  chatRooms                          ChatRoomMember[]
+  // end of teamComminiucations
+  coinPurchaseInvoice                CoinPurchaseInvoice[]
+  TeamMembershipTypePurchaseInvoices TeamMembershipTypePurchaseInvoice[]
+  // follower fallowing
+  followingIsOn                      Boolean                             @default(true)
+  fallowers                          FollowerFallowing[]                 @relation(name: "followers")
+  fallowing                          FollowerFallowing[]                 @relation(name: "fallowing")
+  // market
+  purchasedAdminPlayersCount         Int                                 @default(0)
+  purchasedAdminPlayer               AdminSellablePlayer[]
+  purchasedPlayesrCount              Int                                 @default(0)
+  purchasedPlayer                    playerTransfers[]                   @relation(name: "buyer")
+  soldPlayersCount                   Int                                 @default(0)
+  PlayersOnSale                      playerTransfers[]                   @relation(name: "seller")
+}
+
 model FollowerFallowing {
   id          Int      @id @default(autoincrement())
   date        DateTime
-  follower    User     @relation(name: "followers", fields: [followerId], references: [id])
+  follower    Team     @relation(name: "followers", fields: [followerId], references: [id])
   followerId  Int
-  fallowing   User     @relation(name: "fallowing", fields: [fallowingId], references: [id])
+  fallowing   Team     @relation(name: "fallowing", fields: [fallowingId], references: [id])
   fallowingId Int
 }
 
-model Team {
-  id                            Int                          @id @default(autoincrement())
-  name                          String                       @unique
-  coinCount                     Int                          @default(0)
-  logoUrl                       String?
-  profilePictureUrl             String?
-  fanSatisfaction               Int                          @default(50)
-  isOnline                      Boolean                      @default(false)
-  lastTimeSeen                  DateTime                     @default(now())
-  dateOfStablishment            DateTime                     @default(now())
-  spirit                        Int                          @default(100)
-  isBlock                       Boolean                      @default(false)
-  technique                     Technique
-  strategy                      Strategy
-  // owner
-  owner                         User?                        @relation(fields: [ownerId], references: [id])
-  ownerId                       Int?
-  // total
-  totalScore                    Int                          @default(0)
-  totalWinCount                 Int                          @default(0)
-  totalLoseCount                Int                          @default(0)
-  totalEqualCount               Int                          @default(0)
-  hasBestTeamCup                Boolean                      @default(false)
-  // settings
-  friendlyGameRequestIsOn       Boolean                      @default(true)
-  privateChatIsOn               Boolean                      @default(true)
-  followingIsOn                 Boolean                      @default(true)
-  // 
-  friendlyGameCount             Int                          @default(0)
-  isUsedRecovery                Boolean                      @default(false)
-  composition                   Composition                  @relation(fields: [compositionId], references: [id])
-  compositionId                 Int
-  players                       Player[]
-  gym                           Gym?                         @relation(fields: [gymId], references: [id])
-  gymId                         Int?
-  usedGymCount                  Int                          @default(0)
-  coach                         Coach?                       @relation(fields: [coachId], references: [id])
-  coachId                       Int?
-  stadium                       Stadium?                     @relation(fields: [stadiumId], references: [id])
-  stadiumId                     Int?
-  stadiumName                   String                       @default("تعریف نشده")
-  doctor                        Doctor?                      @relation(fields: [doctorId], references: [id])
-  doctorId                      Int?
-  isUsedDoctor                  Boolean                      @default(false)
-  psychologist                  Psychologist?                @relation(fields: [psychologistId], references: [id])
-  psychologistId                Int?
-  isUsedPsychologist            Boolean                      @default(false)
-  teamMembershipType            TeamMembershipType           @relation(fields: [teamMembershipTypeId], references: [id])
-  teamMembershipTypeId          Int
-  endOfTeamMemberShipType       DateTime                     @default(now())
-  dateOfEstablishment           DateTime                     @default(now())
-  RequestToCreatePlayer         RequestToCreatePlayer[]
-  playerCount                   Int                          @default(21)
-  sponser                       Sponser                      @relation(fields: [sponserId], references: [id])
-  sponserId                     Int
-  // golden cup
-  goldenCups                    TeamsOfGoldenCups[]
-  goldenCupGamesHostTeam        GoldenCupGame[]              @relation("hostTeam")
-  goldenCupGamesVisitingTeam    GoldenCupGame[]              @relation("visitingTeam")
-  goldenCupCount                Int                          @default(0)
-  // champions cup
-  championsCupGamesHostTeam     ChampionsCupGame[]           @relation("hostTeam")
-  championsCupGamesVisitingTeam ChampionsCupGame[]           @relation("visitingTeam")
-  championsCupCount             Int                          @default(0)
-  championsCups                 TeamsOfChampionsCups[]
+model TeamAssets {
+  id                 Int           @id @default(autoincrement())
+  team               Team          @relation(fields: [teamId], references: [id])
+  teamId             Int           @unique
+  gym                Gym?          @relation(fields: [gymId], references: [id])
+  gymId              Int?
+  usedGymCount       Int           @default(0)
+  coach              Coach?        @relation(fields: [coachId], references: [id])
+  coachId            Int?
+  stadium            Stadium?      @relation(fields: [stadiumId], references: [id])
+  stadiumId          Int?
+  stadiumName        String        @default("تعریف نشده")
+  doctor             Doctor?       @relation(fields: [doctorId], references: [id])
+  doctorId           Int?
+  isUsedDoctor       Boolean       @default(false)
+  psychologist       Psychologist? @relation(fields: [psychologistId], references: [id])
+  psychologistId     Int?
+  isUsedPsychologist Boolean       @default(false)
+  isUsedRecovery     Boolean       @default(false)
+}
+
+model TeamScores {
+  id                         Int     @id @default(autoincrement())
+  team                       Team    @relation(fields: [teamId], references: [id])
+  teamId                     Int     @unique
   // league
-  leagueGamesHostTeam           LeagueGame[]                 @relation("hostTeam")
-  leagueGamesVisitingTeam       LeagueGame[]                 @relation("visitingTeam")
-  scoreInLeague                 Int                          @default(0)
-  winCountInLeague              Int                          @default(0)
-  loseCountInLeague             Int                          @default(0)
-  equalCountInLeague            Int                          @default(0)
-  firstTeamInLeagueCupCount     Int                          @default(0)
-  secondTeamInLeagueCupCount    Int                          @default(0)
-  thirdTeamInLeagueCupCount     Int                          @default(0)
-  leauge                        TeamsOfLeague[]
-  tournaments                   TeamsOfTournaments[]
-  // comminiucation
-  privateChatsTeamOne           PrivateChat[]                @relation(name: "teamOne")
-  privateChatsTeamTwo           PrivateChat[]                @relation(name: "teamTwo")
-  tickets                       Ticket[]
-  publicAdminMessages           PublicAdminMessagesOfTeams[]
-  groups                        GroupMember[]
-  groupPostComments             GroupPostComment[]
-  groupPostLikes                GroupPost[]                  @relation(name: "like")
-  groupPostDisLikes             GroupPost[]                  @relation(name: "disLike")
-  chatRooms                     ChatRoomMember[]
-  // market
-  AdminTeamSalesContract        AdminSellableTeam?
-  purchasedAdminPlayer          AdminSellablePlayer[]
-  purchasedPlayer               playerTransfers[]            @relation(name: "buyer")
-  PlayersOnSale                 playerTransfers[]            @relation(name: "seller")
+  scoreInLeague              Int     @default(0)
+  winCountInLeague           Int     @default(0)
+  loseCountInLeague          Int     @default(0)
+  equalCountInLeague         Int     @default(0)
+  firstTeamInLeagueCupCount  Int     @default(0)
+  secondTeamInLeagueCupCount Int     @default(0)
+  thirdTeamInLeagueCupCount  Int     @default(0)
+  // total
+  totalScore                 Int     @default(0)
+  totalWinCount              Int     @default(0)
+  totalLoseCount             Int     @default(0)
+  totalEqualCount            Int     @default(0)
+  hasBestTeamCup             Boolean @default(false)
+  // cups
+  championsCupCount          Int     @default(0)
+  goldCupCount               Int     @default(0)
 }
 
 enum Technique {
@@ -169,10 +192,22 @@ enum Strategy {
 }
 
 model TeamMembershipType {
-  id           Int                    @id @default(autoincrement())
-  name         TeamMembershipTypeName @unique
-  priceInToman Int
-  teams        Team[]
+  id              Int                                 @id @default(autoincrement())
+  name            TeamMembershipTypeName              @unique
+  priceInToman    Int
+  purchaseInvoice TeamMembershipTypePurchaseInvoice[]
+}
+
+model TeamMembershipTypePurchaseInvoice {
+  id                   Int                @id @default(autoincrement())
+  date                 DateTime           @default(now())
+  authority            String             @unique
+  amountInToman        Int
+  isPay                Boolean            @default(false)
+  team                 Team               @relation(fields: [teamId], references: [id])
+  teamId               Int
+  TeamMembershipType   TeamMembershipType @relation(fields: [TeamMembershipTypeId], references: [id])
+  TeamMembershipTypeId Int
 }
 
 enum TeamMembershipTypeName {
@@ -184,66 +219,67 @@ enum TeamMembershipTypeName {
 
 model ReservedTeamName {
   id   Int    @id @default(autoincrement())
-  name String
+  name String @unique
 }
 
 model Composition {
   id               Int     @id @default(autoincrement())
+  name             String  @unique
+  Goalkeaper_No    Boolean @default(false)
+  Defender_Left    Boolean @default(false)
+  Defender_One     Boolean @default(false)
+  Defender_Two     Boolean @default(false)
+  Defender_Three   Boolean @default(false)
+  Defender_Right   Boolean @default(false)
+  Midfielder_Left  Boolean @default(false)
+  Midfielder_One   Boolean @default(false)
+  Midfielder_Two   Boolean @default(false)
+  Midfielder_Three Boolean @default(false)
+  Midfielder_Right Boolean @default(false)
+  Attacker_Left    Boolean @default(false)
+  Attacker_One     Boolean @default(false)
+  Attacker_Two     Boolean @default(false)
+  Attacker_Three   Boolean @default(false)
+  Attacker_Right   Boolean @default(false)
   teams            Team[]
-  GOALKEAPER_NO    Boolean @default(false)
-  DEFENDER_LEFT    Boolean @default(false)
-  DEFENDER_ONE     Boolean @default(false)
-  DEFENDER_TWO     Boolean @default(false)
-  DEFENDER_THREE   Boolean @default(false)
-  DEFENDER_RIGHT   Boolean @default(false)
-  MIDFIELDER_LEFT  Boolean @default(false)
-  MIDFIELDER_ONE   Boolean @default(false)
-  MIDFIELDER_TWO   Boolean @default(false)
-  MIDFIELDER_THREE Boolean @default(false)
-  MIDFIELDER_RIGHT Boolean @default(false)
-  ATTACKER_LEFT    Boolean @default(false)
-  ATTACKER_ONE     Boolean @default(false)
-  ATTACKER_TWO     Boolean @default(false)
-  ATTACKER_THREE   Boolean @default(false)
-  ATTACKER_RIGHT   Boolean @default(false)
 }
 
 model Gym {
-  id       Int    @id @default(autoincrement())
-  teams    Team[]
-  level    Int    @unique
+  id       Int          @id @default(autoincrement())
+  teams    TeamAssets[]
+  level    Int          @unique
   price    Int
   capacity Int
 }
 
 model Coach {
-  id      Int    @id @default(autoincrement())
-  teams   Team[]
-  level   Int    @unique
+  id      Int          @id @default(autoincrement())
+  teams   TeamAssets[]
+  level   Int          @unique
   price   Int
   ability Int
 }
 
 model Stadium {
-  id       Int    @id @default(autoincrement())
-  teams    Team[]
-  level    Int    @unique
+  id       Int          @id @default(autoincrement())
+  teams    TeamAssets[]
+  level    Int          @unique
   price    Int
   capacity Int
 }
 
 model Doctor {
-  id      Int    @id @default(autoincrement())
-  teams   Team[]
-  level   Int    @unique
+  id      Int          @id @default(autoincrement())
+  teams   TeamAssets[]
+  level   Int          @unique
   price   Int
   ability Int
 }
 
 model Psychologist {
-  id      Int    @id @default(autoincrement())
-  teams   Team[]
-  level   Int    @unique
+  id      Int          @id @default(autoincrement())
+  teams   TeamAssets[]
+  level   Int          @unique
   price   Int
   ability Int
 }
@@ -273,16 +309,16 @@ model Player {
   energy                                         Int                    @default(100)
   injury                                         Int                    @default(0)
   // power
-  spead                                          Int                    @default(0)
-  controll                                       Int                    @default(0)
-  pass                                           Int                    @default(0)
-  flexibility                                    Int                    @default(0)
-  stamina                                        Int                    @default(0)
-  technique                                      Int                    @default(0)
-  shoot                                          Int                    @default(0)
-  drible                                         Int                    @default(0)
-  focus                                          Int                    @default(0)
-  experience                                     Int                    @default(0)
+  spead                                          Int
+  controll                                       Int
+  pass                                           Int
+  flexibility                                    Int
+  stamina                                        Int
+  technique                                      Int
+  shoot                                          Int
+  drible                                         Int
+  focus                                          Int
+  experience                                     Int
   totalPower                                     Int
   // end power
   status                                         PlayerStatus           @default(InTeam)
@@ -309,6 +345,13 @@ model Player {
   leagueGamePlayerTwoHasReceivedYellowCart       LeagueGame[]           @relation(name: "playerTwoHasReceivedYellowCart")
   leagueGamePlayerHasReceivedRedCart             LeagueGame[]           @relation(name: "playerHasReceivedRedCart")
   leagueGameGoals                                LeagueGame[]           @relation(name: "scorerPlayer")
+  // friendly game
+  friendlyGameBestPlayer                         FriendlyGame[]         @relation(name: "bestPlayer")
+  friendlyGameInjuredPlayer                      FriendlyGame[]         @relation(name: "injuredPlayer")
+  friendlyGameplayerOneHasReceivedYellowCart     FriendlyGame[]         @relation(name: "playerOneHasReceivedYellowCart")
+  friendlyGamePlayerTwoHasReceivedYellowCart     FriendlyGame[]         @relation(name: "playerTwoHasReceivedYellowCart")
+  friendlyGamePlayerHasReceivedRedCart           FriendlyGame[]         @relation(name: "playerHasReceivedRedCart")
+  friendlyGameGoals                              FriendlyGame[]         @relation(name: "scorerPlayer")
   // market
   adminPlayerSalesContract                       AdminSellablePlayer?
   playerSalesContract                            playerTransfers?
@@ -377,32 +420,26 @@ model CoinPlan {
   coinPurchaseInvoices CoinPurchaseInvoice[]
 }
 
-model RequestToCreatePlayer {
-  id            Int                        @id @default(autoincrement())
-  team          Team                       @relation(fields: [teamId], references: [id])
-  teamId        Int
-  player        Player?                    @relation(fields: [playerId], references: [id])
-  playerId      Int?                       @unique
-  status        RequestToCreatePlayerSatus @default(Pending)
-  adminResponse String?
-}
-
-enum RequestToCreatePlayerSatus {
-  Pending
-  Confirm
-  Reject
-}
-
 model CoinPurchaseInvoice {
   id            Int      @id @default(autoincrement())
   date          DateTime @default(now())
   authority     String   @unique
   amountInToman Int
   isPay         Boolean  @default(false)
-  user          User     @relation(fields: [userId], references: [id])
-  userId        Int
+  team          Team     @relation(fields: [teamId], references: [id])
+  teamId        Int
   coinPlan      CoinPlan @relation(fields: [coinPlanId], references: [id])
   coinPlanId    Int
+}
+
+model RequestToCreatePlayer {
+  id            Int           @id @default(autoincrement())
+  team          Team          @relation(fields: [teamId], references: [id])
+  teamId        Int
+  player        Player?       @relation(fields: [playerId], references: [id])
+  playerId      Int?          @unique
+  status        RequestStatus @default(Pending)
+  adminResponse String?
 }
 
 // competition
@@ -569,6 +606,40 @@ enum teamStatusInLeague {
   Remove
 }
 
+// friendly game
+model FriendlyGame {
+  id                               Int         @id @default(autoincrement())
+  hostTeam                         Team        @relation(name: "hostTeam", fields: [hostTeamId], references: [id])
+  hostTeamId                       Int
+  visitingTeam                     Team        @relation(name: "visitingTeam", fields: [visitingTeamId], references: [id])
+  visitingTeamId                   Int
+  startTime                        DateTime
+  resultDescription                String?
+  result                           GameResult?
+  winerTeamGoalCount               Int?
+  loserGoalCount                   Int?
+  // special player in game
+  bestPlayer                       Player?     @relation(name: "bestPlayer", fields: [bestPlayerId], references: [id])
+  bestPlayerId                     Int?
+  injuredPlayer                    Player?     @relation(name: "injuredPlayer", fields: [injuredPlayerId], references: [id])
+  injuredPlayerId                  Int?
+  playerOneHasReceivedYellowCart   Player?     @relation(name: "playerOneHasReceivedYellowCart", fields: [playerOneHasReceivedYellowCartId], references: [id])
+  playerOneHasReceivedYellowCartId Int?
+  playerTwoHasReceivedYellowCart   Player?     @relation(name: "playerTwoHasReceivedYellowCart", fields: [playerTwoHasReceivedYellowCartId], references: [id])
+  playerTwoHasReceivedYellowCartId Int?
+  playerHasReceivedRedCart         Player?     @relation(name: "playerHasReceivedRedCart", fields: [playerHasReceivedRedCartId], references: [id])
+  playerHasReceivedRedCartId       Int?
+  scorerPlayer                     Player[]    @relation(name: "scorerPlayer")
+}
+
+model RequestFriendlyGame {
+  id             Int           @id @default(autoincrement())
+  date           DateTime      @default(now())
+  status         RequestStatus @default(Pending)
+  senderTeamId   Int
+  receiverTeamId Int
+}
+
 model Tournament {
   id                                Int                  @id @default(autoincrement())
   name                              String
@@ -644,7 +715,7 @@ model Sponser {
 // admin
 model AdminNews {
   id      Int    @id @default(autoincrement())
-  // TODO
+  title   String
   context Json
 }
 
@@ -656,19 +727,32 @@ enum AdminNewsType {
 }
 
 // general model
-model GeneralInformation {
-  id                Int              @id @default(autoincrement())
-  instagramPageLink String
-  homePageLink      String
-  telegramGroups    TelegramGroups[]
+model GameLink {
+  id          Int          @id @default(autoincrement())
+  name        String
+  url         String
+  type        GameLinkType
+  description String
 }
 
-model TelegramGroups {
-  id                   Int                @id @default(autoincrement())
-  link                 String
-  description          String
-  generalInformation   GeneralInformation @relation(fields: [generalInformationId], references: [id])
-  generalInformationId Int
+enum GameLinkType {
+  InstagramLink
+  TelegramLink
+  WebsiteLink
+}
+
+model GameFactor {
+  id     Int            @id @default(autoincrement())
+  name   GameFactorName @unique
+  amount Float
+}
+
+enum GameFactorName {
+  Salary
+  DifferenceInPointsForEachGoal
+  MinimumPlayerPrice
+  MaximumPlayerPrice
+  InviteNewTeamCoinCount
 }
 
 model ContactUs {
@@ -874,4 +958,11 @@ model playerTransfers {
 enum ProductStatus {
   OnSale
   SoldOut
+}
+
+// general eunms
+enum RequestStatus {
+  Pending
+  Confirm
+  Reject
 }

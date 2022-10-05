@@ -17,7 +17,6 @@ const { useEnergyProducer } = require("../controller/energyProducer")
 const {
   hasAccessToAdminOperation,
   hasAccessToTeam,
-  hasAccessToPlayWithApp,
 } = require("../middleware/accessControl")
 const energyProducerRouter = express.Router()
 
@@ -29,7 +28,7 @@ energyProducerRouter.post(
   createEnergyProducer.bind(null, ["level", "price", "ability"])
 )
 
-energyProducerRouter.get("/", hasAccessToPlayWithApp, getEnergyProducer)
+energyProducerRouter.get("/", getEnergyProducer)
 
 energyProducerRouter.delete(
   "/:id",
@@ -41,7 +40,6 @@ energyProducerRouter.delete(
 
 energyProducerRouter.post(
   "/use",
-  hasAccessToPlayWithApp,
   checkSchema(useEnergyProducerSchemaValidation),
   expressValidationResultHandler,
   hasAccessToTeam,

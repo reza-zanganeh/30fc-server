@@ -18,7 +18,6 @@ const {
 const {
   hasAccessToAdminOperation,
   hasAccessToTeam,
-  hasAccessToPlayWithApp,
 } = require("../middleware/accessControl")
 const stadiumRouter = express.Router()
 
@@ -31,7 +30,7 @@ stadiumRouter.post(
 )
 
 stadiumRouter.get("/admin", hasAccessToAdminOperation, getStadium)
-stadiumRouter.get("/", hasAccessToPlayWithApp, hasAccessToTeam, getStadium)
+stadiumRouter.get("/", hasAccessToTeam, getStadium)
 
 stadiumRouter.delete(
   "/:id",
@@ -43,7 +42,6 @@ stadiumRouter.delete(
 
 stadiumRouter.post(
   "/buy",
-  hasAccessToPlayWithApp,
   checkSchema(buyStadiumSchemaValidation),
   expressValidationResultHandler,
   hasAccessToTeam,

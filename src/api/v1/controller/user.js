@@ -8,6 +8,10 @@ const { userModelName } = modelName
 const { update, readOne } = require("../helpers/prisma")
 const { resposeHandler } = require("../helpers/responseHandler")
 const { createError } = require("../helpers/Functions")
+const {
+  addUserToNeedLoginAgainInRedis,
+  removeUserFromNeedLoginAgainInRedis,
+} = require("../services/redis")
 module.exports.getUserInformationWithToken = async (req, res, next) => {
   try {
     const userId = req.user.id
@@ -34,6 +38,8 @@ module.exports.blockUser = async (req, res, next) => {
       { id: +userId },
       { isBlock: true }
     )
+
+    await addUserToNeedLoginAgainInRedis(userId)
 
     delete blockedUser.password
 
@@ -62,6 +68,8 @@ module.exports.unBlockUser = async (req, res, next) => {
       { id: +userId },
       { isBlock: false }
     )
+
+    await removeUserFromNeedLoginAgainInRedis(userId)
 
     delete unBlockedUser.password
 

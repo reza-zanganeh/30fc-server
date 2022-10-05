@@ -9,15 +9,21 @@ module.exports.requestOtpValidationSchema = {
 }
 
 module.exports.registerValidationSchema = {
-  phonenumber: phonenumber("body"),
-  email: email("body"),
+  fullname: required("نام و نام خانوادگی", "body"),
+  teamName: required("نام تیم", "body"),
+  password: password("body"),
+  confirmPassword: password("body"),
+  otpCode: required("کد اعتبار سنجی", "body"),
+}
+
+module.exports.initialAdminValidationSchema = {
   fullname: required("نام و نام خانوادگی", "body"),
   password: password("body"),
+  confirmPassword: password("body"),
   otpCode: required("کد اعتبار سنجی", "body"),
 }
 
 module.exports.loginValidationSchema = {
-  email: email("body"),
   password: password("body"),
 }
 

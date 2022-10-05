@@ -19,7 +19,6 @@ const { useGym } = require("../controller/gym")
 const {
   hasAccessToAdminOperation,
   hasAccessToTeam,
-  hasAccessToPlayWithApp,
   hasAccessToPlayer,
 } = require("../middleware/accessControl")
 const gymRouter = express.Router()
@@ -33,7 +32,7 @@ gymRouter.post(
 )
 
 gymRouter.get("/admin", hasAccessToAdminOperation, getGym)
-gymRouter.get("/", hasAccessToPlayWithApp, hasAccessToTeam, getGym)
+gymRouter.get("/", hasAccessToTeam, getGym)
 
 gymRouter.delete(
   "/:id",
@@ -45,7 +44,6 @@ gymRouter.delete(
 
 gymRouter.post(
   "/buy",
-  hasAccessToPlayWithApp,
   checkSchema(buyGymSchemaValidation),
   expressValidationResultHandler,
   hasAccessToTeam,
@@ -54,7 +52,6 @@ gymRouter.post(
 
 gymRouter.post(
   "/use",
-  hasAccessToPlayWithApp,
   checkSchema(useGymSchemaValidation),
   expressValidationResultHandler,
   hasAccessToPlayer,

@@ -1,176 +1,178 @@
-const { PrismaClient } = require("@prisma/client")
-const { team } = new PrismaClient()
-
-module.exports.createTeam = async (
-  name,
-  ownerId,
-  compositionId,
-  strategy,
-  technique,
-  players
-) => {
+const { modelName } = require("../../../config/Constant")
+const { createRandomNumber } = require("../helpers/Functions")
+const {
+  compositionModelName,
+  primitivePlayerNameModelName,
+  playerFacePictureModelName,
+  playerPositionModelName,
+} = modelName
+const { readOne, readAll, remove } = require("../helpers/prisma")
+const { calculatePlayerSalary } = require("./formula")
+module.exports.createDataTeam = async (teamName) => {
   try {
-    const createdTeam = await team.create({
-      data: {
+    const composition = await readOne(compositionModelName.english, {
+      name: "4-4-2",
+    })
+    const compositionId = composition.id
+    delete composition.id
+    delete composition.name
+    // create 20 random player
+    // name
+    const primitivePlayerName = await readAll(
+      primitivePlayerNameModelName.english,
+      null,
+      {
+        name: true,
+      }
+    )
+    const primitivePlayerNameCount = primitivePlayerName.length
+    const primitivePlayerNameSelectRange = Math.floor(
+      primitivePlayerNameCount / 21
+    )
+    let primitivePlayerNameSelectRangeStart = 1
+
+    // face picture
+    const playerFacePicture = await readAll(
+      playerFacePictureModelName.english,
+      {
+        isSpecial: false,
+      },
+      { id: true }
+    )
+    const playerFacePictureCount = playerFacePicture.length
+    const playerFacePictureSelectRange = Math.floor(playerFacePictureCount / 21)
+    let playerFacePictureSelectRangeStart = 1
+
+    const positions = await readAll(playerPositionModelName.english)
+    const positionsMap = {}
+    positions.forEach((position) => {
+      positionsMap[`${position.major}_${position.manor}`] = position.id
+    })
+
+    const playerPositionsOnTeam = [
+      "Goalkeaper_No",
+      "Goalkeaper_No",
+      "Defender_Left",
+      "Defender_Left",
+      "Defender_Middle",
+      "Defender_Middle",
+      "Defender_Middle",
+      "Defender_Right",
+      "Defender_Right",
+      "Midfielder_Left",
+      "Midfielder_Left",
+      "Midfielder_Middle",
+      "Midfielder_Middle",
+      "Midfielder_Right",
+      "Midfielder_Right",
+      "Attacker_Left",
+      "Attacker_Left",
+      "Attacker_Middle",
+      "Attacker_Middle",
+      "Attacker_Right",
+      "Attacker_Right",
+    ]
+
+    const PositionOnCompositionToPlayerMap = {
+      Goalkeaper_No: createRandomNumber(0, 1),
+      Defender_Left: createRandomNumber(2, 3),
+      Defender_One: createRandomNumber(4, 5),
+      Defender_Three: 6,
+      Defender_Right: createRandomNumber(7, 8),
+      Midfielder_Left: createRandomNumber(9, 10),
+      Midfielder_One: 11,
+      Midfielder_Three: 12,
+      Midfielder_Right: createRandomNumber(13, 14),
+      Attacker_One: 17,
+      Attacker_Three: 18,
+    }
+    // age
+    const ages = [
+      20, 25, 20, 22, 21, 20, 23, 26, 24, 26, 25, 24, 25, 26, 22, 21, 20, 26,
+      23, 21, 23,
+    ]
+    let agesArrayLenght = 21
+    // power
+    const powers = [
+      250, 270, 280, 270, 250, 280, 270, 290, 260, 280, 290, 270, 260, 250, 280,
+      250, 260, 300, 250, 290, 270,
+    ]
+    let powersArrayLenght = 21
+
+    const players = []
+
+    for (let counter = 1; counter <= 21; ++counter) {
+      const name =
+        primitivePlayerName[
+          createRandomNumber(
+            primitivePlayerNameSelectRangeStart,
+            primitivePlayerNameSelectRangeStart +
+              primitivePlayerNameSelectRange -
+              1
+          ) - 1
+        ].name
+      primitivePlayerNameSelectRangeStart += primitivePlayerNameSelectRange
+
+      const age = ages[createRandomNumber(0, agesArrayLenght)]
+      agesArrayLenght--
+
+      const facePictureId =
+        playerFacePicture[
+          createRandomNumber(
+            playerFacePictureSelectRangeStart,
+            playerFacePictureSelectRangeStart + playerFacePictureSelectRange - 1
+          ) - 1
+        ].id
+      playerFacePictureSelectRangeStart += playerFacePictureSelectRange
+
+      const totalPower = powers[createRandomNumber(0, powersArrayLenght)]
+      powersArrayLenght--
+
+      const salary = await calculatePlayerSalary(totalPower, age)
+
+      const position = playerPositionsOnTeam[counter - 1]
+      const positionId = positionsMap[position]
+      const tShirtNumber = counter
+
+      const power = totalPower / 10
+
+      players[counter - 1] = {
         name,
-        owner: {
-          connect: {
-            id: ownerId,
-          },
-        },
-        composition: {
-          connect: {
-            id: compositionId,
-          },
-        },
-        strategy,
-        technique,
-        coinCount: 1000,
-        players: {
-          createMany: {
-            data: players,
-          },
-        },
-      },
-    })
-    return createdTeam
-  } catch (error) {
-    throw error
-  }
-}
+        age,
+        facePictureId,
+        spead: power,
+        controll: power,
+        pass: power,
+        flexibility: power,
+        stamina: power,
+        technique: power,
+        shoot: power,
+        drible: power,
+        focus: power,
+        experience: power,
+        totalPower,
+        salary,
+        positionId,
+        tShirtNumber,
+      }
+    }
 
-module.exports.getPlayers = async (teamId) => {
-  try {
-    const players = team.findFirst({
-      where: {
-        id: +teamId,
-      },
-      select: {
-        players: {
-          select: {
-            id: true,
-            name: true,
-            age: true,
-            position: {
-              select: {
-                major: true,
-                manor: true,
-              },
-            },
-            injury: true,
-            inMainComposition: true,
-            positionInMainComposition: true,
-            // power
-            totalPower: true,
-            energy: true,
-            tShirtNumber: true,
-            spead: true,
-          },
-          orderBy: {
-            id: "asc",
-          },
-        },
-      },
-    })
+    for (const [position, havePlayer] of Object.entries(composition)) {
+      if (havePlayer) {
+        players[PositionOnCompositionToPlayerMap[position]].status =
+          "InTeamMainComposition"
+        players[
+          PositionOnCompositionToPlayerMap[position]
+        ].positionInMainCompositionId = positionsMap[position]
+      }
+    }
 
-    return players
-  } catch (error) {
-    throw error
-  }
-}
-
-module.exports.changeComposition = async (
-  teamId,
-  compositionId,
-  newPlayerPosition
-) => {
-  try {
-    const updatedTeam = await team.update({
-      where: {
-        id: teamId,
-      },
-      data: {
-        composition: {
-          connect: { id: compositionId },
-        },
-        players: {
-          updateMany: newPlayerPosition.map((player) => ({
-            where: { id: player.id },
-            data: {
-              positionInMainCompositionId: player.positionInMainCompositionId,
-            },
-          })),
-        },
-      },
-    })
-    return updatedTeam
-  } catch (error) {
-    throw error
-  }
-}
-
-module.exports.changeTwoPlayerPosition = async (
-  teamId,
-  playerOne,
-  playerTwo
-) => {
-  try {
-    const result = await team.update({
-      where: {
-        id: teamId,
-      },
-      data: {
-        players: {
-          updateMany: [
-            {
-              where: { id: +playerOne.id },
-              data: {
-                positionInMainCompositionId:
-                  playerTwo.positionInMainCompositionId,
-              },
-            },
-            {
-              where: { id: +playerTwo.id },
-              data: {
-                positionInMainCompositionId:
-                  playerOne.positionInMainCompositionId,
-              },
-            },
-          ],
-        },
-      },
-    })
-    return result
-  } catch (error) {
-    throw error
-  }
-}
-
-module.exports.updateTeamPlayers = async (
-  teamId,
-  updatedTeamData,
-  updatedPlayersData
-) => {
-  try {
-    const updatedTeam = await team.update({
-      where: {
-        id: teamId,
-      },
-      data: {
-        ...updatedTeamData,
-        players: {
-          updateMany: updatedPlayersData.map((player) => {
-            const playerId = player.id
-            delete player.id
-            return {
-              where: { id: playerId },
-              data: { ...player },
-            }
-          }),
-        },
-      },
-    })
-    return updatedTeam
+    return {
+      compositionId,
+      strategy: "Press",
+      technique: "Moderate",
+      players,
+    }
   } catch (error) {
     throw error
   }

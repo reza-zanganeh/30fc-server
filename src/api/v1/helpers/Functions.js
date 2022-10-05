@@ -1,12 +1,13 @@
 const jwt = require("jsonwebtoken")
 const projectConfig = require("../../../config/index")
-
-const createJsonWebToken = (data, expiresIn) => {
-  const token = jwt.sign(data, projectConfig.jsonwebtoken.tokenKey, {
-    expiresIn: `${expiresIn}m`,
-  })
-  return token
-}
+const { modelName } = require("../../../config/Constant")
+const { readAll } = require("./prisma")
+const { gameFactorModelName } = modelName
+const {
+  setDifferenceInPointsForEachGoalFactorOnRedis,
+  setSalaryFactorOnRedis,
+  setInviteNewTeamCoinCountOnRedis,
+} = require("../services/redis")
 
 module.exports.createRandomNumber = (min, max) => {
   return Math.floor(Math.random() * (max - min + 1)) + min
@@ -19,24 +20,37 @@ module.exports.createError = ({ statusCode, message }) => {
   return error
 }
 
-module.exports.createOtpCodeToken = (phonenumber) => {
-  return createJsonWebToken(
+module.exports.createOtpCodeToken = (phonenumber, isUserExists) => {
+  const token = jwt.sign(
+    { phonenumber, isUserExists },
+    projectConfig.otpCode.tokenKey,
     {
-      phonenumber,
-    },
-    projectConfig.otpCode.expiresTimeInMinute
+      expiresIn: `${projectConfig.authentication.applicationActiveTimeInMinutes}m`,
+    }
   )
+  return token
 }
 
-module.exports.createAuthenticationToken = (id, level, isBlock) => {
-  return createJsonWebToken(
+module.exports.createCaptchaToken = (text) => {
+  const token = jwt.sign({ text }, projectConfig.captcha.tokenKey, {
+    expiresIn: `${projectConfig.authentication.applicationActiveTimeInMinutes}m`,
+  })
+  return token
+}
+
+module.exports.createAuthenticationToken = (id, role, isBlock) => {
+  const token = jwt.sign(
     {
       id,
-      level,
+      role,
       isBlock,
     },
-    projectConfig.jsonwebtoken.authenticationTokenExpiresTimeInMinute
+    projectConfig.authentication.tokenKey,
+    {
+      expiresIn: `${projectConfig.authentication.authenticationTokenExpiresTimeInMinute}m`,
+    }
   )
+  return token
 }
 
 module.exports.convertSecondToMinAndScond = (time) => {
@@ -48,13 +62,29 @@ module.exports.convertSecondToMinAndScond = (time) => {
   }
 }
 
-module.exports.getSkipFromPageAndTakeCount = (page, takeCount) => {
-  return (page - 1) * takeCount
-}
-
 module.exports.sumOfArrayElements = (numbers) => {
   return numbers.reduce(
     (previousValue, currentValue) => previousValue + currentValue,
     0
   )
+}
+
+module.exports.readGeneralDataAndSaveOnRedis = async () => {
+  try {
+    // factors
+    const factors = await readAll(gameFactorModelName.english)
+    const factorsNameMapToAmount = {}
+    factors.forEach((factor) => {
+      factorsNameMapToAmount[factor.name] = factor.amount
+    })
+    await setDifferenceInPointsForEachGoalFactorOnRedis(
+      factorsNameMapToAmount["DifferenceInPointsForEachGoal"]
+    )
+    await setSalaryFactorOnRedis(factorsNameMapToAmount["Salary"])
+    await setInviteNewTeamCoinCountOnRedis(
+      factorsNameMapToAmount["InviteNewTeamCoinCount"]
+    )
+  } catch (error) {
+    throw error
+  }
 }

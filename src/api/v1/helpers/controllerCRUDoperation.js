@@ -28,6 +28,7 @@ const createController = async (MODELNAME, dataSchema, req, res, next) => {
     const newRecord = await create(MODELNAME.english, data)
     resposeHandler(res, newRecord, Created(MODELNAME.persian))
   } catch (error) {
+    console.log(error)
     if (error.code === "P2002") {
       return next(
         createError(

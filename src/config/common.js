@@ -1,15 +1,4 @@
 // common configuration in all enviroments
-const OTPCODEEXPIRESTIMEINMINUTE = 4
-
-const jsonwebtoken = {
-  tokenKey: "b0a74aa9ef623381e32f9a4579655ad8458f2124b25d704b3ab7aaba96dd8aca",
-  refreshTokenKey:
-    "666da5bdcf537baf674db0727e0084318b39a7d164034d796c4b917f8d2d3197",
-  salt: "f8eae0e5536f33650bc5",
-  authenticationTokenExpiresTimeInMinute: 1440,
-  authenticationTokenExpiresTimeInMilisecond: 86400000,
-}
-
 const ghasedak = {
   tokenApi: "47b994dcf39c928389d85c8f1c19bead6ea830800668c994dcc6d7b32d99fa3a",
   verification: {
@@ -18,18 +7,31 @@ const ghasedak = {
   },
 }
 
-const redisExpireTime = {
-  otpCode: OTPCODEEXPIRESTIMEINMINUTE,
-  resetPassword: 4,
+const authentication = {
+  tokenKey: "b0a74aa9ef623381e32f9a4579655ad8458f2124b25d704b3ab7aaba96dd8aca",
+  refreshTokenKey:
+    "666da5bdcf537baf674db0727e0084318b39a7d164034d796c4b917f8d2d3197",
+  salt: "f8eae0e5536f33650bc5",
+  authenticationTokenExpiresTimeInMinute: 1440,
+  authenticationTokenExpiresTimeInMilisecond: 86400000,
+  applicationActiveTimeInMinutes: 5,
+  applicationActiveTimeInMiliSeconds: 300000,
+}
+
+const captcha = {
+  length: 6,
+  tokenKey: "a04beb0937024a0428c8956ed6f77a64040687ee1f6998604d9d27cef962319e",
 }
 
 const otpCode = {
-  length: {
-    min: 10000,
-    max: 100000,
-  },
-  expiresTimeInMilisecond: OTPCODEEXPIRESTIMEINMINUTE * 60 * 1000,
-  expiresTimeInMinute: OTPCODEEXPIRESTIMEINMINUTE,
+  minimum: 10000,
+  maximum: 100000,
+  tokenKey: "f4ef94e8d97efd031f49470971b5d01aad4946c4ea5fdd5713c396f977293248",
+}
+
+const invalidPasswordOrCode = {
+  numberOfOpportunitiesToEnterTheWrongPasswordOrCode: 5,
+  expiresTimeInMinutes: 60,
 }
 
 const google = {
@@ -66,12 +68,13 @@ const zarinPall = {
 }
 
 module.exports = {
-  jsonwebtoken,
   ghasedak,
   otpCode,
-  redisExpireTime,
   cloud,
   nodemailer,
   google,
   zarinPall,
+  authentication,
+  captcha,
+  invalidPasswordOrCode,
 }

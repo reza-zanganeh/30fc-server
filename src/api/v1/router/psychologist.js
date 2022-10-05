@@ -19,7 +19,6 @@ const { usePsychologist } = require("../controller/psychologist")
 const {
   hasAccessToAdminOperation,
   hasAccessToTeam,
-  hasAccessToPlayWithApp,
 } = require("../middleware/accessControl")
 const psychologistRouter = express.Router()
 
@@ -32,12 +31,7 @@ psychologistRouter.post(
 )
 
 psychologistRouter.get("/admin", hasAccessToAdminOperation, getPsychologist)
-psychologistRouter.get(
-  "/",
-  hasAccessToPlayWithApp,
-  hasAccessToTeam,
-  getPsychologist
-)
+psychologistRouter.get("/", hasAccessToTeam, getPsychologist)
 
 psychologistRouter.delete(
   "/:id",
@@ -49,7 +43,6 @@ psychologistRouter.delete(
 
 psychologistRouter.post(
   "/buy",
-  hasAccessToPlayWithApp,
   checkSchema(buyPsychologisSchemaValidation),
   expressValidationResultHandler,
   hasAccessToTeam,
@@ -58,7 +51,6 @@ psychologistRouter.post(
 
 psychologistRouter.post(
   "/use",
-  hasAccessToPlayWithApp,
   checkSchema(usePsychologisSchemaValidation),
   expressValidationResultHandler,
   hasAccessToTeam,
