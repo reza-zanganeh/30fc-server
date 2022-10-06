@@ -5,18 +5,15 @@ const {
   Ok,
 } = require("../helpers/HttpResponse")
 const { modelName } = require("../../../config/Constant")
-const { psychologistModelName, teamModelName } = modelName
+const { psychologistModelName, teamModelName, teamAssetsModelName } = modelName
 const { readOne, update } = require("../helpers/prisma")
 const { resposeHandler } = require("../helpers/responseHandler")
 
 module.exports.usePsychologist = async (req, res, next) => {
   try {
-    const {
-      id: teamId,
-      psychologistId,
-      isUsedPsychologist,
-      spirit,
-    } = req[teamModelName.english]
+    const { id: teamId, spirit } = req[teamModelName.english]
+    const teamAssets = await readOne(teamAssetsModelName, { teamId: +teamId })
+    const { psychologistId, isUsedPsychologist } = teamAssets
 
     if (!psychologistId)
       return next(

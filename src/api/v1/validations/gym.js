@@ -5,9 +5,10 @@ const {
   checkExistsObjectWithIdInDb,
   checkAssetInUseWithTeam,
   inArray,
+  between,
 } = require("../helpers/inputValidation")
 module.exports.createGymSchemaValidation = {
-  level: required("سطح باشگاه", "body"),
+  level: between("سطح باشگاه", "body", 0, 9),
   price: required("هزینه اجاره باشگاه", "body"),
   capacity: required("ظرفیت باشگاه", "body"),
 }

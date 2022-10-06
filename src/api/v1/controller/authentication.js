@@ -33,8 +33,14 @@ const {
   getInvalidPasswordCountTtlFromRedis,
 } = require("../services/redis")
 const { createTeamWithOwnerPrismaQuery } = require("../prismaQuery/team")
-const { createDataTeam } = require("../dataLogic/team")
-const { compareUserPassword, hashUserPassword } = require("../dataLogic/user")
+const {
+  createDataTeam,
+  validateTeamName,
+} = require("../modelHelperFunction/team")
+const {
+  compareUserPassword,
+  hashUserPassword,
+} = require("../modelHelperFunction/user")
 const { internalServerErrorHandler } = require("../helpers/responseHandler")
 const { sendResetPasswordHash } = require("../services/email")
 const { sendOtpCode } = require("../services/sms")
@@ -99,7 +105,7 @@ module.exports.requestToLoginOrRegister = async (req, res, next) => {
     const { phonenumber } = req.body
 
     const user = await readOne(userModelName.english, { phonenumber })
-    console.log(user)
+
     let token
     if (user) {
       // request to login
@@ -174,7 +180,6 @@ module.exports.requestToLoginOrRegister = async (req, res, next) => {
       }
     )
   } catch (error) {
-    console.log(error)
     internalServerErrorHandler(next, error)
   }
 }
@@ -217,41 +222,13 @@ module.exports.register = async (req, res, next) => {
         )
       )
 
-    const selectedNameIsReserved =
-      (await readOne(
-        reservedTeamNameModelName.english,
-        {
-          name: teamName,
-        },
-        { id: true }
-      )) !== null
+    const {
+      isValid: isValidTeamName,
+      errorMessage: invalidTeamNameErrorMessage,
+    } = await validateTeamName(teamName)
 
-    if (selectedNameIsReserved)
-      return next(
-        createError(
-          BadRequest(
-            "نام تیم انتخابی شما جزو اسامی ویژه می باشد لطفا نام دیگری انتخاب کنید"
-          )
-        )
-      )
-
-    const selectedTeamNameIsInUse =
-      (await readOne(
-        teamModelName.english,
-        {
-          name: teamName,
-        },
-        { id: true }
-      )) !== null
-
-    if (selectedTeamNameIsInUse)
-      return next(
-        createError(
-          BadRequest(
-            "نام تیم انتخابی شما قبلا استفاده شده است نام تیم شما باید متفاوت باشد"
-          )
-        )
-      )
+    if (!isValidTeamName)
+      return next(createError(BadRequest(invalidTeamNameErrorMessage)))
 
     let introducingUser
     if (introductionCode) {
@@ -286,7 +263,6 @@ module.exports.register = async (req, res, next) => {
         password: hashedPass,
       }
     )
-    console.log(createdTeam)
     // add gift coin to introducingUser
     if (introducingUser) {
       const inviteNewTeamCoinCount = await getInviteNewTeamCoinCountFromRedis()
@@ -315,7 +291,6 @@ module.exports.register = async (req, res, next) => {
       Created("کاربر")
     )
   } catch (error) {
-    console.log(error)
     internalServerErrorHandler(next, error)
   }
 }
@@ -394,7 +369,6 @@ module.exports.login = async (req, res, next) => {
       Ok("ورود")
     )
   } catch (error) {
-    console.log(error)
     next(createError(InternalServerError()))
   }
 }

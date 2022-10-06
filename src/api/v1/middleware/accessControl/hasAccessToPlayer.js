@@ -32,7 +32,6 @@ module.exports.hasAccessToPlayer = async (req, res, next) => {
       { id: true }
     )
 
-    console.log(players)
     if (!players.find((player) => player.id == playerId))
       next(createError(Forbidden()))
 

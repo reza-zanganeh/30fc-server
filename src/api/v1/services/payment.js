@@ -29,7 +29,6 @@ module.exports.verifyPayment = async (authority, amount) => {
     authority,
     amount,
   })
-  console.log(response)
 
   const noError = response.data.errors.length === 0
   if (noError) {

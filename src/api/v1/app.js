@@ -31,7 +31,7 @@ app.listen(PORT, async () => {
     //     3 . at least 105 player face picture
     //     4 . positions
     //     5 . factors :
-    //          Salary
+    //          SalaryFactor
     //          DifferenceInPointsForEachGoal
     //          MinimumPlayerPrice
     //          MaximumPlayerPrice

@@ -2,7 +2,7 @@ const { PrismaClient } = require("@prisma/client")
 
 const { player } = new PrismaClient()
 
-module.exports.createPlayer = async ({
+module.exports.createPlayerPrismaQuery = async ({
   name,
   age,
   salary,
@@ -17,27 +17,14 @@ module.exports.createPlayer = async ({
   shoot,
   spead,
   stamina,
+  // end of power
+  totalPower,
   facePictureUrl,
   positionId,
-  teamId,
   nationality,
   status,
   tShirtNumber,
-  price,
-  inMainComposition,
-  positionInMainCompositionId,
 }) => {
-  const totalPower =
-    controll +
-    technique +
-    flexibility +
-    drible +
-    experience +
-    focus +
-    pass +
-    shoot +
-    spead +
-    stamina
   try {
     const createdPlayer = await player.create({
       data: {
@@ -55,22 +42,15 @@ module.exports.createPlayer = async ({
         shoot,
         spead,
         stamina,
+        // end of power
         totalPower,
         tShirtNumber,
-        // end of power
         facePicture: {
           create: { pictureUrl: facePictureUrl, isSpecial: true },
         },
         position: { connect: { id: positionId } },
-        ...(teamId && { team: { connect: { id: teamId } } }),
         nationality,
         status,
-        ...(price && { price }),
-        ...(inMainComposition && {
-          positionInMainComposition: {
-            connect: { id: positionInMainCompositionId },
-          },
-        }),
       },
     })
 

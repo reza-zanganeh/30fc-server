@@ -32,10 +32,10 @@ module.exports.createTeamPrismaQuery = async (
           },
         },
         teamAssets: {
-          create: { data: {} },
+          create: {},
         },
         teamScores: {
-          create: { data: {} },
+          create: {},
         },
       },
     })
@@ -73,6 +73,12 @@ module.exports.createTeamWithOwnerPrismaQuery = async (
             data: players,
           },
         },
+        teamAssets: {
+          create: {},
+        },
+        teamScores: {
+          create: {},
+        },
       },
     })
     return createdTeam
@@ -81,47 +87,27 @@ module.exports.createTeamWithOwnerPrismaQuery = async (
   }
 }
 
-module.exports.getPlayers = async (teamId) => {
+module.exports.getPlayersPrismaQuery = async (teamId) => {
   try {
     const players = team.findFirst({
       where: {
         id: +teamId,
       },
-      select: {
+      include: {
         players: {
-          select: {
-            id: true,
-            name: true,
-            age: true,
-            position: {
-              select: {
-                major: true,
-                manor: true,
-              },
-            },
-            injury: true,
-            inMainComposition: true,
-            positionInMainComposition: true,
-            // power
-            totalPower: true,
-            energy: true,
-            tShirtNumber: true,
-            spead: true,
-          },
           orderBy: {
             id: "asc",
           },
         },
       },
     })
-
     return players
   } catch (error) {
     throw error
   }
 }
 
-module.exports.changeComposition = async (
+module.exports.changeCompositionPrismaQuery = async (
   teamId,
   compositionId,
   newPlayerPosition
@@ -151,7 +137,7 @@ module.exports.changeComposition = async (
   }
 }
 
-module.exports.changeTwoPlayerPosition = async (
+module.exports.changeTwoPlayerPositionPrismaQuery = async (
   teamId,
   playerOne,
   playerTwo
@@ -188,7 +174,7 @@ module.exports.changeTwoPlayerPosition = async (
   }
 }
 
-module.exports.updateTeamPlayers = async (
+module.exports.updateTeamPlayersPrismaQuery = async (
   teamId,
   updatedTeamData,
   updatedPlayersData

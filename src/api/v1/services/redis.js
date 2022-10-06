@@ -106,11 +106,11 @@ module.exports.getResetPasswordHashTtlFromRedis = async (email) => {
 }
 
 module.exports.setSalaryFactorOnRedis = async (factorValue) => {
-  return await setOnRedis("Salary", factorValue)
+  return await setOnRedis("SalaryFactor", factorValue)
 }
 
 module.exports.getSalaryFactorFromRedis = async () => {
-  return await getFromRedis("Salary")
+  return await getFromRedis("SalaryFactor")
 }
 
 module.exports.setDifferenceInPointsForEachGoalFactorOnRedis = async (
@@ -145,6 +145,14 @@ module.exports.setInviteNewTeamCoinCountOnRedis = async (factorValue) => {
 
 module.exports.getInviteNewTeamCoinCountFromRedis = async () => {
   return await getFromRedis("InviteNewTeamCoinCount")
+}
+
+module.exports.setNumberOfStadiumTicketCoinsOnRedis = async (factorValue) => {
+  return await setOnRedis("NumberOfStadiumTicketCoins", factorValue)
+}
+
+module.exports.getNumberOfStadiumTicketCoinsFromRedis = async () => {
+  return await getFromRedis("NumberOfStadiumTicketCoins")
 }
 
 module.exports.addUserToNeedLoginAgainInRedis = async (id) => {

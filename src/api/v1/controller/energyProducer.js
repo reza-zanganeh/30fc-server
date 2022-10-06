@@ -5,21 +5,26 @@ const {
   Ok,
 } = require("../helpers/HttpResponse")
 const { modelName } = require("../../../config/Constant")
-const { energyProducerModelName, teamModelName, playerModelName } = modelName
-const { readAll } = require("../helpers/prisma")
+const {
+  energyProducerModelName,
+  teamModelName,
+  playerModelName,
+  teamAssetsModelName,
+} = modelName
+const { readAll, readOne } = require("../helpers/prisma")
 const { resposeHandler } = require("../helpers/responseHandler")
-const { updateTeamPlayers } = require("../dataLogic/team")
+const { updateTeamPlayersPrismaQuery } = require("../prismaQuery/team")
 module.exports.useEnergyProducer = async (req, res, next) => {
   try {
-    const {
-      id: teamId,
-      coinCount,
-      isUsedEnergyProducer,
-    } = req[teamModelName.english]
+    const { id: teamId, coinCount } = req[teamModelName.english]
+    const teamAssets = await readOne(teamAssetsModelName.english, {
+      teamId: +teamId,
+    })
+    const { isUsedRecovery } = teamAssets
     const { price: energyProducerPrice, ability: energyProducerAbility } =
       req[energyProducerModelName.english]
 
-    if (isUsedEnergyProducer)
+    if (isUsedRecovery)
       return next(
         createError(
           BadRequest("هر 12 ساعت یکبار می توان از انرژی زا استفاده کرد")
@@ -56,7 +61,11 @@ module.exports.useEnergyProducer = async (req, res, next) => {
       isUsedEnergyProducer: true,
     }
 
-    await updateTeamPlayers(+teamId, updatedTeamData, updatedPlayersData)
+    await updateTeamPlayersPrismaQuery(
+      +teamId,
+      updatedTeamData,
+      updatedPlayersData
+    )
 
     resposeHandler(res, updatedPlayersData, Ok("افزایش انرژی بازیکنان"))
   } catch (error) {

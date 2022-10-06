@@ -15,6 +15,9 @@ const {
 } = require("../middleware/accessControl/index")
 const playerRouter = express.Router()
 
+// TODO:
+// add new player to team by admin
+
 playerRouter.post(
   "/",
   hasAccessToAdminOperation,

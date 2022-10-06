@@ -17,13 +17,13 @@ const {
   getPresignedUrlToUploadPlayerFacePiture,
   deletePlayerFacePictureFromCloud,
 } = require("../services/cloud")
-const {
-  createRequestToCreatePlayer,
-  confirmRequestToCreatePlayer,
-  rejectRequestToCreatePlayer,
-  deleteRequestToCreatePlayer,
-  reactivationRequestToCreatePlayer,
-} = require("../dataLogic/requestToCreatePlayer")
+// const {
+//   createRequestToCreatePlayer,
+//   confirmRequestToCreatePlayer,
+//   rejectRequestToCreatePlayer,
+//   deleteRequestToCreatePlayer,
+//   reactivationRequestToCreatePlayer,
+// } = require("../dataLogic/requestToCreatePlayer")
 
 module.exports.createRequestToCreatePlayer = async (req, res, next) => {
   try {

@@ -1,22 +1,21 @@
 const express = require("express")
 const { modelName } = require("../../../config/Constant")
-const { gameFactorModelName } = modelName
+const { gameConstantVariableModelName } = modelName
 const { checkSchema } = require("express-validator")
 const { expressValidationResultHandler } = require("../helpers/responseHandler")
-const { hasAccessToAdminOperation } = require("../middleware/accessControl")
 const {
-  updateGameFactorSchemaValidation,
+  updateGameConstantVariableSchemaValidation,
 } = require("../validations/generalGameSettings")
 const { updateConrtoller: changeFactor } =
-  require("../helpers/controllerCRUDoperation")(gameFactorModelName)
+  require("../helpers/controllerCRUDoperation")(gameConstantVariableModelName)
 const { updateRedisData } = require("../controller/generalGameSetting")
 const generalGameSettingRouter = express.Router()
 
 generalGameSettingRouter.patch("/update", updateRedisData)
 
 generalGameSettingRouter.patch(
-  "/game-factor",
-  checkSchema(updateGameFactorSchemaValidation),
+  "/game-constant-variable",
+  checkSchema(updateGameConstantVariableSchemaValidation),
   expressValidationResultHandler,
   changeFactor.bind(null, ["amount"])
 )

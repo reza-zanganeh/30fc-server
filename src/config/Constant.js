@@ -71,13 +71,17 @@ const modelName = {
     english: "stadium",
     persian: "استادیوم",
   },
-  coinPurchaseInvoice: {
+  coinPurchaseInvoiceModelName: {
     english: "coinPurchaseInvoice",
     persian: "فاکتور های خرید سکه",
   },
-  gameFactorModelName: {
-    english: "gameFactor",
+  gameConstantVariableModelName: {
+    english: "gameConstantVariable",
     persian: "ضریب بازی",
+  },
+  teamAssetsModelName: {
+    english: "teamAssets",
+    persian: "دارایی های تیم",
   },
 }
 

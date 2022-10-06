@@ -4,9 +4,10 @@ const {
   required,
   checkExistsObjectWithIdInDb,
   checkAssetInUseWithTeam,
+  between,
 } = require("../helpers/inputValidation")
 module.exports.createDoctorSchemaValidation = {
-  level: required("سطح پزشک", "body"),
+  level: between("سطح پزشک", "body", 0, 9),
   price: required("هزینه پزشک", "body"),
   ability: required("توانایی پزشک", "body"),
 }

@@ -2,7 +2,7 @@ const jwt = require("jsonwebtoken")
 const projectConfig = require("../../../config/index")
 const { modelName } = require("../../../config/Constant")
 const { readAll } = require("./prisma")
-const { gameFactorModelName } = modelName
+const { gameConstantVariableModelName } = modelName
 const {
   setDifferenceInPointsForEachGoalFactorOnRedis,
   setSalaryFactorOnRedis,
@@ -72,7 +72,7 @@ module.exports.sumOfArrayElements = (numbers) => {
 module.exports.readGeneralDataAndSaveOnRedis = async () => {
   try {
     // factors
-    const factors = await readAll(gameFactorModelName.english)
+    const factors = await readAll(gameConstantVariableModelName.english)
     const factorsNameMapToAmount = {}
     factors.forEach((factor) => {
       factorsNameMapToAmount[factor.name] = factor.amount
@@ -80,7 +80,7 @@ module.exports.readGeneralDataAndSaveOnRedis = async () => {
     await setDifferenceInPointsForEachGoalFactorOnRedis(
       factorsNameMapToAmount["DifferenceInPointsForEachGoal"]
     )
-    await setSalaryFactorOnRedis(factorsNameMapToAmount["Salary"])
+    await setSalaryFactorOnRedis(factorsNameMapToAmount["SalaryFactor"])
     await setInviteNewTeamCoinCountOnRedis(
       factorsNameMapToAmount["InviteNewTeamCoinCount"]
     )

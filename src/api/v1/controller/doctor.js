@@ -5,14 +5,18 @@ const {
   Ok,
 } = require("../helpers/HttpResponse")
 const { modelName } = require("../../../config/Constant")
-const { doctorModelName, teamModelName, playerModelName } = modelName
+const { doctorModelName, teamModelName, playerModelName, teamAssetsModelName } =
+  modelName
 const { readOne, readAll } = require("../helpers/prisma")
 const { resposeHandler } = require("../helpers/responseHandler")
-const { updateTeamPlayers } = require("../dataLogic/team")
+const { updateTeamPlayersPrismaQuery } = require("../prismaQuery/team")
 module.exports.useDoctor = async (req, res, next) => {
   try {
-    const { id: teamId, doctorId, isUsedDoctor } = req[teamModelName.english]
-
+    const { id: teamId } = req[teamModelName.english]
+    const teamAssets = await readOne(teamAssetsModelName.english, {
+      teamId: +teamId,
+    })
+    const { doctorId, isUsedDoctor } = teamAssets
     if (!doctorId)
       return next(
         createError(
@@ -50,7 +54,11 @@ module.exports.useDoctor = async (req, res, next) => {
       isUsedDoctor: true,
     }
 
-    await updateTeamPlayers(+teamId, updatedTeamData, updatedPlayersData)
+    await updateTeamPlayersPrismaQuery(
+      +teamId,
+      updatedTeamData,
+      updatedPlayersData
+    )
 
     resposeHandler(res, updatedPlayersData, Ok("مداوا بازیکنان تیم"))
   } catch (error) {

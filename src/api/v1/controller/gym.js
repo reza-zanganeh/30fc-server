@@ -5,26 +5,30 @@ const {
   Ok,
 } = require("../helpers/HttpResponse")
 const { modelName } = require("../../../config/Constant")
-const { gymModelName, teamModelName, coachModelName, playerModelName } =
-  modelName
+const {
+  gymModelName,
+  teamModelName,
+  coachModelName,
+  playerModelName,
+  teamAssetsModelName,
+} = modelName
 const { readOne, update } = require("../helpers/prisma")
 const { resposeHandler } = require("../helpers/responseHandler")
 
 module.exports.useGym = async (req, res, next) => {
   try {
     const { playerId, power } = req.body
-    const {
-      id: teamId,
-      gymId,
-      coachId,
-      usedGymCount,
-    } = req[teamModelName.english]
+    const { id: teamId } = req[teamModelName.english]
+    const teamAssets = await readOne(teamAssetsModelName.english, {
+      teamId: +teamId,
+    })
+    const { gymId, coachId, usedGymCount } = teamAssets
 
     if (!gymId)
       return next(
         createError(
           BadRequest(
-            "تیم شما دارای باشگاه تمرین نمی باشد ( لطفا یک باشگاه از مارکت خریداری کنید )"
+            "تیم شما دارای باشگاه تمرین نمی باشد ( لطفا یک باشگاه اجاره کنید )"
           )
         )
       )
@@ -33,7 +37,7 @@ module.exports.useGym = async (req, res, next) => {
       return next(
         createError(
           BadRequest(
-            "تیم شما دارای مربی تمرین نمی باشد ( لطفا یک مربی از مارکت خریداری کنید )"
+            "تیم شما دارای مربی تمرین نمی باشد ( لطفا یک مربی اجاره کنید )"
           )
         )
       )
@@ -71,11 +75,13 @@ module.exports.useGym = async (req, res, next) => {
       { usedGymCount: usedGymCount + 1 }
     )
 
+    const newTotalPower = player.totalPower + coach.ability
     const updatedPlayerData = {
       status: "PRACTICEDINTEAM",
-      totalPower: player.totalPower + coach.ability,
+      totalPower: newTotalPower >= 3000 ? 3000 : newTotalPower,
     }
-    updatedPlayerData[power] = player[power] + coach.ability
+    const newAmountOfPower = player[power] + coach.ability
+    updatedPlayerData[power] = newAmountOfPower >= 300 ? 300 : newAmountOfPower
     const updatedPlayer = await update(
       playerModelName.english,
       { id: +playerId },

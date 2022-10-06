@@ -47,7 +47,6 @@ module.exports.readPlayerFacePicture = async (req, res, next) => {
       page
     )
 
-    console.log(playerFacePicture)
     const baseUrl =
       projectConfig.cloud.endPointUrl +
       "/" +
@@ -61,7 +60,6 @@ module.exports.readPlayerFacePicture = async (req, res, next) => {
       Ok("خواندن تصاویر بازیکنان")
     )
   } catch (error) {
-    console.log(error)
     next(createError(InternalServerError()))
   }
 }

@@ -5,10 +5,26 @@ const {
   primitivePlayerNameModelName,
   playerFacePictureModelName,
   playerPositionModelName,
+  reservedTeamNameModelName,
+  teamModelName,
 } = modelName
-const { readOne, readAll, remove } = require("../helpers/prisma")
+const { readOne, readAll } = require("../helpers/prisma")
 const { calculatePlayerSalary } = require("./formula")
-module.exports.createDataTeam = async (teamName) => {
+// data functions
+const getPositionsMap = async () => {
+  try {
+    const positions = await readAll(playerPositionModelName.english)
+    const positionsMap = {}
+    positions.forEach((position) => {
+      positionsMap[`${position.major}_${position.manor}`] = position.id
+    })
+    return positionsMap
+  } catch (error) {
+    throw error
+  }
+}
+
+const createDataTeam = async (teamName) => {
   try {
     const composition = await readOne(compositionModelName.english, {
       name: "4-4-2",
@@ -43,11 +59,7 @@ module.exports.createDataTeam = async (teamName) => {
     const playerFacePictureSelectRange = Math.floor(playerFacePictureCount / 21)
     let playerFacePictureSelectRangeStart = 1
 
-    const positions = await readAll(playerPositionModelName.english)
-    const positionsMap = {}
-    positions.forEach((position) => {
-      positionsMap[`${position.major}_${position.manor}`] = position.id
-    })
+    const positionsMap = await getPositionsMap()
 
     const playerPositionsOnTeam = [
       "Goalkeaper_No",
@@ -159,8 +171,9 @@ module.exports.createDataTeam = async (teamName) => {
 
     for (const [position, havePlayer] of Object.entries(composition)) {
       if (havePlayer) {
-        players[PositionOnCompositionToPlayerMap[position]].status =
-          "InTeamMainComposition"
+        players[
+          PositionOnCompositionToPlayerMap[position]
+        ].inTeamMainComposition = true
         players[
           PositionOnCompositionToPlayerMap[position]
         ].positionInMainCompositionId = positionsMap[position]
@@ -176,4 +189,58 @@ module.exports.createDataTeam = async (teamName) => {
   } catch (error) {
     throw error
   }
+}
+
+// validation functions
+// return value
+// {
+//  isValid : true | false
+//  errorMessage : ""
+// }
+const validateTeamName = async (teamName) => {
+  try {
+    const selectedNameIsReserved =
+      (await readOne(
+        reservedTeamNameModelName.english,
+        {
+          name: teamName,
+        },
+        { id: true }
+      )) !== null
+
+    if (selectedNameIsReserved)
+      return {
+        isValid: false,
+        errorMessage:
+          "نام تیم انتخابی شما جزو اسامی ویژه می باشد لطفا نام دیگری انتخاب کنید",
+      }
+
+    const selectedTeamNameIsInUse =
+      (await readOne(
+        teamModelName.english,
+        {
+          name: teamName,
+        },
+        { id: true }
+      )) !== null
+
+    if (selectedTeamNameIsInUse)
+      return {
+        isValid: false,
+        errorMessage:
+          "نام تیم انتخابی شما قبلا استفاده شده است نام تیم شما باید متفاوت باشد",
+      }
+
+    return {
+      isValid: true,
+    }
+  } catch (error) {
+    throw error
+  }
+}
+
+module.exports = {
+  createDataTeam,
+  validateTeamName,
+  getPositionsMap,
 }

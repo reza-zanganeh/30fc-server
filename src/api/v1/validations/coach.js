@@ -4,9 +4,10 @@ const {
   required,
   checkExistsObjectWithIdInDb,
   checkAssetInUseWithTeam,
+  between,
 } = require("../helpers/inputValidation")
 module.exports.createCoachSchemaValidation = {
-  level: required("سطح مربی", "body"),
+  level: between("سطح مربی", "body", 0, 9),
   price: required("هزینه اجاره مربی", "body"),
   ability: required("توانای مربی", "body"),
 }

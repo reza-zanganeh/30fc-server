@@ -5,7 +5,12 @@ const {
   BadRequest,
 } = require("../helpers/HttpResponse")
 const { modelName } = require("../../../config/Constant")
-const { coinPlanModelName, userModelName, coinPurchaseInvoice } = modelName
+const {
+  coinPlanModelName,
+  teamModelName,
+  userModelName,
+  coinPurchaseInvoiceModelName,
+} = modelName
 const { requestToPay, verifyPayment } = require("../services/payment")
 const { readOne, create } = require("../helpers/prisma")
 const { resposeHandler } = require("../helpers/responseHandler")
@@ -18,6 +23,7 @@ module.exports.buyCoin = async (req, res, next) => {
       amount,
       discountInPercent,
     } = req[coinPlanModelName.english]
+    const { id: teamId, name: teamName } = req[teamModelName.english]
     const { id: userId } = req.user
 
     const user = await readOne(userModelName.english, { id: +userId })
@@ -27,7 +33,7 @@ module.exports.buyCoin = async (req, res, next) => {
 
     const { status, authority } = await requestToPay(
       priceToPay,
-      `خرید ${amount} سکه توسط ${user.fullname}`,
+      `خرید ${amount}تیم سکه توسط ${teamName}`,
       {
         email: user.email,
         mobile: user.phonenumber,
@@ -35,10 +41,10 @@ module.exports.buyCoin = async (req, res, next) => {
     )
 
     if (status === "success") {
-      await create(coinPurchaseInvoice.english, {
+      await create(coinPurchaseInvoiceModelName.english, {
         authority,
         amountInToman: priceToPay,
-        userId: +userId,
+        teamId: +teamId,
         coinPlanId: +coinPlanId,
       })
 
@@ -65,9 +71,12 @@ module.exports.completeBuy = async (req, res, next) => {
     if (Status === "NOK")
       return next(createError(BadRequest("تراکنش خرید سکه نا موفق")))
 
-    const coinPurchaseInvoice = await readOne(coinPurchaseInvoice.english, {
-      authority: Authority,
-    })
+    const coinPurchaseInvoice = await readOne(
+      coinPurchaseInvoiceModelName.english,
+      {
+        authority: Authority,
+      }
+    )
 
     if (!coinPurchaseInvoice)
       return next(createError(BadRequest("تراکنش خرید سکه نا موفق")))

@@ -1,3 +1,5 @@
+const { modelName } = require("../../../config/Constant")
+const { teamAssetsModelName } = modelName
 const { createError } = require("./Functions")
 const { resposeHandler } = require("./responseHandler")
 const {
@@ -28,7 +30,6 @@ const createController = async (MODELNAME, dataSchema, req, res, next) => {
     const newRecord = await create(MODELNAME.english, data)
     resposeHandler(res, newRecord, Created(MODELNAME.persian))
   } catch (error) {
-    console.log(error)
     if (error.code === "P2002") {
       return next(
         createError(
@@ -102,16 +103,21 @@ const deleteController = async (MODELNAME, req, res, next) => {
 
 const getTeamAssetsWithPriceForUpgrade = async (MODELNAME, req, res, next) => {
   try {
-    const { level } = req.user
+    const { role } = req.user
     const records = await readAll(MODELNAME.english)
     let correctedRecords = records
-    if (req.team?.[`${MODELNAME.english}Id`] && level !== "LEVEL1") {
-      const assetId = req.team[`${MODELNAME.english}Id`]
+    const teamAssets = req.team
+      ? await readOne(teamAssetsModelName.english, {
+          teamId: +req.team.id,
+        })
+      : {}
+    if (teamAssets?.[`${MODELNAME.english}Id`] && role !== "Admin") {
+      const assetId = teamAssets[`${MODELNAME.english}Id`]
       const currentAsset = await readOne(MODELNAME.english, {
         id: +assetId,
       })
       correctedRecords = records.filter((record) => {
-        if (record.level > currentAsset.level) {
+        if (+record.level > +currentAsset.level) {
           record.priceToUpgrade = record.price - currentAsset.price
           return true
         } else return false
@@ -126,9 +132,43 @@ const getTeamAssetsWithPriceForUpgrade = async (MODELNAME, req, res, next) => {
 
 const buyTeamAsset = async (MODELNAME, req, res, next) => {
   try {
-    const { id: teamId, coinCount } = req.team
-    const prevAssetId = req.team[`${MODELNAME.english}Id`]
-    const { id: newAssetId, price: newAssetPrice } = req[MODELNAME.english]
+    const { id: teamId, coinCount, teamMembershipType } = req.team
+    const teamAssets = await readOne(teamAssetsModelName.english, {
+      teamId: +teamId,
+    })
+    const prevAssetId = teamAssets[`${MODELNAME.english}Id`]
+    const {
+      id: newAssetId,
+      price: newAssetPrice,
+      level: newAssetLevel,
+    } = req[MODELNAME.english]
+
+    if (+newAssetLevel > 2 && teamMembershipType === "Normal")
+      return next(
+        createError(
+          BadRequest(
+            `خرید ${MODELNAME.persian} در سطح ${newAssetLevel} فقط برای کاربران نقره ای . طلایی و الماسی امکان پذیر می باشد`
+          )
+        )
+      )
+
+    if (+newAssetLevel > 3 && teamMembershipType === "Silver")
+      return next(
+        createError(
+          BadRequest(
+            `خرید ${MODELNAME.persian} در سطح ${newAssetLevel} فقط برای کاربران  طلایی و الماسی امکان پذیر می باشد`
+          )
+        )
+      )
+    if (+newAssetLevel > 4 && teamMembershipType === "Golden")
+      return next(
+        createError(
+          BadRequest(
+            `خرید ${MODELNAME.persian} در سطح ${newAssetLevel} فقط برای کاربران الماسی امکان پذیر می باشد`
+          )
+        )
+      )
+
     let coinCountToPay
     if (prevAssetId) {
       const prevAsset = await readOne(MODELNAME.english, { id: +prevAssetId })
@@ -160,8 +200,14 @@ const buyTeamAsset = async (MODELNAME, req, res, next) => {
     const newCoinCount = coinCount - coinCountToPay
 
     const updatedTeamData = { coinCount: newCoinCount }
-    updatedTeamData[`${MODELNAME.english}Id`] = +newAssetId
+    const updatedAssetsTeamData = {}
+    updatedAssetsTeamData[`${MODELNAME.english}Id`] = +newAssetId
     await update("team", { id: +teamId }, updatedTeamData)
+    await update(
+      teamAssetsModelName.english,
+      { teamId: +teamId },
+      updatedAssetsTeamData
+    )
 
     const resposeData = { coinCountToPay }
     resposeData[`${MODELNAME.english}Id`] = newAssetId

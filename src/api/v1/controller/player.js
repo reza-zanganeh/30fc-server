@@ -6,10 +6,12 @@ const {
   Ok,
   BadRequest,
 } = require("../helpers/HttpResponse")
-const { createPlayer } = require("../dataLogic/player")
+const { createPlayerPrismaQuery } = require("../prismaQuery/player")
 const { resposeHandler } = require("../helpers/responseHandler")
 const { getPresignedUrlToUploadPlayerFacePiture } = require("../services/cloud")
-const { update, readAll } = require("../helpers/prisma")
+const { update } = require("../helpers/prisma")
+const { calculatePlayerSalary } = require("../modelHelperFunction/formula")
+const { validateTShirtNumber } = require("../modelHelperFunction/player")
 // admin
 // create player
 module.exports.createPlayerByAdmin = async (req, res, next) => {
@@ -33,36 +35,44 @@ module.exports.createPlayerByAdmin = async (req, res, next) => {
       experience,
       //
       tShirtNumber,
-      price,
     } = req.body
 
     const { Key, fields, url } = await getPresignedUrlToUploadPlayerFacePiture(
       facePicture
     )
 
-    const player = await createPlayer({
+    const totalPower =
+      +controll +
+      +technique +
+      +flexibility +
+      +drible +
+      +experience +
+      +focus +
+      +pass +
+      +shoot +
+      +spead +
+      +stamina
+
+    const player = await createPlayerPrismaQuery({
       name,
       age: +age,
-      // TODO : clalc salary
-      salary: 100,
-      // power
-      controll: +controll,
-      technique: +technique,
-      flexibility: +flexibility,
-      drible: +drible,
-      experience: +experience,
-      focus: +focus,
-      pass: +pass,
-      shoot: +shoot,
-      spead: +spead,
-      stamina: +stamina,
+      salary: calculatePlayerSalary(totalPower, age),
+      controll,
+      technique,
+      flexibility,
+      drible,
+      experience,
+      focus,
+      pass,
+      shoot,
+      spead,
+      stamina,
+      totalPower,
       facePictureUrl: Key,
-      positionId: +positionId,
-      teamId: null,
+      positionId,
       nationality,
-      status: "INMARKET",
+      status: "New",
       tShirtNumber: +tShirtNumber,
-      price: +price,
     })
 
     resposeHandler(res, { ...player, url, fields }, Ok("ساخت بازیکن"))
@@ -76,19 +86,9 @@ module.exports.chnageTShirtNumber = async (req, res, next) => {
     const { tShirtNumber, playerId } = req.body
     const { id: teamId } = req.team
 
-    const players = await readAll(
-      playerModelName.english,
-      {
-        teamId: +teamId,
-      },
-      { id: true, tShirtNumber: true }
-    )
+    const isValidTShirtNumber = await validateTShirtNumber(tShirtNumber, teamId)
 
-    const playerWithSameSelectedTShirtNumber = players.find(
-      (player) => player.tShirtNumber == tShirtNumber
-    )
-
-    if (playerWithSameSelectedTShirtNumber) {
+    if (!isValidTShirtNumber) {
       return next(
         createError(
           BadRequest(

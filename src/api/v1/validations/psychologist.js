@@ -6,7 +6,7 @@ const {
   checkAssetInUseWithTeam,
 } = require("../helpers/inputValidation")
 module.exports.createPsychologisSchemaValidation = {
-  level: required("سطح روانپزشک", "body"),
+  level: between("سطح روانپزشک", "body", 0, 9),
   price: required("هزینه روانپزشک", "body"),
   ability: required("توانایی روانپزشک", "body"),
 }

@@ -1,8 +1,4 @@
-const {
-  createError,
-  createRandomNumber,
-  sumOfArrayElements,
-} = require("../helpers/Functions")
+const { createError } = require("../helpers/Functions")
 const { resposeHandler } = require("../helpers/responseHandler")
 const {
   InternalServerError,
@@ -10,28 +6,23 @@ const {
   Created,
   Ok,
 } = require("../helpers/HttpResponse")
-const { readOne, count, getNthRecord, readAll } = require("../helpers/prisma")
+const { readOne, readAll } = require("../helpers/prisma")
 const {
-  createTeam,
-  getPlayers,
-  changeComposition,
-  changeTwoPlayerPosition,
-} = require("../dataLogic/team")
+  validateTeamName,
+  createDataTeam,
+  getPositionsMap,
+} = require("../modelHelperFunction/team")
+const {
+  getPlayersPrismaQuery,
+  createTeamPrismaQuery,
+  changeCompositionPrismaQuery,
+  changeTwoPlayerPositionPrismaQuery,
+} = require("../prismaQuery/team")
 const { modelName } = require("../../../config/Constant")
-const {
-  compositionModelName,
-  reservedTeamNameModelName,
-  primitivePlayerNameModelName,
-  primitivePlayerAgeModelName,
-  primitivePlayerPowerModelName,
-  playerFacePictureModelName,
-  userModelName,
-  playerPositionModelName,
-  playerModelName,
-} = modelName
+const { compositionModelName, userModelName, playerModelName } = modelName
 module.exports.createTeam = async (req, res, next) => {
   try {
-    const { name, compositionId, technique, strategy } = req.body
+    const { teamName } = req.body
     const ownerId = req.user.id
 
     const user = await readOne(
@@ -40,246 +31,37 @@ module.exports.createTeam = async (req, res, next) => {
       { id: true, teamCount: true }
     )
 
-    if (+user.teamCount >= 3)
+    if (+user.teamCount > 2 && !user.isPayedForCreatingThirdTeam)
+      return next(
+        createError(
+          BadRequest(
+            "کاربر گرامی شما حداکثر می توانید 2 تیم به صورت ریگان بسازید برای ساخت تیم سوم می توانید از قسمت پرداخت هزینه برای ساخت تیم سوم اقدام کنید"
+          )
+        )
+      )
+
+    if (+user.teamCount > 3)
       return next(
         createError(
           BadRequest("کاربر گرامی شما حداکثر می توانید 3 تیم داشته باشید")
         )
       )
-    const selectedNameIsReserved =
-      (await readOne(
-        reservedTeamNameModelName.english,
-        {
-          name,
-        },
-        { id: true }
-      )) !== null
 
-    if (selectedNameIsReserved)
-      return next(
-        createError(
-          BadRequest(
-            "اسم تیم انتخابی شما جزو اسامی ویژه است . شما می توانید در اینده نزدیک این اسم را از مارکت خریداری کنید"
-          )
-        )
-      )
+    const {
+      isValid: isValidTeamName,
+      errorMessage: invalidTeamNameErrorMessage,
+    } = await validateTeamName(teamName)
 
-    const composition = await readOne(compositionModelName.english, {
-      id: +compositionId,
-    })
+    if (!isValidTeamName)
+      return next(createError(BadRequest(invalidTeamNameErrorMessage)))
 
-    const isExistsSelectedComposition = composition !== null
+    const { players, compositionId, strategy, technique } =
+      await createDataTeam(teamName)
 
-    if (!isExistsSelectedComposition)
-      return next(
-        createError(
-          BadRequest(
-            "ترکیب انتخابی شما معتبر نمی باشد لطفا یک ترکیب معتبر انتخاب کنید"
-          )
-        )
-      )
-
-    delete composition.id
-    delete composition.score
-
-    // create 20 random player
-    // name
-    const primitivePlayerName = await readAll(
-      primitivePlayerNameModelName.english,
-      null,
-      {
-        name: true,
-      }
-    )
-    const primitivePlayerNameCount = primitivePlayerName.length
-    const primitivePlayerNameSelectRange = Math.floor(
-      primitivePlayerNameCount / 20
-    )
-    let primitivePlayerNameSelectRangeStart = 1
-
-    // age
-    const primitivePlayerAgeCount = await count(
-      primitivePlayerAgeModelName.english
-    )
-    const randomPrimitivePlayerAge = createRandomNumber(
-      1,
-      primitivePlayerAgeCount - 1
-    )
-    const ages = await getNthRecord(
-      primitivePlayerAgeModelName.english,
-      randomPrimitivePlayerAge
-    )
-    delete ages.id
-    const arrayFromAges = Object.values(ages)
-
-    // face picture
-    const playerFacePicture = await readAll(
-      playerFacePictureModelName.english,
-      {
-        isSpecial: false,
-      },
-      { id: true }
-    )
-    const playerFacePictureCount = playerFacePicture.length
-    const playerFacePictureSelectRange = Math.floor(playerFacePictureCount / 20)
-    let playerFacePictureSelectRangeStart = 1
-
-    // PrimitivePlayerPower
-    const primitivePlayerPower = await readAll(
-      primitivePlayerPowerModelName.english,
-      null,
-      {
-        spead: true,
-        controll: true,
-        pass: true,
-        flexibility: true,
-        stamina: true,
-        technique: true,
-        shoot: true,
-        drible: true,
-        focus: true,
-        experience: true,
-      }
-    )
-    const primitivePlayerPowerCount = primitivePlayerPower.length
-    const primitivePlayerPowerSelectRange = Math.floor(
-      primitivePlayerPowerCount / 20
-    )
-    let primitivePlayerPowerSelectRangeStart = 1
-
-    // positionId
-    const positions = await readAll(playerPositionModelName.english)
-    const positionsMap = {}
-    positions.forEach((position) => {
-      positionsMap[`${position.major}_${position.manor}`] = position.id
-    })
-
-    const playerPositionsOnTeam = [
-      "GOALKEAPER_NO",
-      "GOALKEAPER_NO",
-      "DEFENDER_LEFT",
-      "DEFENDER_LEFT",
-      "DEFENDER_MIDDLE",
-      "DEFENDER_MIDDLE",
-      "DEFENDER_MIDDLE",
-      "DEFENDER_RIGHT",
-      "DEFENDER_RIGHT",
-      "MIDFIELDER_LEFT",
-      "MIDFIELDER_LEFT",
-      "MIDFIELDER_MIDDLE",
-      "MIDFIELDER_MIDDLE",
-      "MIDFIELDER_RIGHT",
-      "MIDFIELDER_RIGHT",
-      "ATTACKER_LEFT",
-      "ATTACKER_LEFT",
-      "ATTACKER_MIDDLE",
-      "ATTACKER_RIGHT",
-      "ATTACKER_RIGHT",
-    ]
-
-    const PositionOnCompositionToPlayerMap = {
-      GOALKEAPER_NO: createRandomNumber(0, 1),
-      DEFENDER_LEFT: createRandomNumber(2, 3),
-      DEFENDER_ONE: 4,
-      DEFENDER_TWO: 5,
-      DEFENDER_THREE: 6,
-      DEFENDER_RIGHT: createRandomNumber(7, 8),
-      MIDFIELDER_LEFT: createRandomNumber(9, 10),
-      MIDFIELDER_ONE: 11,
-      MIDFIELDER_TWO: 12,
-      MIDFIELDER_THREE: 13,
-      MIDFIELDER_RIGHT: 14,
-      ATTACKER_LEFT: 15,
-      ATTACKER_ONE: 16,
-      ATTACKER_TWO: 17,
-      ATTACKER_THREE: 18,
-      ATTACKER_RIGHT: 19,
-    }
-
-    const players = []
-
-    // t shirt number
-    let startT_ShirtNumber = 3
-    let rangeT_ShirtNumber = 4
-
-    for (let counter = 1; counter <= 20; ++counter) {
-      // name
-      const name =
-        primitivePlayerName[
-          createRandomNumber(
-            primitivePlayerNameSelectRangeStart,
-            primitivePlayerNameSelectRangeStart +
-              primitivePlayerNameSelectRange -
-              1
-          ) - 1
-        ].name
-      primitivePlayerNameSelectRangeStart += primitivePlayerNameSelectRange
-      // age
-      const age = arrayFromAges[counter - 1]
-      // face picture
-      const facePictureId =
-        playerFacePicture[
-          createRandomNumber(
-            playerFacePictureSelectRangeStart,
-            playerFacePictureSelectRangeStart + playerFacePictureSelectRange - 1
-          ) - 1
-        ].id
-      playerFacePictureSelectRangeStart += playerFacePictureSelectRange
-
-      // power
-      const power =
-        primitivePlayerPower[
-          createRandomNumber(
-            primitivePlayerPowerSelectRangeStart,
-            primitivePlayerPowerSelectRangeStart +
-              primitivePlayerPowerSelectRange -
-              1
-          ) - 1
-        ]
-      primitivePlayerPowerSelectRangeStart += primitivePlayerPowerSelectRange
-
-      const salary = 100
-
-      const position = playerPositionsOnTeam[counter - 1]
-      const positionId = positionsMap[position]
-
-      let tShirtNumber
-      if (counter < 3) tShirtNumber = counter
-      else {
-        tShirtNumber = createRandomNumber(
-          startT_ShirtNumber,
-          startT_ShirtNumber + rangeT_ShirtNumber - 1
-        )
-        startT_ShirtNumber += rangeT_ShirtNumber
-      }
-
-      players[counter - 1] = {
-        name,
-        age,
-        facePictureId,
-        ...power,
-        totalPower: sumOfArrayElements(Object.values(power)),
-        salary,
-        positionId,
-        tShirtNumber,
-      }
-    }
-
-    for (const [position, havePlayer] of Object.entries(composition)) {
-      if (havePlayer) {
-        players[
-          PositionOnCompositionToPlayerMap[position]
-        ].inMainComposition = true
-        players[
-          PositionOnCompositionToPlayerMap[position]
-        ].positionInMainCompositionId = positionsMap[position]
-      }
-    }
-
-    const createdTeam = await createTeam(
-      name,
-      ownerId,
-      compositionId,
+    const createdTeam = await createTeamPrismaQuery(
+      teamName,
+      +ownerId,
+      +compositionId,
       strategy,
       technique,
       players
@@ -287,23 +69,15 @@ module.exports.createTeam = async (req, res, next) => {
 
     resposeHandler(res, createdTeam, Created("تیم"))
   } catch (error) {
-    if (error.code === "P2002" && error.meta.target[0] === "name")
-      return next(
-        createError(
-          BadRequest(
-            "نام تیم انتخابی شما تکراری است لطفا یک نام دیگر انتخاب کنید"
-          )
-        )
-      )
     next(createError(InternalServerError()))
   }
 }
 
 module.exports.getPlayers = async (req, res, next) => {
   try {
-    const { id } = req.params
+    const { id: teamId } = req.params
 
-    const players = await getPlayers(+id)
+    const players = await getPlayersPrismaQuery(+teamId)
 
     resposeHandler(res, players, Ok("خواندن بازیکنان تیم"))
   } catch (error) {
@@ -337,11 +111,7 @@ module.exports.changeComposition = async (req, res, next) => {
     const updatedPlayer = []
 
     // positionId
-    const positions = await readAll(playerPositionModelName.english)
-    const positionsMap = {}
-    positions.forEach((position) => {
-      positionsMap[`${position.major}_${position.manor}`] = position.id
-    })
+    const positionsMap = await getPositionsMap()
 
     for (const [position, havePlayer] of Object.entries(newComposition)) {
       if (havePlayer) {
@@ -350,21 +120,21 @@ module.exports.changeComposition = async (req, res, next) => {
         } else {
           const major = position.split("_")[0]
           let playerId
-          if (positionInMainCompositionToIdPlayerMap[`${major}_LEFT`]) {
-            playerId = positionInMainCompositionToIdPlayerMap[`${major}_LEFT`]
-            delete positionInMainCompositionToIdPlayerMap[`${major}_LEFT`]
-          } else if (positionInMainCompositionToIdPlayerMap[`${major}_ONE`]) {
-            playerId = positionInMainCompositionToIdPlayerMap[`${major}_ONE`]
-            delete positionInMainCompositionToIdPlayerMap[`${major}_ONE`]
-          } else if (positionInMainCompositionToIdPlayerMap[`${major}_TWO`]) {
-            playerId = positionInMainCompositionToIdPlayerMap[`${major}_TWO`]
-            delete positionInMainCompositionToIdPlayerMap[`${major}_TWO`]
-          } else if (positionInMainCompositionToIdPlayerMap[`${major}_THREE`]) {
-            playerId = positionInMainCompositionToIdPlayerMap[`${major}_THREE`]
-            delete positionInMainCompositionToIdPlayerMap[`${major}_THREE`]
-          } else if (positionInMainCompositionToIdPlayerMap[`${major}_RIGHT`]) {
-            playerId = positionInMainCompositionToIdPlayerMap[`${major}_RIGHT`]
-            delete positionInMainCompositionToIdPlayerMap[`${major}_RIGHT`]
+          if (positionInMainCompositionToIdPlayerMap[`${major}_Left`]) {
+            playerId = positionInMainCompositionToIdPlayerMap[`${major}_Left`]
+            delete positionInMainCompositionToIdPlayerMap[`${major}_Left`]
+          } else if (positionInMainCompositionToIdPlayerMap[`${major}_One`]) {
+            playerId = positionInMainCompositionToIdPlayerMap[`${major}_One`]
+            delete positionInMainCompositionToIdPlayerMap[`${major}_One`]
+          } else if (positionInMainCompositionToIdPlayerMap[`${major}_Two`]) {
+            playerId = positionInMainCompositionToIdPlayerMap[`${major}_Two`]
+            delete positionInMainCompositionToIdPlayerMap[`${major}_Two`]
+          } else if (positionInMainCompositionToIdPlayerMap[`${major}_Three`]) {
+            playerId = positionInMainCompositionToIdPlayerMap[`${major}_Three`]
+            delete positionInMainCompositionToIdPlayerMap[`${major}_Three`]
+          } else if (positionInMainCompositionToIdPlayerMap[`${major}_Right`]) {
+            playerId = positionInMainCompositionToIdPlayerMap[`${major}_Right`]
+            delete positionInMainCompositionToIdPlayerMap[`${major}_Right`]
           }
 
           if (playerId) {
@@ -382,7 +152,7 @@ module.exports.changeComposition = async (req, res, next) => {
       }
     }
 
-    const updatedTeam = await changeComposition(
+    const updatedTeam = await changeCompositionPrismaQuery(
       +teamId,
       +compositionId,
       updatedPlayer
@@ -405,7 +175,7 @@ module.exports.changeTwoPlayerPosition = async (req, res, next) => {
         id: +playerOneId,
         teamId: +teamId,
       },
-      { positionInMainCompositionId: true, name: true, id: true }
+      { positionInMainCompositionId: true, name: true, status: true, id: true }
     )
 
     const playerTwo = await readOne(
@@ -414,13 +184,26 @@ module.exports.changeTwoPlayerPosition = async (req, res, next) => {
         id: +playerTwoId,
         teamId: +teamId,
       },
-      { positionInMainCompositionId: true, name: true, id: true }
+      { positionInMainCompositionId: true, name: true, status: true, id: true }
     )
 
     if (!playerOne || !playerTwo)
       return next(createError(BadRequest("بازیکنان متعلق به تیم شما نیستند")))
 
-    const result = await changeTwoPlayerPosition(+teamId, playerOne, playerTwo)
+    if (playerOne.status === "InMarket" || playerTwo.status === "InMarket")
+      return next(
+        createError(
+          BadRequest(
+            "شما قادر به تعویض بازیکنانی که برای فروش گذاشته اید نمی باشید"
+          )
+        )
+      )
+
+    const result = await changeTwoPlayerPositionPrismaQuery(
+      +teamId,
+      playerOne,
+      playerTwo
+    )
 
     resposeHandler(
       res,

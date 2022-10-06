@@ -14,7 +14,6 @@ module.exports.getCaptcha = async (req, res, next) => {
 
     resposeHandler(res, { image, token }, Ok("ایجاد کپچا"))
   } catch (error) {
-    console.log(error)
     internalServerErrorHandler(next, error)
   }
 }

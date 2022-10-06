@@ -6,7 +6,7 @@ const {
   checkAssetInUseWithTeam,
 } = require("../helpers/inputValidation")
 module.exports.createEnergyProducerSchemaValidation = {
-  level: required("سطح انرژی زا", "body"),
+  level: between("سطح انرژی زا", "body", 0, 9),
   price: required("هزینه انرژی زا", "body"),
   ability: required("توانایی انرژی زا", "body"),
 }
