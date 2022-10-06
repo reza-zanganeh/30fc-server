@@ -11,28 +11,29 @@ datasource db {
 }
 
 model User {
-  id               Int                   @id @default(autoincrement())
-  fullname         String
-  email            String?               @unique
-  phonenumber      String                @unique @db.VarChar(11)
-  password         String
-  lastTimeSeen     DateTime              @default(now())
-  birthday         DateTime?
-  isBlock          Boolean               @default(false)
-  createdTeamCount String                @default("0") @db.VarChar(1)
-  teamCount        Int                   @default(0)
-  gender           Gender?
-  city             String?
-  state            String?
-  country          String?
+  id                          Int                   @id @default(autoincrement())
+  fullname                    String
+  email                       String?               @unique
+  phonenumber                 String                @unique @db.VarChar(11)
+  password                    String
+  lastTimeSeen                DateTime              @default(now())
+  birthday                    DateTime?
+  isBlock                     Boolean               @default(false)
+  createdTeamCount            String                @default("0") @db.VarChar(1)
+  teamCount                   Int                   @default(1)
+  isPayedForCreatingThirdTeam Boolean               @default(false)
+  gender                      Gender?
+  city                        String?
+  state                       String?
+  country                     String?
   // user level
-  role             UserRole              @default(Normal)
-  teams            Team[]
+  role                        UserRole              @default(Normal)
+  teams                       Team[]
   // admin
-  sellableTeam     AdminSellableTeam[]   @relation(name: "seller")
-  sellablePlayer   AdminSellablePlayer[]
+  sellableTeam                AdminSellableTeam[]   @relation(name: "seller")
+  sellablePlayer              AdminSellablePlayer[]
   // 
-  purchasedTeams   AdminSellableTeam[]   @relation(name: "buyer")
+  purchasedTeams              AdminSellableTeam[]   @relation(name: "buyer")
 }
 
 enum UserRole {
@@ -247,7 +248,7 @@ model Composition {
 model Gym {
   id       Int          @id @default(autoincrement())
   teams    TeamAssets[]
-  level    Int          @unique
+  level    String       @unique @db.VarChar(1)
   price    Int
   capacity Int
 }
@@ -255,7 +256,7 @@ model Gym {
 model Coach {
   id      Int          @id @default(autoincrement())
   teams   TeamAssets[]
-  level   Int          @unique
+  level   String       @unique @db.VarChar(1)
   price   Int
   ability Int
 }
@@ -263,7 +264,7 @@ model Coach {
 model Stadium {
   id       Int          @id @default(autoincrement())
   teams    TeamAssets[]
-  level    Int          @unique
+  level    String       @unique @db.VarChar(1)
   price    Int
   capacity Int
 }
@@ -271,7 +272,7 @@ model Stadium {
 model Doctor {
   id      Int          @id @default(autoincrement())
   teams   TeamAssets[]
-  level   Int          @unique
+  level   String       @unique @db.VarChar(1)
   price   Int
   ability Int
 }
@@ -279,14 +280,14 @@ model Doctor {
 model Psychologist {
   id      Int          @id @default(autoincrement())
   teams   TeamAssets[]
-  level   Int          @unique
+  level   String       @unique @db.VarChar(1)
   price   Int
   ability Int
 }
 
 model Recovery {
-  id      Int @id @default(autoincrement())
-  level   Int @unique
+  id      Int    @id @default(autoincrement())
+  level   String @unique @db.VarChar(1)
   price   Int
   ability Int
 }
@@ -305,9 +306,11 @@ model Player {
   positionId                                     Int
   positionInMainComposition                      PlayerPosition?        @relation(name: "playerPositionInMainComposition", fields: [positionInMainCompositionId], references: [id])
   positionInMainCompositionId                    Int?
+  inTeamMainComposition                          Boolean                @default(false)
   nationality                                    String                 @default("ایران")
   energy                                         Int                    @default(100)
   injury                                         Int                    @default(0)
+  isPracticed                                    Boolean                @default(false)
   // power
   spead                                          Int
   controll                                       Int
@@ -355,19 +358,24 @@ model Player {
   // market
   adminPlayerSalesContract                       AdminSellablePlayer?
   playerSalesContract                            playerTransfers?
+  // crts
+  // yellow
+  yellowCartInLeagueGameCount                    String                 @unique @default("0") @db.VarChar(1)
+  yellowCartInFriendlyGameCount                  String                 @unique @default("0") @db.VarChar(1)
+  yellowCartInGoldCupGameCount                   String                 @unique @default("0") @db.VarChar(1)
+  yellowCartInChampionsCupGameCount              String                 @unique @default("0") @db.VarChar(1)
+  // red
+  hasRedCartInLeagueGame                         Boolean                @default(false)
+  hasRedCartInFriendlyGame                       Boolean                @default(false)
+  hasRedCartInGoldCupGame                        Boolean                @default(false)
+  hasRedCartInChampionsCupGame                   Boolean                @default(false)
 }
 
 enum PlayerStatus {
+  New
   InRequest
   InMarket
   InTeam
-  InTeamPracticed
-  InTeamInjured
-  InTeamWithRedCart
-  InTeamWithOneYellowCart
-  InTeamWithTwoYellowCart
-  InTeamMainComposition
-  Retirement
 }
 
 model ReservedPlayerName {
@@ -741,18 +749,20 @@ enum GameLinkType {
   WebsiteLink
 }
 
-model GameFactor {
-  id     Int            @id @default(autoincrement())
-  name   GameFactorName @unique
+model GameConstantVariable {
+  id     Int                      @id @default(autoincrement())
+  name   GameConstantVariableName @unique
   amount Float
 }
 
-enum GameFactorName {
-  Salary
+enum GameConstantVariableName {
+  SalaryFactor
   DifferenceInPointsForEachGoal
-  MinimumPlayerPrice
-  MaximumPlayerPrice
+  MinimumPlayerPriceFactor
+  MaximumPlayerPriceFactor
   InviteNewTeamCoinCount
+  NumberOfStadiumTicketCoins
+  CostOfCreatingThirdTeam
 }
 
 model ContactUs {
