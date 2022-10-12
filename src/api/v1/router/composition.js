@@ -14,7 +14,7 @@ const { deleteController: deleteComposition, readController: readComposition } =
 const compositionRouter = express.Router()
 
 compositionRouter.post(
-  "/",
+  "/admin",
   hasAccessToAdminOperation,
   checkSchema(createCompositionSchemaValidation),
   expressValidationResultHandler,
@@ -22,6 +22,10 @@ compositionRouter.post(
 )
 compositionRouter.get("/", readComposition)
 
-compositionRouter.delete("/:id", hasAccessToAdminOperation, deleteComposition)
+compositionRouter.delete(
+  "/admin/:id",
+  hasAccessToAdminOperation,
+  deleteComposition
+)
 
 module.exports.compositionRouter = compositionRouter

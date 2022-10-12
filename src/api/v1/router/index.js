@@ -55,11 +55,7 @@ module.exports.registerRoutes = (app) => {
     hasAccessToAdminOperation,
     playerPositionRouter
   )
-  app.use(
-    `/api/${appVersion}/admin/composition`,
-    isAuthenticate,
-    compositionRouter
-  )
+  app.use(`/api/${appVersion}/composition`, isAuthenticate, compositionRouter)
   app.use(`/api/${appVersion}/team`, isAuthenticate, teamRouter)
   app.use(`/api/${appVersion}/player`, isAuthenticate, playerRouter)
   app.use(

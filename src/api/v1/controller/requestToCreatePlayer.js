@@ -17,13 +17,13 @@ const {
   getPresignedUrlToUploadPlayerFacePiture,
   deletePlayerFacePictureFromCloud,
 } = require("../services/cloud")
-// const {
-//   createRequestToCreatePlayer,
-//   confirmRequestToCreatePlayer,
-//   rejectRequestToCreatePlayer,
-//   deleteRequestToCreatePlayer,
-//   reactivationRequestToCreatePlayer,
-// } = require("../dataLogic/requestToCreatePlayer")
+const { calculatePlayerSalary } = require("../modelHelperFunction/formula")
+const {
+  createRequestToCreatePlayerPrismaQuery,
+  confirmRequestToCreatePlayerPrismaQuery,
+  reactivationRequestToCreatePlayerPrismaQuery,
+  rejectRequestToCreatePlayerPrismaQuery,
+} = require("../prismaQuery/requestToCreatePlayer")
 
 module.exports.createRequestToCreatePlayer = async (req, res, next) => {
   try {
@@ -73,7 +73,7 @@ module.exports.createRequestToCreatePlayer = async (req, res, next) => {
       return next(
         createError(
           BadRequest(
-            "درحال حاضر شما دارای درخواست بازیکن فعال می باشید. شما می توانید در صورت منصرف شدن انرا حذف کنید و اگر درخواست شما رد شده است لطفا انرا اصلاح کنید و مجدد ان را فعال کنید"
+            "درحال حاضر شما دارای درخواست بازیکن فعال می باشید. شما می توانید در صورت منصرف شدن انرا حذف کنید و اگر درخواست شما رد شده است لطفا انرا اصلاح کنید و مجدد ان را فعال کنید یا انرا حذف کنید"
           )
         )
       )
@@ -82,10 +82,20 @@ module.exports.createRequestToCreatePlayer = async (req, res, next) => {
       facePictureFileName
     )
 
-    // TODO calc salary base on power and age
-    const salary = 100
+    const totalPower =
+      +controll +
+      +drible +
+      +experience +
+      +flexibility +
+      +focus +
+      +shoot +
+      +spead +
+      +pass +
+      +stamina +
+      +technique
+    const salary = await calculatePlayerSalary(totalPower, age)
 
-    const newRequest = await createRequestToCreatePlayer(+teamId, {
+    const newRequest = await createRequestToCreatePlayerPrismaQuery(+teamId, {
       name,
       age: +age,
       salary,
@@ -128,7 +138,7 @@ module.exports.confirmRequestToCreatePlayer = async (req, res, next) => {
     if (status !== "PENDING")
       return next(createError(BadRequest("این درخواست قبلا پاسخ داده شده است")))
 
-    const confirmedRequest = await confirmRequestToCreatePlayer(
+    const confirmedRequest = await confirmRequestToCreatePlayerPrismaQuery(
       +requestId,
       price,
       adminResponse
@@ -150,7 +160,7 @@ module.exports.rejectRequestToCreatePlayer = async (req, res, next) => {
     if (status !== "PENDING")
       return next(createError(BadRequest("این درخواست قبلا پاسخ داده شده است")))
 
-    const rejectedRequest = await rejectRequestToCreatePlayer(
+    const rejectedRequest = await rejectRequestToCreatePlayerPrismaQuery(
       +requestId,
       adminResponse
     )
@@ -183,9 +193,11 @@ module.exports.reactivationRequestToCreatePlayer = async (req, res, next) => {
         )
       )
 
-    const reactivedRequest = await reactivationRequestToCreatePlayer(requestId)
+    const reactivedRequest = await reactivationRequestToCreatePlayerPrismaQuery(
+      requestId
+    )
 
-    resposeHandler(res, reactivedRequest, Ok("رد درخواست ساخت بازیکن"))
+    resposeHandler(res, reactivedRequest, Ok("فعال سازی درخواست ساخت بازیکن"))
   } catch (error) {
     next(createError(InternalServerError()))
   }
@@ -237,20 +249,16 @@ module.exports.deleteRequestToCreatePlayer = async (req, res, next) => {
 
     resposeHandler(res, removeRequest, Ok("حذف درخواست ساخت بازیکن"))
   } catch (error) {
-    if (error.code === "P2025")
-      next(
-        createError(BadRequest("درخواست ساخت بازیکن با این شناسه وجود ندارد"))
-      )
     next(createError(InternalServerError()))
   }
 }
 // get own team not confirmed request
 module.exports.getRequestToCreatePlayer = async (req, res, next) => {
   try {
-    const { level } = req.user
+    const { role } = req.user
     let requests
 
-    if (level === "LEVEL1")
+    if (role === "Admin")
       requests = await readAll(requestToCreatePlayerModelName.english)
     else {
       const { id: teamId } = req.team

@@ -291,6 +291,7 @@ module.exports.register = async (req, res, next) => {
       Created("کاربر")
     )
   } catch (error) {
+    console.log(error)
     internalServerErrorHandler(next, error)
   }
 }

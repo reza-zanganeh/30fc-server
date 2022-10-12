@@ -1,4 +1,5 @@
 const jwt = require("jsonwebtoken")
+const persianDate = require("persian-date").toLocale("fa")
 const projectConfig = require("../../../config/index")
 const { modelName } = require("../../../config/Constant")
 const { readAll } = require("./prisma")
@@ -87,4 +88,8 @@ module.exports.readGeneralDataAndSaveOnRedis = async () => {
   } catch (error) {
     throw error
   }
+}
+
+module.exports.howManyDayPssedFromNow = (timeStamp) => {
+  return new persianDate().diff(new persianDate(timeStamp), "days")
 }

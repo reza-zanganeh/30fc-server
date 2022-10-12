@@ -8,8 +8,16 @@ const {
   reservedTeamNameModelName,
   teamModelName,
 } = modelName
-const { readOne, readAll } = require("../helpers/prisma")
+const {
+  readOne,
+  readAll,
+  updateWithoutExecute,
+  prismaTransaction,
+} = require("../helpers/prisma")
 const { calculatePlayerSalary } = require("./formula")
+const {
+  getComplateInfoAboutSponserAndScoresTopThreeTeams,
+} = require("../prismaQuery/team")
 // data functions
 const getPositionsMap = async () => {
   try {
@@ -239,8 +247,90 @@ const validateTeamName = async (teamName) => {
   }
 }
 
+const updateThreeTopTeams = async (firstTeamId, secondTeamId, thirdTeamId) => {
+  try {
+    const threeTopTeams =
+      await getComplateInfoAboutSponserAndScoresTopThreeTeams(
+        firstTeamId,
+        secondTeamId,
+        thirdTeamId
+      )
+    await prismaTransaction([
+      updateWithoutExecute(
+        teamModelName.english,
+        { id: threeTopTeams[0].id },
+        {
+          ...(threeTopTeams[0].sponser && {
+            coinCount:
+              threeTopTeams[0].coinCount +
+              threeTopTeams[0].sponser.firstInLeagueCoinCount,
+          }),
+          teamScores: {
+            update: {
+              firstTeamInLeagueCupCount:
+                threeTopTeams[0].teamScores.firstTeamInLeagueCupCount + 1,
+              ...(threeTopTeams[0].tournament && {
+                scoreInTournament:
+                  threeTopTeams[0].tournament.firstTeamInLeaguePoints +
+                  threeTopTeams[0].teamScores.scoreInTournament,
+              }),
+            },
+          },
+        }
+      ),
+      updateWithoutExecute(
+        teamModelName.english,
+        { id: threeTopTeams[1].id },
+        {
+          ...(threeTopTeams[1].sponser && {
+            coinCount:
+              threeTopTeams[1].coinCount +
+              threeTopTeams[1].sponser.secondInLeagueCoinCount,
+          }),
+          teamScores: {
+            update: {
+              secondTeamInLeagueCupCount:
+                threeTopTeams[1].teamScores.secondTeamInLeagueCupCount + 1,
+              ...(threeTopTeams[1].tournament && {
+                scoreInTournament:
+                  threeTopTeams[1].tournament.secondTeamInLeagePoints +
+                  threeTopTeams[1].teamScores.scoreInTournament,
+              }),
+            },
+          },
+        }
+      ),
+      updateWithoutExecute(
+        teamModelName.english,
+        { id: threeTopTeams[2].id },
+        {
+          ...(threeTopTeams[2].sponser && {
+            coinCount:
+              threeTopTeams[2].coinCount +
+              threeTopTeams[2].sponser.thirdInLeagueCoinCount,
+          }),
+          teamScores: {
+            update: {
+              thirdTeamInLeagueCupCount:
+                threeTopTeams[2].teamScores.thirdTeamInLeagueCupCount + 1,
+              ...(threeTopTeams[2].tournament && {
+                scoreInTournament:
+                  threeTopTeams[2].tournament.thirdTeamInLeaguePoints +
+                  threeTopTeams[2].teamScores.scoreInTournament,
+              }),
+            },
+          },
+        }
+      ),
+    ])
+  } catch (error) {
+    throw error
+  }
+}
+
 module.exports = {
   createDataTeam,
   validateTeamName,
   getPositionsMap,
+  updateThreeTopTeams,
 }

@@ -4,6 +4,7 @@ const {
   required,
   checkExistsObjectWithIdInDb,
   checkAssetInUseWithTeam,
+  between,
 } = require("../helpers/inputValidation")
 module.exports.createPsychologisSchemaValidation = {
   level: between("سطح روانپزشک", "body", 0, 9),

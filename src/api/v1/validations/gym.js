@@ -37,6 +37,5 @@ module.exports.useGymSchemaValidation = {
     "shoot",
     "drible",
     "focus",
-    "experience",
   ]),
 }

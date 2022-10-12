@@ -83,6 +83,14 @@ const modelName = {
     english: "teamAssets",
     persian: "دارایی های تیم",
   },
+  leagueModelName: {
+    english: "league",
+    persian: "لیگ",
+  },
+  gameTimeModelName: {
+    english: "gameTime",
+    persian: "ساعت انجام بازی ها",
+  },
 }
 
 module.exports = {

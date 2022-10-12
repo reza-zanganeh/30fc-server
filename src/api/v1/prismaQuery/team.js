@@ -1,4 +1,4 @@
-const { PrismaClient } = require("@prisma/client")
+const { PrismaClient, prisma } = require("@prisma/client")
 const { team } = new PrismaClient()
 
 module.exports.createTeamPrismaQuery = async (
@@ -199,6 +199,102 @@ module.exports.updateTeamPlayersPrismaQuery = async (
       },
     })
     return updatedTeam
+  } catch (error) {
+    throw error
+  }
+}
+
+module.exports.getNewUnBlockedTeam = async () => {
+  try {
+    return team.findMany({
+      where: {
+        AND: [{ leagueId: { equals: null } }, { isBlock: { equals: false } }],
+      },
+      select: { id: true },
+      orderBy: {
+        id: "asc",
+      },
+    })
+  } catch (error) {
+    throw error
+  }
+}
+
+module.exports.getUnBlockTeamsInleagues = async () => {
+  try {
+    const teams = await team.findMany({
+      where: {
+        AND: [{ isBlock: false }, { leagueId: { not: { equals: null } } }],
+      },
+      select: {
+        id: true,
+        isBlock: true,
+        lastTimeSeen: true,
+      },
+    })
+    return teams
+  } catch (error) {
+    throw error
+  }
+}
+
+module.exports.blockTeamsPrismaQuery = async (teamIds) => {
+  try {
+    await team.updateMany({
+      where: { id: { in: teamIds } },
+      data: { isBlock: true },
+    })
+  } catch (error) {
+    throw error
+  }
+}
+
+module.exports.getComplateInfoAboutSponserAndScoresTopThreeTeams = async (
+  firstTeamId,
+  secondTeamId,
+  thirdTeamId
+) => {
+  try {
+    const topTeams = await team.findMany({
+      where: {
+        id: {
+          in: [firstTeamId, secondTeamId, thirdTeamId],
+        },
+      },
+      select: {
+        id: true,
+        coinCount: true,
+        teamScores: {
+          select: {
+            firstTeamInLeagueCupCount: true,
+            secondTeamInLeagueCupCount: true,
+            thirdTeamInLeagueCupCount: true,
+            scoreInTournament: true,
+          },
+        },
+        sponser: {
+          select: {
+            firstInLeagueCoinCount: true,
+            secondInLeagueCoinCount: true,
+            thirdInLeagueCoinCount: true,
+            topScorerCoinCount: true,
+          },
+        },
+        tournament: {
+          select: {
+            firstTeamInLeaguePoints: true,
+            secondTeamInLeagePoints: true,
+            thirdTeamInLeaguePoints: true,
+          },
+        },
+      },
+      orderBy: {
+        teamScores: {
+          scoreInLeague: "asc",
+        },
+      },
+    })
+    return topTeams
   } catch (error) {
     throw error
   }

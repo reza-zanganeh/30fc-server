@@ -75,15 +75,26 @@ model Team {
   endOfTeamMemberShipType            DateTime                            @default(now())
   dateOfEstablishment                DateTime                            @default(now())
   // team competitions
-  leauges                            TeamsOfLeague[]
+  // league
+  leauge                             League?                             @relation(fields: [leagueId], references: [id])
+  leagueId                           Int?
+  leagueThatRankedFirst              League?                             @relation(name: "firstTeam")
+  leagueThatRankedSecond             League?                             @relation(name: "secondTeam")
+  leagueThatRankedThird              League?                             @relation(name: "thirdTeam")
   leagueGamesHostTeam                LeagueGame[]                        @relation("hostTeam")
   leagueGamesVisitingTeam            LeagueGame[]                        @relation("visitingTeam")
   // golden cup
-  goldenCups                         TeamsOfGoldenCups[]
+  goldenCup                          GoldenCup?                          @relation(fields: [goldenCupId], references: [id])
+  goldenCupId                        Int?
+  goldenCupThatRankedFirst           GoldenCup?                          @relation(name: "firstTeam")
+  goldenCupThatRankedSecond          GoldenCup?                          @relation(name: "secondTeam")
   goldenCupGamesHostTeam             GoldenCupGame[]                     @relation("hostTeam")
   goldenCupGamesVisitingTeam         GoldenCupGame[]                     @relation("visitingTeam")
   // champions cup
-  championsCups                      TeamsOfChampionsCups[]
+  championsCup                       ChampionsCup?                       @relation(fields: [championsCupId], references: [id])
+  championsCupId                     Int?
+  championsCupThatRankedFirst        ChampionsCup?                       @relation(name: "firstTeam")
+  championsCupThatRankedSecond       ChampionsCup?                       @relation(name: "secondTeam")
   championsCupGamesHostTeam          ChampionsCupGame[]                  @relation("hostTeam")
   championsCupGamesVisitingTeam      ChampionsCupGame[]                  @relation("visitingTeam")
   // friendly game
@@ -93,7 +104,11 @@ model Team {
   friendlyGameCount                  Int                                 @default(0)
   // end of team competitions
   teamScores                         TeamScores?
-  tournaments                        TeamsOfTournaments[]
+  tournament                         Tournament?                         @relation(fields: [tournamentId], references: [id])
+  tournamentId                       Int?
+  TournamentsThatWonFirstPlace       Tournament[]                        @relation(name: "firstTeam")
+  TournamentsThatWonSecondPlace      Tournament[]                        @relation(name: "secondTeam")
+  TournamentsThatWonThirdPlace       Tournament[]                        @relation(name: "thirdTeam")
   RequestToCreatePlayer              RequestToCreatePlayer[]
   sponser                            Sponser?                            @relation(fields: [sponserId], references: [id])
   sponserId                          Int?
@@ -123,6 +138,12 @@ model Team {
   purchasedPlayer                    playerTransfers[]                   @relation(name: "buyer")
   soldPlayersCount                   Int                                 @default(0)
   PlayersOnSale                      playerTransfers[]                   @relation(name: "seller")
+}
+
+enum TeamStatusInCup {
+  First
+  Second
+  Remove
 }
 
 model FollowerFallowing {
@@ -176,6 +197,8 @@ model TeamScores {
   // cups
   championsCupCount          Int     @default(0)
   goldCupCount               Int     @default(0)
+  // tournament
+  scoreInTournament          Int     @default(0)
 }
 
 enum Technique {
@@ -360,10 +383,10 @@ model Player {
   playerSalesContract                            playerTransfers?
   // crts
   // yellow
-  yellowCartInLeagueGameCount                    String                 @unique @default("0") @db.VarChar(1)
-  yellowCartInFriendlyGameCount                  String                 @unique @default("0") @db.VarChar(1)
-  yellowCartInGoldCupGameCount                   String                 @unique @default("0") @db.VarChar(1)
-  yellowCartInChampionsCupGameCount              String                 @unique @default("0") @db.VarChar(1)
+  yellowCartInLeagueGameCount                    String                 @default("0") @db.VarChar(1)
+  yellowCartInFriendlyGameCount                  String                 @default("0") @db.VarChar(1)
+  yellowCartInGoldCupGameCount                   String                 @default("0") @db.VarChar(1)
+  yellowCartInChampionsCupGameCount              String                 @default("0") @db.VarChar(1)
   // red
   hasRedCartInLeagueGame                         Boolean                @default(false)
   hasRedCartInFriendlyGame                       Boolean                @default(false)
@@ -453,30 +476,24 @@ model RequestToCreatePlayer {
 // competition
 //  golden cup
 model GoldenCup {
-  id                      Int                 @id @default(autoincrement())
-  teamCount               Int
+  id                     Int             @id @default(autoincrement())
+  step                   Int
+  teamCount              Int
   // gameCountToPlay = teamCount / 2
-  gameCountToPlay         Int
-  startGoldenCupTimeStamp DateTime
-  endGoldenCupTimeStamp   DateTime
-  status                  competitionStatus   @default(NotStarted)
-  registerCostInToman     Int
-  startRegisterTimeStamp  DateTime
-  endRegisterTimeStamp    DateTime
-  silver                  Boolean
-  golden                  Boolean
-  diamond                 Boolean
-  teams                   TeamsOfGoldenCups[]
-  games                   GoldenCupGame[]
-}
-
-model TeamsOfGoldenCups {
-  id                    Int                     @id @default(autoincrement())
-  goldenCup             GoldenCup               @relation(fields: [goldenCupId], references: [id])
-  goldenCupId           Int
-  team                  Team                    @relation(fields: [teamId], references: [id])
-  teamId                Int
-  teamStatusInGoldenCup teamStatusInCompetition @default(Playing)
+  gameCountToPlay        Int
+  registerCostInToman    Int
+  startRegisterTimeStamp DateTime
+  endRegisterTimeStamp   DateTime
+  silver                 Boolean
+  golden                 Boolean
+  diamond                Boolean
+  teams                  Team[]
+  // top teams
+  firstTeam              Team?           @relation(name: "firstTeam", fields: [firstTeamId], references: [id])
+  firstTeamId            Int?            @unique
+  secondTeam             Team?           @relation(name: "secondTeam", fields: [secondTeamId], references: [id])
+  secondTeamId           Int?            @unique
+  games                  GoldenCupGame[]
 }
 
 model GoldenCupGame {
@@ -509,27 +526,21 @@ model GoldenCupGame {
 // end of golden cup
 // champions cup
 model ChampionsCup {
-  id                         Int                    @id @default(autoincrement())
+  id           Int                @id @default(autoincrement())
   // team count = 32
-  teamCount                  Int
-  startChampionsCupTimeStamp DateTime
-  endChampionsCupTimeStamp   DateTime
-  status                     competitionStatus      @default(NotStarted)
-  teams                      TeamsOfChampionsCups[]
-  games                      ChampionsCupGame[]
-}
-
-model TeamsOfChampionsCups {
-  id                       Int                     @id @default(autoincrement())
-  championsCup             ChampionsCup            @relation(fields: [championsCupId], references: [id])
-  championsCupId           Int
-  team                     Team                    @relation(fields: [teamId], references: [id])
-  teamId                   Int
-  teamStatusInChampionsCup teamStatusInCompetition @default(Playing)
+  teamCount    Int                @default(32)
+  teams        Team[]
+  // top teams
+  firstTeam    Team?              @relation(name: "firstTeam", fields: [firstTeamId], references: [id])
+  firstTeamId  Int?               @unique
+  secondTeam   Team?              @relation(name: "secondTeam", fields: [secondTeamId], references: [id])
+  secondTeamId Int?               @unique
+  games        ChampionsCupGame[]
 }
 
 model ChampionsCupGame {
   id                               Int          @id @default(autoincrement())
+  step                             Int
   championsCup                     ChampionsCup @relation(fields: [championsCupId], references: [id])
   championsCupId                   Int
   hostTeam                         Team         @relation(name: "hostTeam", fields: [hostTeamId], references: [id])
@@ -558,25 +569,42 @@ model ChampionsCupGame {
 // end of champions cup
 // league
 model League {
-  id                   Int               @id @default(autoincrement())
-  level                Int
-  group                Int
+  id           Int          @id @default(autoincrement())
+  level        Int
+  group        Int          @unique
   // team count = 14
-  teamCount            Int
-  startLeagueTimeStamp DateTime
-  endLeagueTimeStamp   DateTime
-  status               competitionStatus @default(NotStarted)
-  teams                TeamsOfLeague[]
-  games                LeagueGame[]
+  teamCount    Int          @default(14)
+  teams        Team[]
+  // top teams
+  firstTeam    Team?        @relation(name: "firstTeam", fields: [firstTeamId], references: [id])
+  firstTeamId  Int?         @unique
+  secondTeam   Team?        @relation(name: "secondTeam", fields: [secondTeamId], references: [id])
+  secondTeamId Int?         @unique
+  thirdTeam    Team?        @relation(name: "thirdTeam", fields: [thirdTeamId], references: [id])
+  thirdTeamId  Int?         @unique
+  games        LeagueGame[]
 }
 
-model TeamsOfLeague {
-  id                 Int                @id @default(autoincrement())
-  league             League             @relation(fields: [leagueId], references: [id])
-  leagueId           Int
-  team               Team               @relation(fields: [teamId], references: [id])
-  teamId             Int
-  teamStatusInLeague teamStatusInLeague @default(Playing)
+model GameTime {
+  id     Int          @id @default(autoincrement())
+  name   GameTimeName @unique
+  hour   Int
+  minute Int
+}
+
+enum GameTimeName {
+  LeagueLevelOne
+  LeagueLevelTwo
+  LeagueLevelThree
+  LeagueLevelFour
+  LeagueLevelFive
+  LeagueLevelSix
+  ChampionsCup
+  FriendlyGameOne
+  FriendlyGameTwo
+  FriendlyGameThree
+  GoldenCupOne
+  GoldenCupTwo
 }
 
 model LeagueGame {
@@ -604,14 +632,6 @@ model LeagueGame {
   playerHasReceivedRedCart         Player?     @relation(name: "playerHasReceivedRedCart", fields: [playerHasReceivedRedCartId], references: [id])
   playerHasReceivedRedCartId       Int?
   scorerPlayer                     Player[]    @relation(name: "scorerPlayer")
-}
-
-enum teamStatusInLeague {
-  Playing
-  FirstTeam
-  SecondTeam
-  ThirdTeam
-  Remove
 }
 
 // friendly game
@@ -649,55 +669,40 @@ model RequestFriendlyGame {
 }
 
 model Tournament {
-  id                                Int                  @id @default(autoincrement())
-  name                              String
-  startDate                         DateTime
-  endDate                           DateTime
-  winOfficialGameCoinCount          Int
-  equalOfficialGameCoinCount        Int
-  winFriendlyGameCoinCount          Int
-  equalFriendlyGameCoinCount        Int
-  firstTeamInLeagueCoinCount        Int
-  secondTeamInLeageCoinCount        Int
-  thirdTeamInLeagueCoinCount        Int
-  firstTeamInGoldCupCoinCount       Int
-  secondTeamInGoldCupCoinCount      Int
-  firstTeamInChampionsCupCoinCount  Int
-  secondTeamInChampionsCupCoinCount Int
-  playGameCoinCount                 Int
-  buyCoinCoinCount                  Int
-  buySilverMembershipCoinCount      Int
-  buyGoldenMembershipCoinCount      Int
-  buyDiamondMembershipCoinCount     Int
-  teams                             TeamsOfTournaments[]
+  id                             Int      @id @default(autoincrement())
+  name                           String
+  startDate                      DateTime
+  endDate                        DateTime
+  winOfficialGamePoints          Int
+  equalOfficialGamePoints        Int
+  winFriendlyGamePoints          Int
+  equalFriendlyGamePoints        Int
+  firstTeamInLeaguePoints        Int
+  secondTeamInLeagePoints        Int
+  thirdTeamInLeaguePoints        Int
+  firstTeamInGoldCupPoints       Int
+  secondTeamInGoldCupPoints      Int
+  firstTeamInChampionsCupPoints  Int
+  secondTeamInChampionsCupPoints Int
+  playGamePoints                 Int
+  buyCoinPoints                  Int
+  buySilverMembershipPoints      Int
+  buyGoldenMembershipPoints      Int
+  buyDiamondMembershipPoints     Int
+  firstTeam                      Team?    @relation(name: "firstTeam", fields: [firstTeamId], references: [id])
+  firstTeamId                    Int?
+  secondTeam                     Team?    @relation(name: "secondTeam", fields: [secondTeamId], references: [id])
+  secondTeamId                   Int?
+  thirdTeam                      Team?    @relation(name: "thirdTeam", fields: [thirdTeamId], references: [id])
+  thirdTeamId                    Int?
+  teams                          Team[]
 }
 
-model TeamsOfTournaments {
-  id           Int        @id @default(autoincrement())
-  score        Int        @default(0)
-  team         Team       @relation(fields: [teamId], references: [id])
-  teamId       Int
-  tournament   Tournament @relation(fields: [tournamentId], references: [id])
-  tournamentId Int
-}
-
-//  friendly
 enum GameResult {
+  undone
   hostTeam
   visitingTeam
   equal
-}
-
-enum competitionStatus {
-  NotStarted
-  InProcess
-  Ended
-}
-
-enum teamStatusInCompetition {
-  Playing
-  FirstTeam
-  Remove
 }
 
 // sponser
@@ -763,6 +768,17 @@ enum GameConstantVariableName {
   InviteNewTeamCoinCount
   NumberOfStadiumTicketCoins
   CostOfCreatingThirdTeam
+}
+
+model GameTimestamp {
+  id        Int               @id @default(autoincrement())
+  name      GameTimestampName @unique
+  timestamp DateTime
+}
+
+enum GameTimestampName {
+  StartSession
+  EndSession
 }
 
 model ContactUs {

@@ -20,6 +20,8 @@ const { readGeneralDataAndSaveOnRedis } = require("./helpers/Functions")
 const { internalServerErrorHandler } = require("./helpers/responseHandler")
 //#endregion
 
+const { endLeagueCronJobHandler } = require("./controller/league")
+
 const PORT = projectConfig.server.httpServer.port
 app.listen(PORT, async () => {
   try {
@@ -39,6 +41,7 @@ app.listen(PORT, async () => {
     //   `
     // )
     await readGeneralDataAndSaveOnRedis()
+    await endLeagueCronJobHandler()
   } catch (error) {
     internalServerErrorHandler(null, error)
   }

@@ -51,6 +51,17 @@ module.exports.readAll = async (modelName, where, select) => {
   }
 }
 
+module.exports.readAllWithSort = async (modelName, orderBy, select) => {
+  try {
+    let result
+    if (select) result = await prisma[modelName].findMany({ select, orderBy })
+    else result = await prisma[modelName].findMany({ orderBy })
+    return result
+  } catch (error) {
+    throw error
+  }
+}
+
 module.exports.update = async (modelName, where, data) => {
   try {
     const updatedRecord = await prisma[modelName].update({
@@ -58,6 +69,17 @@ module.exports.update = async (modelName, where, data) => {
       data,
     })
     return updatedRecord
+  } catch (error) {
+    throw error
+  }
+}
+
+module.exports.updateWithoutExecute = (modelName, where, data) => {
+  try {
+    return prisma[modelName].update({
+      where,
+      data,
+    })
   } catch (error) {
     throw error
   }
@@ -115,6 +137,15 @@ module.exports.getNthRecord = async (modelName, skip) => {
       take: 1,
     })
     return NthRecord
+  } catch (error) {
+    throw error
+  }
+}
+
+module.exports.prismaTransaction = async (prismaQueries) => {
+  try {
+    const response = await prisma.$transaction(prismaQueries)
+    return response
   } catch (error) {
     throw error
   }

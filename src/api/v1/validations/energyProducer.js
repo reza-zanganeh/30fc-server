@@ -4,6 +4,7 @@ const {
   required,
   checkExistsObjectWithIdInDb,
   checkAssetInUseWithTeam,
+  between,
 } = require("../helpers/inputValidation")
 module.exports.createEnergyProducerSchemaValidation = {
   level: between("سطح انرژی زا", "body", 0, 9),

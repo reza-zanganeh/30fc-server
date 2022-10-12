@@ -1,12 +1,16 @@
 const { PrismaClient } = require("@prisma/client")
 const { requestToCreatePlayer } = new PrismaClient()
 
-module.exports.createRequestToCreatePlayer = async (teamId, player) => {
+module.exports.createRequestToCreatePlayerPrismaQuery = async (
+  teamId,
+  player
+) => {
   try {
     const {
       name,
       age,
       salary,
+      // power
       controll,
       drible,
       experience,
@@ -17,22 +21,13 @@ module.exports.createRequestToCreatePlayer = async (teamId, player) => {
       pass,
       stamina,
       technique,
+      totalPower,
+      // end of power
       pictureUrl,
       positionId,
       nationality,
       tShirtNumber,
     } = player
-    const totalPower =
-      controll +
-      drible +
-      experience +
-      flexibility +
-      focus +
-      shoot +
-      spead +
-      pass +
-      stamina +
-      technique
 
     const newRequest = await requestToCreatePlayer.create({
       data: {
@@ -61,7 +56,7 @@ module.exports.createRequestToCreatePlayer = async (teamId, player) => {
             },
             position: { connect: { id: positionId } },
             nationality,
-            status: "INREQUEST",
+            status: "InRequest",
             tShirtNumber,
           },
         },
@@ -73,7 +68,7 @@ module.exports.createRequestToCreatePlayer = async (teamId, player) => {
   }
 }
 
-module.exports.confirmRequestToCreatePlayer = async (
+module.exports.confirmRequestToCreatePlayerPrismaQuery = async (
   requestId,
   price,
   adminResponse
@@ -84,11 +79,11 @@ module.exports.confirmRequestToCreatePlayer = async (
         id: requestId,
       },
       data: {
-        status: "CONFIRM",
+        status: "Confirm",
         adminResponse,
         player: {
           update: {
-            status: "INMARKET",
+            status: "InMarket",
             price,
           },
         },
@@ -100,7 +95,7 @@ module.exports.confirmRequestToCreatePlayer = async (
   }
 }
 
-module.exports.rejectRequestToCreatePlayer = async (
+module.exports.rejectRequestToCreatePlayerPrismaQuery = async (
   requestId,
   adminResponse
 ) => {
@@ -120,7 +115,9 @@ module.exports.rejectRequestToCreatePlayer = async (
   }
 }
 
-module.exports.reactivationRequestToCreatePlayer = async (requestId) => {
+module.exports.reactivationRequestToCreatePlayerPrismaQuery = async (
+  requestId
+) => {
   try {
     const updatedRequest = await requestToCreatePlayer.update({
       where: {
