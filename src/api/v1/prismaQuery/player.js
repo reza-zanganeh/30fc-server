@@ -59,3 +59,62 @@ module.exports.createPlayerPrismaQuery = async ({
     throw error
   }
 }
+
+module.exports.getSuitablePlayersToReplacePrismaQuery = async (
+  teamId,
+  gameType
+) => {
+  try {
+    const select = {
+      id: true,
+      position: {
+        select: {
+          major: true,
+          manor: true,
+        },
+      },
+      age: true,
+      energy: true,
+      injury: true,
+      totalPower: true,
+      yellowCartInLeagueGameCount: true,
+      yellowCartInFriendlyGameCount: true,
+      yellowCartInChampionsCupGameCount: true,
+      yellowCartInGoldCupGameCount: true,
+      hasRedCartInChampionsCupGame: true,
+      hasRedCartInFriendlyGame: true,
+      hasRedCartInGoldCupGame: true,
+      hasRedCartInLeagueGame: true,
+    }
+    const commonWhereCluse = [
+      { teamId: { equals: teamId } },
+      { inTeamMainComposition: { equals: false } },
+    ]
+    if (gameType === "league")
+      commonWhereCluse.push(
+        { yellowCartInLeagueGameCount: { not: { equals: "2" } } },
+        { hasRedCartInLeagueGame: { equals: false } }
+      )
+
+    if (gameType === "friendly")
+      commonWhereCluse.push(
+        { yellowCartInFriendlyGameCount: { not: { equals: "2" } } },
+        { hasRedCartInFriendlyGame: { equals: false } }
+      )
+    if (gameType === "championsCup")
+      commonWhereCluse.push({ hasRedCartInChampionsCupGame: { equals: false } })
+    if (gameType === "goldCup")
+      commonWhereCluse.push({ hasRedCartInGoldCupGame: { equals: false } })
+
+    const suitablePlayers = await player.findMany({
+      where: {
+        AND: commonWhereCluse,
+      },
+      select,
+    })
+
+    return suitablePlayers
+  } catch (error) {
+    throw error
+  }
+}

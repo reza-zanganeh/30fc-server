@@ -7,14 +7,17 @@ const {
   playerPositionModelName,
   reservedTeamNameModelName,
   teamModelName,
+  stadiumFacilitiesModelName,
+  stadiumModelName,
 } = modelName
 const {
   readOne,
   readAll,
   updateWithoutExecute,
   prismaTransaction,
+  addPrismaQueryToPool,
 } = require("../helpers/prisma")
-const { calculatePlayerSalary } = require("./formula")
+const { calculatePlayerSalary } = require("../helpers/formula")
 const {
   getComplateInfoAboutSponserAndScoresTopThreeTeams,
 } = require("../prismaQuery/team")
@@ -40,6 +43,13 @@ const createDataTeam = async (teamName) => {
     const compositionId = composition.id
     delete composition.id
     delete composition.name
+
+    const defaultStadiumId = (
+      await readOne(stadiumModelName.english, { level: "1" })
+    ).id
+    const defaultStadiumFacilitiesId = (
+      await readOne(stadiumFacilitiesModelName.english, { level: "1" })
+    ).id
     // create 20 random player
     // name
     const primitivePlayerName = await readAll(
@@ -189,6 +199,8 @@ const createDataTeam = async (teamName) => {
     }
 
     return {
+      defaultStadiumFacilitiesId,
+      defaultStadiumId,
       compositionId,
       strategy: "Press",
       technique: "Moderate",
@@ -199,12 +211,6 @@ const createDataTeam = async (teamName) => {
   }
 }
 
-// validation functions
-// return value
-// {
-//  isValid : true | false
-//  errorMessage : ""
-// }
 const validateTeamName = async (teamName) => {
   try {
     const selectedNameIsReserved =
@@ -247,7 +253,12 @@ const validateTeamName = async (teamName) => {
   }
 }
 
-const updateThreeTopTeams = async (firstTeamId, secondTeamId, thirdTeamId) => {
+const updateThreeTopTeams = async (
+  firstTeamId,
+  secondTeamId,
+  thirdTeamId,
+  prismaQueriesEndLeagueCronJobPoolIndex
+) => {
   try {
     const threeTopTeams =
       await getComplateInfoAboutSponserAndScoresTopThreeTeams(
@@ -255,7 +266,8 @@ const updateThreeTopTeams = async (firstTeamId, secondTeamId, thirdTeamId) => {
         secondTeamId,
         thirdTeamId
       )
-    await prismaTransaction([
+    addPrismaQueryToPool(
+      prismaQueriesEndLeagueCronJobPoolIndex,
       updateWithoutExecute(
         teamModelName.english,
         { id: threeTopTeams[0].id },
@@ -274,10 +286,14 @@ const updateThreeTopTeams = async (firstTeamId, secondTeamId, thirdTeamId) => {
                   threeTopTeams[0].tournament.firstTeamInLeaguePoints +
                   threeTopTeams[0].teamScores.scoreInTournament,
               }),
+              totalScore: threeTopTeams[0].teamScores.totalScore + 30,
             },
           },
         }
-      ),
+      )
+    )
+    addPrismaQueryToPool(
+      prismaQueriesEndLeagueCronJobPoolIndex,
       updateWithoutExecute(
         teamModelName.english,
         { id: threeTopTeams[1].id },
@@ -296,10 +312,14 @@ const updateThreeTopTeams = async (firstTeamId, secondTeamId, thirdTeamId) => {
                   threeTopTeams[1].tournament.secondTeamInLeagePoints +
                   threeTopTeams[1].teamScores.scoreInTournament,
               }),
+              totalScore: threeTopTeams[1].teamScores.totalScore + 20,
             },
           },
         }
-      ),
+      )
+    )
+    addPrismaQueryToPool(
+      prismaQueriesEndLeagueCronJobPoolIndex,
       updateWithoutExecute(
         teamModelName.english,
         { id: threeTopTeams[2].id },
@@ -318,11 +338,12 @@ const updateThreeTopTeams = async (firstTeamId, secondTeamId, thirdTeamId) => {
                   threeTopTeams[2].tournament.thirdTeamInLeaguePoints +
                   threeTopTeams[2].teamScores.scoreInTournament,
               }),
+              totalScore: threeTopTeams[2].teamScores.totalScore + 10,
             },
           },
         }
-      ),
-    ])
+      )
+    )
   } catch (error) {
     throw error
   }

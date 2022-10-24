@@ -248,14 +248,22 @@ module.exports.register = async (req, res, next) => {
     }
 
     // create user and team
-    const { players, compositionId, strategy, technique } =
-      await createDataTeam(teamName)
+    const {
+      players,
+      compositionId,
+      defaultStadiumFacilitiesId,
+      defaultStadiumId,
+      strategy,
+      technique,
+    } = await createDataTeam(teamName)
     const hashedPass = await hashUserPassword(password)
     const createdTeam = await createTeamWithOwnerPrismaQuery(
       teamName,
       compositionId,
       strategy,
       technique,
+      defaultStadiumFacilitiesId,
+      defaultStadiumId,
       players,
       {
         phonenumber,

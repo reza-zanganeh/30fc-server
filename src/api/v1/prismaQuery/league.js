@@ -12,10 +12,15 @@ module.exports.getLeaguesPrismaQuery = async () => {
           select: {
             id: true,
             isBlock: true,
+            teamScores: {
+              select: {
+                scoreInLeague: true,
+              },
+            },
           },
           orderBy: {
             teamScores: {
-              scoreInLeague: "asc",
+              scoreInLeague: "desc",
             },
           },
         },
@@ -30,7 +35,7 @@ module.exports.getLeaguesPrismaQuery = async () => {
   }
 }
 
-module.exports.updateLeaguePrismaQuery = async (
+module.exports.updateLeaguePrismaQuery = (
   leagueId,
   teamIds,
   firstTeamId,
@@ -39,7 +44,7 @@ module.exports.updateLeaguePrismaQuery = async (
   games
 ) => {
   try {
-    const updatedLeague = await league.update({
+    return league.update({
       where: { id: leagueId },
       data: {
         teams: { set: teamIds },
@@ -56,20 +61,14 @@ module.exports.updateLeaguePrismaQuery = async (
         }),
       },
     })
-    return updatedLeague
   } catch (error) {
     throw error
   }
 }
 
-module.exports.createNewLeaguePrismaQuery = async (
-  level,
-  group,
-  teamIds,
-  games
-) => {
+module.exports.createNewLeaguePrismaQuery = (level, group, teamIds, games) => {
   try {
-    const newCreatedLeague = await league.create({
+    return league.create({
       data: {
         level,
         group,
@@ -81,17 +80,62 @@ module.exports.createNewLeaguePrismaQuery = async (
         },
       },
     })
-    return newCreatedLeague
   } catch (error) {
     throw error
   }
 }
 
-module.exports.deleteLeagueWithoutComplateTeams = async () => {
+module.exports.deleteLeagueWithoutComplateTeams = () => {
   try {
-    await league.deleteMany({
+    return league.deleteMany({
       where: {
         teamCount: { lt: 14 },
+      },
+    })
+  } catch (error) {
+    throw error
+  }
+}
+
+module.exports.removeTopThreeLeaguTeamsPrismaQuery = () => {
+  try {
+    return league.updateMany({
+      data: {
+        firstTeamId: null,
+        secondTeamId: null,
+        thirdTeamId: null,
+      },
+    })
+  } catch (error) {
+    throw error
+  }
+}
+
+module.exports.getLeagueTablePrismaQuery = (leagueId) => {
+  try {
+    return league.findFirst({
+      where: { id: leagueId },
+      select: {
+        teams: {
+          select: {
+            id: true,
+            name: true,
+            logoUrl: true,
+            teamScores: {
+              select: {
+                equalCountInLeague: true,
+                winCountInLeague: true,
+                loseCountInLeague: true,
+                scoreInLeague: true,
+              },
+            },
+          },
+          orderBy: {
+            teamScores: {
+              scoreInLeague: "desc",
+            },
+          },
+        },
       },
     })
   } catch (error) {

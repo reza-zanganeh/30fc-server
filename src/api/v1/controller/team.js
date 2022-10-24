@@ -55,8 +55,14 @@ module.exports.createTeam = async (req, res, next) => {
     if (!isValidTeamName)
       return next(createError(BadRequest(invalidTeamNameErrorMessage)))
 
-    const { players, compositionId, strategy, technique } =
-      await createDataTeam(teamName)
+    const {
+      players,
+      compositionId,
+      strategy,
+      technique,
+      defaultStadiumFacilitiesId,
+      defaultStadiumId,
+    } = await createDataTeam(teamName)
 
     const createdTeam = await createTeamPrismaQuery(
       teamName,
@@ -64,6 +70,8 @@ module.exports.createTeam = async (req, res, next) => {
       +compositionId,
       strategy,
       technique,
+      defaultStadiumId,
+      defaultStadiumFacilitiesId,
       players
     )
 

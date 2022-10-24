@@ -71,6 +71,10 @@ const modelName = {
     english: "stadium",
     persian: "استادیوم",
   },
+  stadiumFacilitiesModelName: {
+    english: "stadiumFacilities",
+    persian: "امکانات استادیوم",
+  },
   coinPurchaseInvoiceModelName: {
     english: "coinPurchaseInvoice",
     persian: "فاکتور های خرید سکه",
@@ -90,6 +94,14 @@ const modelName = {
   gameTimeModelName: {
     english: "gameTime",
     persian: "ساعت انجام بازی ها",
+  },
+  teamScoresModelName: {
+    english: "teamScores",
+    persian: "امتیازات تیم",
+  },
+  sponserModelName: {
+    english: "sponser",
+    persian: "اسپانسر",
   },
 }
 

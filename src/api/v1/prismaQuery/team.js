@@ -1,5 +1,5 @@
-const { PrismaClient, prisma } = require("@prisma/client")
-const { team } = new PrismaClient()
+const { PrismaClient } = require("@prisma/client")
+const { team, teamScores } = new PrismaClient()
 
 module.exports.createTeamPrismaQuery = async (
   name,
@@ -7,6 +7,8 @@ module.exports.createTeamPrismaQuery = async (
   compositionId,
   strategy,
   technique,
+  stadiumId,
+  stadiumFacilitiesId,
   players
 ) => {
   try {
@@ -32,7 +34,10 @@ module.exports.createTeamPrismaQuery = async (
           },
         },
         teamAssets: {
-          create: {},
+          create: {
+            stadiumId,
+            stadiumFacilitiesId,
+          },
         },
         teamScores: {
           create: {},
@@ -50,6 +55,8 @@ module.exports.createTeamWithOwnerPrismaQuery = async (
   compositionId,
   strategy,
   technique,
+  stadiumFacilitiesId,
+  stadiumId,
   players,
   owner
 ) => {
@@ -74,7 +81,10 @@ module.exports.createTeamWithOwnerPrismaQuery = async (
           },
         },
         teamAssets: {
-          create: {},
+          create: {
+            stadiumId,
+            stadiumFacilitiesId,
+          },
         },
         teamScores: {
           create: {},
@@ -270,6 +280,8 @@ module.exports.getComplateInfoAboutSponserAndScoresTopThreeTeams = async (
             secondTeamInLeagueCupCount: true,
             thirdTeamInLeagueCupCount: true,
             scoreInTournament: true,
+            scoreInLeague: true,
+            totalScore: true,
           },
         },
         sponser: {
@@ -290,11 +302,123 @@ module.exports.getComplateInfoAboutSponserAndScoresTopThreeTeams = async (
       },
       orderBy: {
         teamScores: {
-          scoreInLeague: "asc",
+          scoreInLeague: "desc",
         },
       },
     })
     return topTeams
+  } catch (error) {
+    throw error
+  }
+}
+
+module.exports.getInformationTeamNeedForPlayGame = async (teamId) => {
+  try {
+    const result = await team.findFirst({
+      where: { id: teamId },
+      select: {
+        id: true,
+        isBlock: true,
+        strategy: true,
+        technique: true,
+        spirit: true,
+        name: true,
+        fanSatisfaction: true,
+        coinCount: true,
+        players: {
+          where: { inTeamMainComposition: { equals: true } },
+          select: {
+            id: true,
+            position: {
+              select: {
+                major: true,
+                manor: true,
+              },
+            },
+            positionInMainComposition: {
+              select: {
+                major: true,
+                manor: true,
+              },
+            },
+            age: true,
+            energy: true,
+            injury: true,
+            totalPower: true,
+            yellowCartInLeagueGameCount: true,
+            yellowCartInFriendlyGameCount: true,
+            yellowCartInChampionsCupGameCount: true,
+            yellowCartInGoldCupGameCount: true,
+            hasRedCartInChampionsCupGame: true,
+            hasRedCartInFriendlyGame: true,
+            hasRedCartInGoldCupGame: true,
+            hasRedCartInLeagueGame: true,
+            goalCountInLeague: true,
+          },
+        },
+        teamScores: {
+          select: {
+            scoreInLeague: true,
+            winCountInLeague: true,
+            loseCountInLeague: true,
+            equalCountInLeague: true,
+            totalEqualCount: true,
+            totalLoseCount: true,
+            totalWinCount: true,
+            totalScore: true,
+            scoreInTournament: true,
+          },
+        },
+        teamAssets: {
+          select: {
+            stadium: {
+              select: {
+                capacity: true,
+              },
+            },
+            stadiumFacilities: {
+              select: {
+                win: true,
+                lose: true,
+                equal: true,
+              },
+            },
+          },
+        },
+        tournament: {
+          select: {
+            winOfficialGamePoints: true,
+            equalOfficialGamePoints: true,
+            winFriendlyGamePoints: true,
+            equalFriendlyGamePoints: true,
+            playGamePoints: true,
+          },
+        },
+        sponser: {
+          select: {
+            id: true,
+            totalCoinCount: true,
+            winOfficialGameCoinCount: true,
+          },
+        },
+      },
+    })
+    return result
+  } catch (error) {
+    throw error
+  }
+}
+
+module.exports.resetTeamScoresInLeagu = () => {
+  try {
+    return teamScores.updateMany({
+      data: {
+        scoreInLeague: 0,
+        winCountInLeague: 0,
+        loseCountInLeague: 0,
+        equalCountInLeague: 0,
+      },
+    })
   } catch (error) {
     throw error
   }

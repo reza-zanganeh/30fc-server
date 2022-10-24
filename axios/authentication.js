@@ -10,9 +10,9 @@ const requestToLoginOrRegister = async (phonenumber) => {
 }
 
 const initialAdminUser = async () => {
-  // const otptoken = (await requestToLoginOrRegister("09213263325")).data.data
-  //   .token
-  // console.log(otptoken)
+  const otptoken = (await requestToLoginOrRegister("09213263325")).data.data
+    .token
+  await stop(2)
   await axiosInstance.post(
     "/authentication/initial-admin",
     {
@@ -24,8 +24,7 @@ const initialAdminUser = async () => {
     },
     {
       headers: {
-        otptoken:
-          "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwaG9uZW51bWJlciI6IjA5MjEzMjYzMzI1IiwiaXNVc2VyRXhpc3RzIjpmYWxzZSwiaWF0IjoxNjY1Mzg3NDk4LCJleHAiOjE2NjUzODc3OTh9.MqicX6LsX85vGN9ASSA1C7kWSlH1IC6Z1uNiWOD6e7s",
+        otptoken,
       },
     }
   )
@@ -83,8 +82,10 @@ const getCaptcha = async () => {
   await axiosInstance.get("/captcha")
 }
 
-// requestToLoginOrRegister("09395687854")
+// requestToLoginOrRegister("09213263325")
 // loginRezaAdmin()
+
+// initialAdminUser()
 
 /*
 accounts : 
@@ -229,6 +230,28 @@ users :
 /*
  */
 const main = async () => {
+  // await register("محمد صابری", "03846135678", "مهرباد", "123456")
+  // await stop(4)
+  // await register("هاشم سمیعی", "03654562135", "زمین", "123456")
+  // await stop(4)
+  // await register("اصغر عبدی", "09395687854", "کارگران", "123456")
+  // await stop(4)
+  // await register("صابر ساقی", "03594562135", "ماسال", "123456")
+  // await stop(4)
+  // await register("کاظم ساقی", "06452135468", "سروستان", "123456")
+  // await stop(4)
+  // await register("علی حیدری", "09391856421", "اذرخش", "123456")
+  // await stop(4)
+  // await register("علی افروزی", "09337446566", "اذرباد", "123456")
+  // await stop(4)
+  // await register("امرالله زنگنه", "09391373284", "طوفان", "123456")
+  // await stop(4)
+  // await register("مهسا زنگنه", "09397544085", "سیاه جامگان", "123456")
+  // await stop(4)
+  // await register("ارشیا محرابی", "09369631880", "بدنسازان", "123456")
+  // await stop(4)
+  // await register("امیر زنگنه", "09391825987", "آزادی", "123456")
+  // await stop(4)
   // await register("علی ازاد", "09131565566", "علمدار", "123456")
   // await stop(4)
   // await register("محمد ازاد", "09131565545", "سبز", "123456")
@@ -242,19 +265,30 @@ const main = async () => {
   // await register("هاشم", "09131561566", "هاشوری", "123456")
   // await stop(4)
   // await register("کاظم", "09131565566", "یشمی", "123456")
-  await register("صمد", "09731565566", "کرمی", "123456")
-  await stop(4)
-  await register("حسین", "09131565645", "کاری", "123456")
-  await stop(4)
-  await register("کسیب", "09131565216", "سیرسی", "123456")
-  await stop(4)
-  await register("اسسیبسیب", "09135465666", "ایسبسیببی", "123456")
-  await stop(4)
-  await register("سیامسیبسیبک", "09831565556", "سیاسیبسیبه", "123456")
-  await stop(4)
-  await register("هاشمسیبسیب", "09181561566", "هاشورسیبسیی", "123456")
-  await stop(4)
-  await register("سیبسیبکاظم", "09356421354", "یسیبسیشمی", "123456")
+  // await stop(4)
+  // await register("صمد", "09731565566", "کرمی", "123456")
+  // await stop(4)
+  // await register("حسین", "09131565645", "کاری", "123456")
+  // await stop(4)
+  // await register("کسیب", "09131565216", "سیرسی", "123456")
+  // await stop(4)
+  // await register("اسسیبسیب", "09135465666", "ایسبسیببی", "123456")
+  // await stop(4)
+  // await register("سیامسیبسیبک", "09831565556", "سیاسیبسیبه", "123456")
+  // await stop(4)
+  // await register("هاشمسیبسیب", "09181561566", "هاشورسیبسیی", "123456")
+  // await stop(4)
+  // await register("سیبسیبکاظم", "09356421354", "یسیبسیشمی", "123456")
+  // await stop(4)
+  // await register("سیبسیبکاظم", "09356421554", "بسیشمی", "123456")
+  // await stop(4)
+  // await register("سیبسیبکاظم", "09356451354", "یسیسیببسیشمی", "123456")
+  // await stop(4)
+  await register("سیبسیبکاظم", "09356422354", "یسسیبسییبسیشمی", "123456")
+  // await stop(4)
+  // await register("سیبسیبکاظم", "09356441354", "لالات", "123456")
+  // await stop(4)
+  // await register("سیبسیبکاظم", "09356321354", "یسسیشمی", "123456")
 }
 
 main()

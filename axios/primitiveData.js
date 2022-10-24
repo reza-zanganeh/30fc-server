@@ -31,4 +31,4 @@ const addReservedName = async (name) => {
 // addReservedName("تراکتور")
 // addReservedName("پدیده")
 
-// addName()
+addName()

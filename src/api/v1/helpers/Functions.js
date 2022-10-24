@@ -8,10 +8,18 @@ const {
   setDifferenceInPointsForEachGoalFactorOnRedis,
   setSalaryFactorOnRedis,
   setInviteNewTeamCoinCountOnRedis,
+  setNumberOfStadiumTicketCoinsOnRedis,
 } = require("../services/redis")
 
 module.exports.createRandomNumber = (min, max) => {
   return Math.floor(Math.random() * (max - min + 1)) + min
+}
+
+module.exports.headsOrTails = (moreChance) => {
+  const lessChance = moreChance === 2 ? 1 : 2
+  const randomNumber = Math.floor(Math.random() * (100 - 0 + 1))
+  if (randomNumber < 70) return moreChance
+  else return lessChance
 }
 
 module.exports.createError = ({ statusCode, message }) => {
@@ -73,17 +81,24 @@ module.exports.sumOfArrayElements = (numbers) => {
 module.exports.readGeneralDataAndSaveOnRedis = async () => {
   try {
     // factors
-    const factors = await readAll(gameConstantVariableModelName.english)
-    const factorsNameMapToAmount = {}
-    factors.forEach((factor) => {
-      factorsNameMapToAmount[factor.name] = factor.amount
+    const gameConstantVariables = await readAll(
+      gameConstantVariableModelName.english
+    )
+    const constantVariableNameMapToAmount = {}
+    gameConstantVariables.forEach((variable) => {
+      constantVariableNameMapToAmount[variable.name] = variable.amount
     })
     await setDifferenceInPointsForEachGoalFactorOnRedis(
-      factorsNameMapToAmount["DifferenceInPointsForEachGoal"]
+      constantVariableNameMapToAmount["DifferenceInPointsForEachGoal"]
     )
-    await setSalaryFactorOnRedis(factorsNameMapToAmount["SalaryFactor"])
+    await setSalaryFactorOnRedis(
+      constantVariableNameMapToAmount["SalaryFactor"]
+    )
     await setInviteNewTeamCoinCountOnRedis(
-      factorsNameMapToAmount["InviteNewTeamCoinCount"]
+      constantVariableNameMapToAmount["InviteNewTeamCoinCount"]
+    )
+    await setNumberOfStadiumTicketCoinsOnRedis(
+      constantVariableNameMapToAmount["NumberOfStadiumTicketCoins"]
     )
   } catch (error) {
     throw error

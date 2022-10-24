@@ -1,5 +1,6 @@
 const { PrismaClient } = require("@prisma/client")
 const prisma = new PrismaClient()
+const prismaQueriesPool = []
 module.exports.create = async (modelName, data) => {
   try {
     const newRecord = await prisma[modelName].create({
@@ -142,9 +143,20 @@ module.exports.getNthRecord = async (modelName, skip) => {
   }
 }
 
-module.exports.prismaTransaction = async (prismaQueries) => {
+module.exports.createPrismaQueryPool = () => {
+  return prismaQueriesPool.push([]) - 1
+}
+
+module.exports.addPrismaQueryToPool = (index, query) => {
+  if (Array.isArray(query)) prismaQueriesPool[index].push(...query)
+  else prismaQueriesPool[index].push(query)
+}
+
+module.exports.prismaTransaction = async (prismaQueriesPoolIndex) => {
   try {
-    const response = await prisma.$transaction(prismaQueries)
+    const response = await prisma.$transaction(
+      prismaQueriesPool[prismaQueriesPoolIndex]
+    )
     return response
   } catch (error) {
     throw error

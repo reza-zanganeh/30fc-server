@@ -5,34 +5,34 @@ const stop = async (time) => {
   })
 }
 const main = async () => {
-  await axiosInstance.post("/admin/player-position", {
-    major: "Goalkeaper",
-    manor: "No",
-  })
-  await stop(2)
-  // Defender
-  await axiosInstance.post("/admin/player-position", {
-    major: "Defender",
-    manor: "Left",
-  })
-  await stop(2)
-  await axiosInstance.post("/admin/player-position", {
-    major: "Defender",
-    manor: "One",
-  })
-  await stop(2)
+  // await axiosInstance.post("/admin/player-position", {
+  //   major: "Goalkeaper",
+  //   manor: "No",
+  // })
+  // await stop(2)
+  // // Defender
+  // await axiosInstance.post("/admin/player-position", {
+  //   major: "Defender",
+  //   manor: "Left",
+  // })
+  // await stop(2)
+  // await axiosInstance.post("/admin/player-position", {
+  //   major: "Defender",
+  //   manor: "One",
+  // })
+  // await stop(2)
 
-  await axiosInstance.post("/admin/player-position", {
-    major: "Defender",
-    manor: "Two",
-  })
-  await stop(2)
+  // await axiosInstance.post("/admin/player-position", {
+  //   major: "Defender",
+  //   manor: "Two",
+  // })
+  // await stop(2)
 
-  await axiosInstance.post("/admin/player-position", {
-    major: "Defender",
-    manor: "Three",
-  })
-  await stop(2)
+  // await axiosInstance.post("/admin/player-position", {
+  //   major: "Defender",
+  //   manor: "Three",
+  // })
+  // await stop(2)
 
   await axiosInstance.post("/admin/player-position", {
     major: "Defender",

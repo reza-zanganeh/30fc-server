@@ -10,7 +10,7 @@ const { createPlayerPrismaQuery } = require("../prismaQuery/player")
 const { resposeHandler } = require("../helpers/responseHandler")
 const { getPresignedUrlToUploadPlayerFacePiture } = require("../services/cloud")
 const { update } = require("../helpers/prisma")
-const { calculatePlayerSalary } = require("../modelHelperFunction/formula")
+const { calculatePlayerSalary } = require("../helpers/formula")
 const { validateTShirtNumber } = require("../modelHelperFunction/player")
 // admin
 // create player

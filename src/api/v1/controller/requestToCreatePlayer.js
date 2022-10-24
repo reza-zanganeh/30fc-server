@@ -17,7 +17,7 @@ const {
   getPresignedUrlToUploadPlayerFacePiture,
   deletePlayerFacePictureFromCloud,
 } = require("../services/cloud")
-const { calculatePlayerSalary } = require("../modelHelperFunction/formula")
+const { calculatePlayerSalary } = require("../helpers/formula")
 const {
   createRequestToCreatePlayerPrismaQuery,
   confirmRequestToCreatePlayerPrismaQuery,

@@ -156,24 +156,26 @@ model FollowerFallowing {
 }
 
 model TeamAssets {
-  id                 Int           @id @default(autoincrement())
-  team               Team          @relation(fields: [teamId], references: [id])
-  teamId             Int           @unique
-  gym                Gym?          @relation(fields: [gymId], references: [id])
-  gymId              Int?
-  usedGymCount       Int           @default(0)
-  coach              Coach?        @relation(fields: [coachId], references: [id])
-  coachId            Int?
-  stadium            Stadium?      @relation(fields: [stadiumId], references: [id])
-  stadiumId          Int?
-  stadiumName        String        @default("تعریف نشده")
-  doctor             Doctor?       @relation(fields: [doctorId], references: [id])
-  doctorId           Int?
-  isUsedDoctor       Boolean       @default(false)
-  psychologist       Psychologist? @relation(fields: [psychologistId], references: [id])
-  psychologistId     Int?
-  isUsedPsychologist Boolean       @default(false)
-  isUsedRecovery     Boolean       @default(false)
+  id                  Int                @id @default(autoincrement())
+  team                Team               @relation(fields: [teamId], references: [id])
+  teamId              Int                @unique
+  gym                 Gym?               @relation(fields: [gymId], references: [id])
+  gymId               Int?
+  usedGymCount        Int                @default(0)
+  coach               Coach?             @relation(fields: [coachId], references: [id])
+  coachId             Int?
+  stadium             Stadium?           @relation(fields: [stadiumId], references: [id])
+  stadiumId           Int?
+  stadiumFacilities   StadiumFacilities? @relation(fields: [stadiumFacilitiesId], references: [id])
+  stadiumFacilitiesId Int?
+  stadiumName         String             @default("تعریف نشده")
+  doctor              Doctor?            @relation(fields: [doctorId], references: [id])
+  doctorId            Int?
+  isUsedDoctor        Boolean            @default(false)
+  psychologist        Psychologist?      @relation(fields: [psychologistId], references: [id])
+  psychologistId      Int?
+  isUsedPsychologist  Boolean            @default(false)
+  isUsedRecovery      Boolean            @default(false)
 }
 
 model TeamScores {
@@ -292,6 +294,17 @@ model Stadium {
   capacity Int
 }
 
+model StadiumFacilities {
+  id         Int          @id @default(autoincrement())
+  teams      TeamAssets[]
+  level      String       @unique @db.VarChar(1)
+  price      Int
+  facilities String
+  win        Int
+  equal      Int
+  lose       Int
+}
+
 model Doctor {
   id      Int          @id @default(autoincrement())
   teams   TeamAssets[]
@@ -316,24 +329,24 @@ model Recovery {
 }
 
 model Player {
-  id                                             Int                    @id @default(autoincrement())
-  team                                           Team?                  @relation(fields: [teamId], references: [id])
+  id                                             Int                            @id @default(autoincrement())
+  team                                           Team?                          @relation(fields: [teamId], references: [id])
   teamId                                         Int?
   name                                           String
   tShirtNumber                                   Int
-  facePicture                                    PlayerFacePicture      @relation(fields: [facePictureId], references: [id])
+  facePicture                                    PlayerFacePicture              @relation(fields: [facePictureId], references: [id])
   facePictureId                                  Int
   age                                            Int
-  goalCountInLeague                              Int                    @default(0)
-  position                                       PlayerPosition         @relation(name: "playerPosition", fields: [positionId], references: [id])
+  goalCountInLeague                              Int                            @default(0)
+  position                                       PlayerPosition                 @relation(name: "playerPosition", fields: [positionId], references: [id])
   positionId                                     Int
-  positionInMainComposition                      PlayerPosition?        @relation(name: "playerPositionInMainComposition", fields: [positionInMainCompositionId], references: [id])
+  positionInMainComposition                      PlayerPosition?                @relation(name: "playerPositionInMainComposition", fields: [positionInMainCompositionId], references: [id])
   positionInMainCompositionId                    Int?
-  inTeamMainComposition                          Boolean                @default(false)
-  nationality                                    String                 @default("ایران")
-  energy                                         Int                    @default(100)
-  injury                                         Int                    @default(0)
-  isPracticed                                    Boolean                @default(false)
+  inTeamMainComposition                          Boolean                        @default(false)
+  nationality                                    String                         @default("ایران")
+  energy                                         Int                            @default(100)
+  injury                                         Int                            @default(0)
+  isPracticed                                    Boolean                        @default(false)
   // power
   spead                                          Int
   controll                                       Int
@@ -347,51 +360,51 @@ model Player {
   experience                                     Int
   totalPower                                     Int
   // end power
-  status                                         PlayerStatus           @default(InTeam)
+  status                                         PlayerStatus                   @default(InTeam)
   salary                                         Int
   RequestToCreatePlayer                          RequestToCreatePlayer?
   // golden cup
-  goldenCupGameBestPlayer                        GoldenCupGame[]        @relation(name: "bestPlayer")
-  goldenCupGameInjuredPlayer                     GoldenCupGame[]        @relation(name: "injuredPlayer")
-  goldenCupGameplayerOneHasReceivedYellowCart    GoldenCupGame[]        @relation(name: "playerOneHasReceivedYellowCart")
-  goldenCupGamePlayerTwoHasReceivedYellowCart    GoldenCupGame[]        @relation(name: "playerTwoHasReceivedYellowCart")
-  goldenCupGamePlayerHasReceivedRedCart          GoldenCupGame[]        @relation(name: "playerHasReceivedRedCart")
-  goldenCupGameGoals                             GoldenCupGame[]        @relation(name: "scorerPlayer")
+  goldenCupGameBestPlayer                        GoldenCupGame[]                @relation(name: "bestPlayer")
+  goldenCupGameInjuredPlayer                     GoldenCupGame[]                @relation(name: "injuredPlayer")
+  goldenCupGameplayerOneHasReceivedYellowCart    GoldenCupGame[]                @relation(name: "playerOneHasReceivedYellowCart")
+  goldenCupGamePlayerTwoHasReceivedYellowCart    GoldenCupGame[]                @relation(name: "playerTwoHasReceivedYellowCart")
+  goldenCupGamePlayerHasReceivedRedCart          GoldenCupGame[]                @relation(name: "playerHasReceivedRedCart")
+  goldenCupGameGoals                             goldenCupGameScorerPlayer[]
   // champions cup
-  championsCupGameBestPlayer                     ChampionsCupGame[]     @relation(name: "bestPlayer")
-  championsCupGameInjuredPlayer                  ChampionsCupGame[]     @relation(name: "injuredPlayer")
-  championsCupGameplayerOneHasReceivedYellowCart ChampionsCupGame[]     @relation(name: "playerOneHasReceivedYellowCart")
-  championsCupGamePlayerTwoHasReceivedYellowCart ChampionsCupGame[]     @relation(name: "playerTwoHasReceivedYellowCart")
-  championsCupGamePlayerHasReceivedRedCart       ChampionsCupGame[]     @relation(name: "playerHasReceivedRedCart")
-  championsCupGameGoals                          ChampionsCupGame[]     @relation(name: "scorerPlayer")
+  championsCupGameBestPlayer                     ChampionsCupGame[]             @relation(name: "bestPlayer")
+  championsCupGameInjuredPlayer                  ChampionsCupGame[]             @relation(name: "injuredPlayer")
+  championsCupGameplayerOneHasReceivedYellowCart ChampionsCupGame[]             @relation(name: "playerOneHasReceivedYellowCart")
+  championsCupGamePlayerTwoHasReceivedYellowCart ChampionsCupGame[]             @relation(name: "playerTwoHasReceivedYellowCart")
+  championsCupGamePlayerHasReceivedRedCart       ChampionsCupGame[]             @relation(name: "playerHasReceivedRedCart")
+  championsCupGameGoals                          ChampionsCupGameScorerPlayer[]
   // league
-  leagueGameBestPlayer                           LeagueGame[]           @relation(name: "bestPlayer")
-  leagueGameInjuredPlayer                        LeagueGame[]           @relation(name: "injuredPlayer")
-  leagueGameplayerOneHasReceivedYellowCart       LeagueGame[]           @relation(name: "playerOneHasReceivedYellowCart")
-  leagueGamePlayerTwoHasReceivedYellowCart       LeagueGame[]           @relation(name: "playerTwoHasReceivedYellowCart")
-  leagueGamePlayerHasReceivedRedCart             LeagueGame[]           @relation(name: "playerHasReceivedRedCart")
-  leagueGameGoals                                LeagueGame[]           @relation(name: "scorerPlayer")
+  leagueGameBestPlayer                           LeagueGame[]                   @relation(name: "bestPlayer")
+  leagueGameInjuredPlayer                        LeagueGame[]                   @relation(name: "injuredPlayer")
+  leagueGameplayerOneHasReceivedYellowCart       LeagueGame[]                   @relation(name: "playerOneHasReceivedYellowCart")
+  leagueGamePlayerTwoHasReceivedYellowCart       LeagueGame[]                   @relation(name: "playerTwoHasReceivedYellowCart")
+  leagueGamePlayerHasReceivedRedCart             LeagueGame[]                   @relation(name: "playerHasReceivedRedCart")
+  leagueGameGoals                                LeagueGameScorerPlayer[]
   // friendly game
-  friendlyGameBestPlayer                         FriendlyGame[]         @relation(name: "bestPlayer")
-  friendlyGameInjuredPlayer                      FriendlyGame[]         @relation(name: "injuredPlayer")
-  friendlyGameplayerOneHasReceivedYellowCart     FriendlyGame[]         @relation(name: "playerOneHasReceivedYellowCart")
-  friendlyGamePlayerTwoHasReceivedYellowCart     FriendlyGame[]         @relation(name: "playerTwoHasReceivedYellowCart")
-  friendlyGamePlayerHasReceivedRedCart           FriendlyGame[]         @relation(name: "playerHasReceivedRedCart")
-  friendlyGameGoals                              FriendlyGame[]         @relation(name: "scorerPlayer")
+  friendlyGameBestPlayer                         FriendlyGame[]                 @relation(name: "bestPlayer")
+  friendlyGameInjuredPlayer                      FriendlyGame[]                 @relation(name: "injuredPlayer")
+  friendlyGameplayerOneHasReceivedYellowCart     FriendlyGame[]                 @relation(name: "playerOneHasReceivedYellowCart")
+  friendlyGamePlayerTwoHasReceivedYellowCart     FriendlyGame[]                 @relation(name: "playerTwoHasReceivedYellowCart")
+  friendlyGamePlayerHasReceivedRedCart           FriendlyGame[]                 @relation(name: "playerHasReceivedRedCart")
+  friendlyGameGoals                              FriendlyGameScorerPlayer[]
   // market
   adminPlayerSalesContract                       AdminSellablePlayer?
   playerSalesContract                            playerTransfers?
   // crts
   // yellow
-  yellowCartInLeagueGameCount                    String                 @default("0") @db.VarChar(1)
-  yellowCartInFriendlyGameCount                  String                 @default("0") @db.VarChar(1)
-  yellowCartInGoldCupGameCount                   String                 @default("0") @db.VarChar(1)
-  yellowCartInChampionsCupGameCount              String                 @default("0") @db.VarChar(1)
+  yellowCartInLeagueGameCount                    String                         @default("0") @db.VarChar(1)
+  yellowCartInFriendlyGameCount                  String                         @default("0") @db.VarChar(1)
+  yellowCartInGoldCupGameCount                   String                         @default("0") @db.VarChar(1)
+  yellowCartInChampionsCupGameCount              String                         @default("0") @db.VarChar(1)
   // red
-  hasRedCartInLeagueGame                         Boolean                @default(false)
-  hasRedCartInFriendlyGame                       Boolean                @default(false)
-  hasRedCartInGoldCupGame                        Boolean                @default(false)
-  hasRedCartInChampionsCupGame                   Boolean                @default(false)
+  hasRedCartInLeagueGame                         Boolean                        @default(false)
+  hasRedCartInFriendlyGame                       Boolean                        @default(false)
+  hasRedCartInGoldCupGame                        Boolean                        @default(false)
+  hasRedCartInChampionsCupGame                   Boolean                        @default(false)
 }
 
 enum PlayerStatus {
@@ -497,30 +510,38 @@ model GoldenCup {
 }
 
 model GoldenCupGame {
-  id                               Int         @id @default(autoincrement())
-  goldenCup                        GoldenCup   @relation(fields: [goldenCupId], references: [id])
+  id                               Int                         @id @default(autoincrement())
+  goldenCup                        GoldenCup                   @relation(fields: [goldenCupId], references: [id])
   goldenCupId                      Int
-  hostTeam                         Team        @relation(name: "hostTeam", fields: [hostTeamId], references: [id])
+  hostTeam                         Team                        @relation(name: "hostTeam", fields: [hostTeamId], references: [id])
   hostTeamId                       Int
-  visitingTeam                     Team        @relation(name: "visitingTeam", fields: [visitingTeamId], references: [id])
+  visitingTeam                     Team                        @relation(name: "visitingTeam", fields: [visitingTeamId], references: [id])
   visitingTeamId                   Int
   startTime                        DateTime
   resultDescription                String?
-  result                           GameResult?
+  result                           GameResult                  @default(undone)
   winerTeamGoalCount               Int?
   loserGoalCount                   Int?
   // special player in game
-  bestPlayer                       Player?     @relation(name: "bestPlayer", fields: [bestPlayerId], references: [id])
+  bestPlayer                       Player?                     @relation(name: "bestPlayer", fields: [bestPlayerId], references: [id])
   bestPlayerId                     Int?
-  injuredPlayer                    Player?     @relation(name: "injuredPlayer", fields: [injuredPlayerId], references: [id])
+  injuredPlayer                    Player?                     @relation(name: "injuredPlayer", fields: [injuredPlayerId], references: [id])
   injuredPlayerId                  Int?
-  playerOneHasReceivedYellowCart   Player?     @relation(name: "playerOneHasReceivedYellowCart", fields: [playerOneHasReceivedYellowCartId], references: [id])
+  playerOneHasReceivedYellowCart   Player?                     @relation(name: "playerOneHasReceivedYellowCart", fields: [playerOneHasReceivedYellowCartId], references: [id])
   playerOneHasReceivedYellowCartId Int?
-  playerTwoHasReceivedYellowCart   Player?     @relation(name: "playerTwoHasReceivedYellowCart", fields: [playerTwoHasReceivedYellowCartId], references: [id])
+  playerTwoHasReceivedYellowCart   Player?                     @relation(name: "playerTwoHasReceivedYellowCart", fields: [playerTwoHasReceivedYellowCartId], references: [id])
   playerTwoHasReceivedYellowCartId Int?
-  playerHasReceivedRedCart         Player?     @relation(name: "playerHasReceivedRedCart", fields: [playerHasReceivedRedCartId], references: [id])
+  playerHasReceivedRedCart         Player?                     @relation(name: "playerHasReceivedRedCart", fields: [playerHasReceivedRedCartId], references: [id])
   playerHasReceivedRedCartId       Int?
-  scorerPlayer                     Player[]    @relation(name: "scorerPlayer")
+  scorerPlayer                     goldenCupGameScorerPlayer[]
+}
+
+model goldenCupGameScorerPlayer {
+  id              Int           @id @default(autoincrement())
+  goldenCupGame   GoldenCupGame @relation(fields: [goldenCupGameId], references: [id])
+  goldenCupGameId Int
+  player          Player        @relation(fields: [playerId], references: [id])
+  playerId        Int
 }
 
 // end of golden cup
@@ -539,31 +560,39 @@ model ChampionsCup {
 }
 
 model ChampionsCupGame {
-  id                               Int          @id @default(autoincrement())
+  id                               Int                            @id @default(autoincrement())
   step                             Int
-  championsCup                     ChampionsCup @relation(fields: [championsCupId], references: [id])
+  championsCup                     ChampionsCup                   @relation(fields: [championsCupId], references: [id])
   championsCupId                   Int
-  hostTeam                         Team         @relation(name: "hostTeam", fields: [hostTeamId], references: [id])
+  hostTeam                         Team                           @relation(name: "hostTeam", fields: [hostTeamId], references: [id])
   hostTeamId                       Int
-  visitingTeam                     Team         @relation(name: "visitingTeam", fields: [visitingTeamId], references: [id])
+  visitingTeam                     Team                           @relation(name: "visitingTeam", fields: [visitingTeamId], references: [id])
   visitingTeamId                   Int
   startTime                        DateTime
   resultDescription                String?
-  result                           GameResult?
+  result                           GameResult                     @default(undone)
   winerTeamGoalCount               Int?
   loserGoalCount                   Int?
   // special player in game
-  bestPlayer                       Player?      @relation(name: "bestPlayer", fields: [bestPlayerId], references: [id])
+  bestPlayer                       Player?                        @relation(name: "bestPlayer", fields: [bestPlayerId], references: [id])
   bestPlayerId                     Int?
-  injuredPlayer                    Player?      @relation(name: "injuredPlayer", fields: [injuredPlayerId], references: [id])
+  injuredPlayer                    Player?                        @relation(name: "injuredPlayer", fields: [injuredPlayerId], references: [id])
   injuredPlayerId                  Int?
-  playerOneHasReceivedYellowCart   Player?      @relation(name: "playerOneHasReceivedYellowCart", fields: [playerOneHasReceivedYellowCartId], references: [id])
+  playerOneHasReceivedYellowCart   Player?                        @relation(name: "playerOneHasReceivedYellowCart", fields: [playerOneHasReceivedYellowCartId], references: [id])
   playerOneHasReceivedYellowCartId Int?
-  playerTwoHasReceivedYellowCart   Player?      @relation(name: "playerTwoHasReceivedYellowCart", fields: [playerTwoHasReceivedYellowCartId], references: [id])
+  playerTwoHasReceivedYellowCart   Player?                        @relation(name: "playerTwoHasReceivedYellowCart", fields: [playerTwoHasReceivedYellowCartId], references: [id])
   playerTwoHasReceivedYellowCartId Int?
-  playerHasReceivedRedCart         Player?      @relation(name: "playerHasReceivedRedCart", fields: [playerHasReceivedRedCartId], references: [id])
+  playerHasReceivedRedCart         Player?                        @relation(name: "playerHasReceivedRedCart", fields: [playerHasReceivedRedCartId], references: [id])
   playerHasReceivedRedCartId       Int?
-  scorerPlayer                     Player[]     @relation(name: "scorerPlayer")
+  scorerPlayer                     ChampionsCupGameScorerPlayer[]
+}
+
+model ChampionsCupGameScorerPlayer {
+  id                 Int              @id @default(autoincrement())
+  championsCupGame   ChampionsCupGame @relation(fields: [championsCupGameId], references: [id])
+  championsCupGameId Int
+  player             Player           @relation(fields: [playerId], references: [id])
+  playerId           Int
 }
 
 // end of champions cup
@@ -608,56 +637,72 @@ enum GameTimeName {
 }
 
 model LeagueGame {
-  id                               Int         @id @default(autoincrement())
-  league                           League      @relation(fields: [leagueId], references: [id])
+  id                               Int                      @id @default(autoincrement())
+  league                           League                   @relation(fields: [leagueId], references: [id])
   leagueId                         Int
-  hostTeam                         Team        @relation(name: "hostTeam", fields: [hostTeamId], references: [id])
+  hostTeam                         Team                     @relation(name: "hostTeam", fields: [hostTeamId], references: [id])
   hostTeamId                       Int
-  visitingTeam                     Team        @relation(name: "visitingTeam", fields: [visitingTeamId], references: [id])
+  visitingTeam                     Team                     @relation(name: "visitingTeam", fields: [visitingTeamId], references: [id])
   visitingTeamId                   Int
   startTime                        DateTime
   resultDescription                String?
-  result                           GameResult?
+  result                           GameResult               @default(undone)
   winerTeamGoalCount               Int?
   loserGoalCount                   Int?
   // special player in game
-  bestPlayer                       Player?     @relation(name: "bestPlayer", fields: [bestPlayerId], references: [id])
+  bestPlayer                       Player?                  @relation(name: "bestPlayer", fields: [bestPlayerId], references: [id])
   bestPlayerId                     Int?
-  injuredPlayer                    Player?     @relation(name: "injuredPlayer", fields: [injuredPlayerId], references: [id])
+  injuredPlayer                    Player?                  @relation(name: "injuredPlayer", fields: [injuredPlayerId], references: [id])
   injuredPlayerId                  Int?
-  playerOneHasReceivedYellowCart   Player?     @relation(name: "playerOneHasReceivedYellowCart", fields: [playerOneHasReceivedYellowCartId], references: [id])
+  playerOneHasReceivedYellowCart   Player?                  @relation(name: "playerOneHasReceivedYellowCart", fields: [playerOneHasReceivedYellowCartId], references: [id])
   playerOneHasReceivedYellowCartId Int?
-  playerTwoHasReceivedYellowCart   Player?     @relation(name: "playerTwoHasReceivedYellowCart", fields: [playerTwoHasReceivedYellowCartId], references: [id])
+  playerTwoHasReceivedYellowCart   Player?                  @relation(name: "playerTwoHasReceivedYellowCart", fields: [playerTwoHasReceivedYellowCartId], references: [id])
   playerTwoHasReceivedYellowCartId Int?
-  playerHasReceivedRedCart         Player?     @relation(name: "playerHasReceivedRedCart", fields: [playerHasReceivedRedCartId], references: [id])
+  playerHasReceivedRedCart         Player?                  @relation(name: "playerHasReceivedRedCart", fields: [playerHasReceivedRedCartId], references: [id])
   playerHasReceivedRedCartId       Int?
-  scorerPlayer                     Player[]    @relation(name: "scorerPlayer")
+  scorerPlayer                     LeagueGameScorerPlayer[]
+}
+
+model LeagueGameScorerPlayer {
+  id           Int        @id @default(autoincrement())
+  leagueGame   LeagueGame @relation(fields: [leagueGameId], references: [id])
+  leagueGameId Int
+  player       Player     @relation(fields: [playerId], references: [id])
+  playerId     Int
 }
 
 // friendly game
 model FriendlyGame {
-  id                               Int         @id @default(autoincrement())
-  hostTeam                         Team        @relation(name: "hostTeam", fields: [hostTeamId], references: [id])
+  id                               Int                        @id @default(autoincrement())
+  hostTeam                         Team                       @relation(name: "hostTeam", fields: [hostTeamId], references: [id])
   hostTeamId                       Int
-  visitingTeam                     Team        @relation(name: "visitingTeam", fields: [visitingTeamId], references: [id])
+  visitingTeam                     Team                       @relation(name: "visitingTeam", fields: [visitingTeamId], references: [id])
   visitingTeamId                   Int
   startTime                        DateTime
   resultDescription                String?
-  result                           GameResult?
+  result                           GameResult                 @default(undone)
   winerTeamGoalCount               Int?
   loserGoalCount                   Int?
   // special player in game
-  bestPlayer                       Player?     @relation(name: "bestPlayer", fields: [bestPlayerId], references: [id])
+  bestPlayer                       Player?                    @relation(name: "bestPlayer", fields: [bestPlayerId], references: [id])
   bestPlayerId                     Int?
-  injuredPlayer                    Player?     @relation(name: "injuredPlayer", fields: [injuredPlayerId], references: [id])
+  injuredPlayer                    Player?                    @relation(name: "injuredPlayer", fields: [injuredPlayerId], references: [id])
   injuredPlayerId                  Int?
-  playerOneHasReceivedYellowCart   Player?     @relation(name: "playerOneHasReceivedYellowCart", fields: [playerOneHasReceivedYellowCartId], references: [id])
+  playerOneHasReceivedYellowCart   Player?                    @relation(name: "playerOneHasReceivedYellowCart", fields: [playerOneHasReceivedYellowCartId], references: [id])
   playerOneHasReceivedYellowCartId Int?
-  playerTwoHasReceivedYellowCart   Player?     @relation(name: "playerTwoHasReceivedYellowCart", fields: [playerTwoHasReceivedYellowCartId], references: [id])
+  playerTwoHasReceivedYellowCart   Player?                    @relation(name: "playerTwoHasReceivedYellowCart", fields: [playerTwoHasReceivedYellowCartId], references: [id])
   playerTwoHasReceivedYellowCartId Int?
-  playerHasReceivedRedCart         Player?     @relation(name: "playerHasReceivedRedCart", fields: [playerHasReceivedRedCartId], references: [id])
+  playerHasReceivedRedCart         Player?                    @relation(name: "playerHasReceivedRedCart", fields: [playerHasReceivedRedCartId], references: [id])
   playerHasReceivedRedCartId       Int?
-  scorerPlayer                     Player[]    @relation(name: "scorerPlayer")
+  scorerPlayer                     FriendlyGameScorerPlayer[]
+}
+
+model FriendlyGameScorerPlayer {
+  id             Int          @id @default(autoincrement())
+  friendlyGame   FriendlyGame @relation(fields: [friendlyGameId], references: [id])
+  friendlyGameId Int
+  player         Player       @relation(fields: [playerId], references: [id])
+  playerId       Int
 }
 
 model RequestFriendlyGame {

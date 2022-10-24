@@ -59,7 +59,7 @@ const arrangeTeamsOfLeague = async (
       const neededTeamInLeague = 14 - league.teams.length
       if (neededTeamInLeague < newUnBlockedTeams.length) {
         league.teams.push(...newUnBlockedTeams.splice(0, neededTeamInLeague))
-      } else {
+      } else if (neededTeamInLeague !== 0) {
         league.teams.push(
           ...newUnBlockedTeams.splice(0, newUnBlockedTeams.length)
         )
@@ -95,10 +95,11 @@ const planningLeagueGames = async (teamIds, firstTimeInDay) => {
       .add("h", hour)
       .add("m", minute)
       .add("d", 1)
-
     const leagueGameTimePlan = []
     for (let i = 1; i <= 13; i++) {
-      leagueGameTimePlan.push(new Date(+gameTime.format("X")).toISOString())
+      leagueGameTimePlan.push(
+        new Date(+`${gameTime.format("X")}000`).toISOString()
+      )
       gameTime = gameTime.add("h", 12)
     }
 

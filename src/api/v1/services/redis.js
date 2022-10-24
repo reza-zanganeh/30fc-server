@@ -17,6 +17,7 @@ const REQUESTTOLOGIN = "REQUESTTOLOGIN"
 const RESETPASSWORD = "RESETPASSWORD"
 const NEEDLOGINAGAIN = "NEEDLOGINAGAIN"
 const INVALIDPASSWORD = "INVALIPASSWORD"
+const GAMECOUNT = "GAMECOUNT"
 
 const setOnRedis = async (key, value, expiresIn) => {
   return await client.set(key, value, expiresIn ? { EX: expiresIn * 60 } : {})
@@ -178,4 +179,14 @@ module.exports.removeUserFromNeedLoginAgainInRedis = async (id) => {
 module.exports.checkUserNeedToLoginAgain = async (id) => {
   const needLoginAgain = await getFromRedis(NEEDLOGINAGAIN)
   return needLoginAgain && needLoginAgain.includes(id) != -1
+}
+
+module.exports.getGameCount = async () => {
+  return +(await getFromRedis(GAMECOUNT)) || 1
+}
+
+module.exports.increaseGameCount = async () => {
+  const gameCount = await getFromRedis(GAMECOUNT)
+  if (gameCount) await setOnRedis(GAMECOUNT, +gameCount + 1)
+  else await setOnRedis(GAMECOUNT, 1)
 }
