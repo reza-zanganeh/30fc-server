@@ -15,10 +15,12 @@ const {
   getNewUnBlockedTeam,
   resetTeamScoresInLeagu,
 } = require("../prismaQuery/team")
-const { deleteAllDoneLeaguGames } = require("../prismaQuery/game")
+const {
+  deleteAllLeaguGames,
+  getLeagueGamesThatPassedStartTime,
+} = require("../prismaQuery/game")
 const {
   arrangeTeamsOfLeague,
-  blockInactiveTeams,
   createNewLeague,
   getLeagueLevelToLeagueGameTimeMap,
   planningLeagueGames,
@@ -28,30 +30,57 @@ const {
   addPrismaQueryToPool,
   prismaTransaction,
 } = require("../helpers/prisma")
-const { updateThreeTopTeams } = require("../modelHelperFunction/team")
+const {
+  updateThreeTopLeagueTeams,
+  blockInactiveTeams,
+} = require("../modelHelperFunction/team")
+const { playGame } = require("../modelHelperFunction/game")
+
 const { Ok } = require("../helpers/HttpResponse")
-// at 12 am friday
-module.exports.endLeagueCronJobHandler = async () => {
+
+module.exports.startLeague = async () => {
   try {
-    const prismaQueriesEndLeagueCronJobPoolIndex = createPrismaQueryPool()
+    // remove all league without 14 teams
+    // un link first team second team third team
+    const prismaQueriesStartLeaguePoolIndex = createPrismaQueryPool()
+    addPrismaQueryToPool(
+      prismaQueriesStartLeaguePoolIndex,
+      deleteLeagueWithoutComplateTeams()
+    )
+    addPrismaQueryToPool(
+      prismaQueriesStartLeaguePoolIndex,
+      removeTopThreeLeaguTeamsPrismaQuery()
+    )
+    await prismaTransaction(prismaQueriesStartLeaguePoolIndex)
+  } catch (error) {
+    internalServerErrorHandler(null, error)
+  }
+}
+
+// at 12 am friday
+
+module.exports.endLeague = async () => {
+  try {
+    const prismaQueriesEndLeaguePoolIndex = createPrismaQueryPool()
+    // go to end session
     await blockInactiveTeams()
     let needToCreateNewLeagues = true
     const leagues = await getLeaguesPrismaQuery()
     const newUnBlockedTeams = await getNewUnBlockedTeam()
     const leagueLevelToLeagueGameTimeMap =
       await getLeagueLevelToLeagueGameTimeMap()
-    await deleteAllDoneLeaguGames()
+    deleteAllLeaguGames(prismaQueriesEndLeaguePoolIndex)
 
     for (let i = 0; i < leagues.length; i++) {
       //  especify first team , second team , third team
       const firstTeamInLeague = leagues[i].teams[0]
       const secondTeamInLeague = leagues[i].teams[1]
       const thirdTeamInLeague = leagues[i].teams[2]
-      await updateThreeTopTeams(
+      await updateThreeTopLeagueTeams(
         firstTeamInLeague.id,
         secondTeamInLeague.id,
         thirdTeamInLeague.id,
-        prismaQueriesEndLeagueCronJobPoolIndex
+        prismaQueriesEndLeaguePoolIndex
       )
       const leftLeagueIndex = 2 * leagues[i].group - 1
       const rightLeagueIndex = 2 * leagues[i].group
@@ -65,7 +94,7 @@ module.exports.endLeagueCronJobHandler = async () => {
       //  planning new games and remove old games
       if (!teamsOfLeagueIsComplate) {
         addPrismaQueryToPool(
-          prismaQueriesEndLeagueCronJobPoolIndex,
+          prismaQueriesEndLeaguePoolIndex,
           updateLeaguePrismaQuery(
             leagues[i].id,
             teamIds,
@@ -77,12 +106,12 @@ module.exports.endLeagueCronJobHandler = async () => {
         needToCreateNewLeagues = false
         return
       }
-      const games = await planningLeagueGames(
+      const games = planningLeagueGames(
         leagues[i].teams.map((team) => team.id),
         leagueLevelToLeagueGameTimeMap[leagues[i].level]
       )
       addPrismaQueryToPool(
-        prismaQueriesEndLeagueCronJobPoolIndex,
+        prismaQueriesEndLeaguePoolIndex,
         updateLeaguePrismaQuery(
           leagues[i].id,
           teamIds,
@@ -96,7 +125,7 @@ module.exports.endLeagueCronJobHandler = async () => {
 
     // reset teams score in league
     addPrismaQueryToPool(
-      prismaQueriesEndLeagueCronJobPoolIndex,
+      prismaQueriesEndLeaguePoolIndex,
       resetTeamScoresInLeagu()
     )
     //  if have new teams create new league
@@ -106,7 +135,7 @@ module.exports.endLeagueCronJobHandler = async () => {
         const { newLeagueGroup, newLeagueLevel, teams, games } =
           await createNewLeague(lastLeagueGroup, newUnBlockedTeams)
         addPrismaQueryToPool(
-          prismaQueriesEndLeagueCronJobPoolIndex,
+          prismaQueriesEndLeaguePoolIndex,
           createNewLeaguePrismaQuery(
             newLeagueLevel,
             newLeagueGroup,
@@ -118,26 +147,7 @@ module.exports.endLeagueCronJobHandler = async () => {
       }
     }
 
-    await prismaTransaction(prismaQueriesEndLeagueCronJobPoolIndex)
-  } catch (error) {
-    internalServerErrorHandler(null, error)
-  }
-}
-
-module.exports.startLeagueCronJobHandler = async () => {
-  try {
-    // remove all league without 14 teams
-    // un link first team second team third team
-    const prismaQueriesStartLeagueCronJobPoolIndex = createPrismaQueryPool()
-    addPrismaQueryToPool(
-      prismaQueriesStartLeagueCronJobPoolIndex,
-      deleteLeagueWithoutComplateTeams()
-    )
-    addPrismaQueryToPool(
-      prismaQueriesStartLeagueCronJobPoolIndex,
-      removeTopThreeLeaguTeamsPrismaQuery()
-    )
-    await prismaTransaction(prismaQueriesStartLeagueCronJobPoolIndex)
+    await prismaTransaction(prismaQueriesEndLeaguePoolIndex)
   } catch (error) {
     internalServerErrorHandler(null, error)
   }
@@ -165,5 +175,22 @@ module.exports.getLeaguTable = async (req, res, next) => {
     resposeHandler(res, leagueTable, Ok("خواندن جدول لیگ"))
   } catch (error) {
     internalServerErrorHandler(next, error)
+  }
+}
+
+module.exports.playRecievedTimeLeagueGames = async () => {
+  try {
+    const leagueGameThatPassedStartTime =
+      await getLeagueGamesThatPassedStartTime()
+    for (let i = 0; i < leagueGameThatPassedStartTime.length; i++) {
+      await playGame(
+        leagueGameThatPassedStartTime[i].hostTeamId,
+        leagueGameThatPassedStartTime[i].visitingTeamId,
+        "league",
+        leagueGameThatPassedStartTime[i].id
+      )
+    }
+  } catch (error) {
+    internalServerErrorHandler(null, error)
   }
 }

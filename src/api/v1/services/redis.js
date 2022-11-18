@@ -190,3 +190,7 @@ module.exports.increaseGameCount = async () => {
   if (gameCount) await setOnRedis(GAMECOUNT, +gameCount + 1)
   else await setOnRedis(GAMECOUNT, 1)
 }
+
+module.exports.resetGameCount = async () => {
+  await setOnRedis(GAMECOUNT, 0)
+}

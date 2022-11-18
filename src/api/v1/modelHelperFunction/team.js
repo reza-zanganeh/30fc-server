@@ -1,5 +1,8 @@
 const { modelName } = require("../../../config/Constant")
-const { createRandomNumber } = require("../helpers/Functions")
+const {
+  createRandomNumber,
+  howManyDayPssedFromNow,
+} = require("../helpers/Functions")
 const {
   compositionModelName,
   primitivePlayerNameModelName,
@@ -14,11 +17,11 @@ const {
   readOne,
   readAll,
   updateWithoutExecute,
-  prismaTransaction,
   addPrismaQueryToPool,
 } = require("../helpers/prisma")
 const { calculatePlayerSalary } = require("../helpers/formula")
 const {
+  blockTeamsPrismaQuery,
   getComplateInfoAboutSponserAndScoresTopThreeTeams,
 } = require("../prismaQuery/team")
 // data functions
@@ -253,11 +256,11 @@ const validateTeamName = async (teamName) => {
   }
 }
 
-const updateThreeTopTeams = async (
+const updateThreeTopLeagueTeams = async (
   firstTeamId,
   secondTeamId,
   thirdTeamId,
-  prismaQueriesEndLeagueCronJobPoolIndex
+  prismaQueriesEndLeaguePoolIndex
 ) => {
   try {
     const threeTopTeams =
@@ -267,7 +270,7 @@ const updateThreeTopTeams = async (
         thirdTeamId
       )
     addPrismaQueryToPool(
-      prismaQueriesEndLeagueCronJobPoolIndex,
+      prismaQueriesEndLeaguePoolIndex,
       updateWithoutExecute(
         teamModelName.english,
         { id: threeTopTeams[0].id },
@@ -293,7 +296,7 @@ const updateThreeTopTeams = async (
       )
     )
     addPrismaQueryToPool(
-      prismaQueriesEndLeagueCronJobPoolIndex,
+      prismaQueriesEndLeaguePoolIndex,
       updateWithoutExecute(
         teamModelName.english,
         { id: threeTopTeams[1].id },
@@ -319,7 +322,7 @@ const updateThreeTopTeams = async (
       )
     )
     addPrismaQueryToPool(
-      prismaQueriesEndLeagueCronJobPoolIndex,
+      prismaQueriesEndLeaguePoolIndex,
       updateWithoutExecute(
         teamModelName.english,
         { id: threeTopTeams[2].id },
@@ -349,9 +352,26 @@ const updateThreeTopTeams = async (
   }
 }
 
+const blockInactiveTeams = async () => {
+  try {
+    const teams = await readAll(teamModelName.english, {
+      isBlock: { equals: false },
+    })
+    const inactiveTeamIds = []
+    teams.forEach((team) => {
+      if (howManyDayPssedFromNow(team.lastTimeSeen) >= 30)
+        inactiveTeamIds.push(team.id)
+    })
+    if (inactiveTeamIds.length > 0) await blockTeamsPrismaQuery(inactiveTeamIds)
+  } catch (error) {
+    throw error
+  }
+}
+
 module.exports = {
   createDataTeam,
   validateTeamName,
   getPositionsMap,
-  updateThreeTopTeams,
+  updateThreeTopLeagueTeams,
+  blockInactiveTeams,
 }

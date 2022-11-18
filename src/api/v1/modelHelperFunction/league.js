@@ -1,14 +1,7 @@
 const { modelName } = require("../../../config/Constant")
 const { gameTimeModelName } = modelName
 const persianDate = require("persian-date").toLocale("fa")
-
-const { howManyDayPssedFromNow } = require("../helpers/Functions")
 const { readAll } = require("../helpers/prisma")
-const {
-  getUnBlockTeamsInleagues,
-  blockTeamsPrismaQuery,
-} = require("../prismaQuery/team")
-
 const arrangeTeamsOfLeague = async (
   league,
   leftLowerLeague,
@@ -73,21 +66,7 @@ const arrangeTeamsOfLeague = async (
   }
 }
 
-const blockInactiveTeams = async () => {
-  try {
-    const teams = await getUnBlockTeamsInleagues()
-    const inactiveTeamIds = []
-    teams.forEach((team) => {
-      if (howManyDayPssedFromNow(team.lastTimeSeen) >= 30)
-        inactiveTeamIds.push(team.id)
-    })
-    await blockTeamsPrismaQuery(inactiveTeamIds)
-  } catch (error) {
-    throw error
-  }
-}
-
-const planningLeagueGames = async (teamIds, firstTimeInDay) => {
+const planningLeagueGames = (teamIds, firstTimeInDay) => {
   try {
     const { hour, minute } = firstTimeInDay
     let gameTime = new persianDate()
@@ -257,14 +236,14 @@ const createNewLeague = async (lastLeagueGroup = 1, newUnBlockedTeams) => {
       await getLeagueLevelToLeagueGameTimeMap()
     let newLeagueLevel = 1
     let newLeagueGroup = lastLeagueGroup + 1
-    while (newLeagueGroup > 1) {
+    while (Math.floor(newLeagueGroup) > 1) {
       newLeagueLevel += 1
       newLeagueGroup /= 2
     }
     newLeagueGroup = lastLeagueGroup + 1
     const teams = newUnBlockedTeams.splice(0, 14)
     //  planning games
-    const games = await planningLeagueGames(
+    const games = planningLeagueGames(
       teams.map((team) => team.id),
       leagueLevelToLeagueGameTimeMap[newLeagueLevel]
     )
@@ -308,7 +287,6 @@ const getLeagueLevelToLeagueGameTimeMap = async () => {
 
 module.exports = {
   arrangeTeamsOfLeague,
-  blockInactiveTeams,
   createNewLeague,
   planningLeagueGames,
   getLeagueLevelToLeagueGameTimeMap,

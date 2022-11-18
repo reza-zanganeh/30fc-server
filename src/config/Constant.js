@@ -103,6 +103,14 @@ const modelName = {
     english: "sponser",
     persian: "اسپانسر",
   },
+  championsCupModelName: {
+    english: "championsCup",
+    persian: "جام قهرمانان",
+  },
+  championsCupGameModelName: {
+    english: "championsCupGame",
+    persian: "بازی جام قهرمانان",
+  },
 }
 
 module.exports = {

@@ -18,14 +18,8 @@ registerRoutes(app)
 //#region functions that run on running server
 const { readGeneralDataAndSaveOnRedis } = require("./helpers/Functions")
 const { internalServerErrorHandler } = require("./helpers/responseHandler")
+const { resetGameCount } = require("./services/redis")
 //#endregion
-
-const { playLeagueLevelOneGames } = require("./controller/game")
-const {
-  startLeagueCronJobHandler,
-  endLeagueCronJobHandler,
-} = require("./controller/league")
-
 const PORT = projectConfig.server.httpServer.port
 app.listen(PORT, async () => {
   try {
@@ -44,11 +38,10 @@ app.listen(PORT, async () => {
     //          InviteNewTeamCoinCount
     //   `
     // )
-    // await readGeneralDataAndSaveOnRedis()
-    // await endLeagueCronJobHandler()
-    await startLeagueCronJobHandler()
-    // await playLeagueLevelOneGames()
+    await readGeneralDataAndSaveOnRedis()
+    await resetGameCount()
   } catch (error) {
+    console.log(error)
     internalServerErrorHandler(null, error)
   }
 })

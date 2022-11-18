@@ -1,4 +1,4 @@
-const { modelName } = require("../../../config/Constant")
+const { modelName, gameSettings } = require("../../../config/Constant")
 const {
   playerModelName,
   sponserModelName,
@@ -17,6 +17,8 @@ const {
 const {
   playingLeagueGame,
   connectScorerPlayerToLeagueGame,
+  connectScorerPlayerToChampionsCupGame,
+  playingChampionsCupGame,
 } = require("../prismaQuery/game")
 const {
   getGameCount,
@@ -410,26 +412,26 @@ const givingYellowCartToPlayer = (
         )
       )
     } else if (gameType === "championsCup") {
-      newYellowCartCount = player.hasRedCartInChampionsCupGame + 1
+      newYellowCartCount = +player.yellowCartInChampionsCupGameCount + 1
       addPrismaQueryToPool(
         prismaQueriesPlayGamePoolIndex,
         updateWithoutExecute(
           playerModelName.english,
           { id: playerReceivedYellowCartId },
           {
-            hasRedCartInChampionsCupGame: newYellowCartCount,
+            yellowCartInChampionsCupGameCount: `${newYellowCartCount}`,
           }
         )
       )
     } else if (gameType === "goldCup") {
-      newYellowCartCount = player.hasRedCartInGoldCupGame + 1
+      newYellowCartCount = +player.yellowCartInGoldCupGameCount + 1
       addPrismaQueryToPool(
         prismaQueriesPlayGamePoolIndex,
         updateWithoutExecute(
           playerModelName.english,
           { id: playerReceivedYellowCartId },
           {
-            hasRedCartInGoldCupGame: newYellowCartCount,
+            yellowCartInGoldCupGameCount: newYellowCartCount,
           }
         )
       )
@@ -886,11 +888,16 @@ const playGame = async (hostTeamId, visitingTeamId, gameType, gameId) => {
         visitingTeamScore *= 1.1
     }
 
+    const differenceOfHostTeamAndVisitingTeamGoalCountFloor = Math.floor(
+      Math.abs(hostTeamScore - visitingTeamScore) /
+        DifferenceInPointsForEachGoal
+    )
     const differenceOfHostTeamAndVisitingTeamGoalCount =
-      Math.floor(
-        Math.abs(hostTeamScore - visitingTeamScore) /
-          DifferenceInPointsForEachGoal
-      ) || 0
+      differenceOfHostTeamAndVisitingTeamGoalCountFloor >= 1
+        ? differenceOfHostTeamAndVisitingTeamGoalCountFloor
+        : gameType === "league" || gameType === "friendly"
+        ? 0
+        : 1
 
     let result, hostTeamGoalCount, visitingTeamGoalCount
     if (differenceOfHostTeamAndVisitingTeamGoalCount === 0) {
@@ -1035,7 +1042,6 @@ const playGame = async (hostTeamId, visitingTeamId, gameType, gameId) => {
         )
       }
     }
-
     // // update host team
     // totalLoseCount
     // totalWinCount
@@ -1060,14 +1066,16 @@ const playGame = async (hostTeamId, visitingTeamId, gameType, gameId) => {
         teamScoresModelName.english,
         { teamId: hostTeam.id },
         {
+          ...(gameType === "league" && {
+            scoreInLeague: hostTeamUpdatedData.scoreInLeague,
+            equalCountInLeague: hostTeamUpdatedData.equalCountInLeague,
+            winCountInLeague: hostTeamUpdatedData.winCountInLeague,
+            loseCountInLeague: hostTeamUpdatedData.loseCountInLeague,
+          }),
           totalEqualCount: hostTeamUpdatedData.totalEqualCount,
-          totalScore: hostTeamUpdatedData.totalScore,
-          scoreInLeague: hostTeamUpdatedData.scoreInLeague,
-          equalCountInLeague: hostTeamUpdatedData.equalCountInLeague,
           totalLoseCount: hostTeamUpdatedData.totalLoseCount,
           totalWinCount: hostTeamUpdatedData.totalWinCount,
-          winCountInLeague: hostTeamUpdatedData.winCountInLeague,
-          loseCountInLeague: hostTeamUpdatedData.loseCountInLeague,
+          totalScore: hostTeamUpdatedData.totalScore,
           scoreInTournament: hostTeamUpdatedData.scoreInTournament,
         }
       )
@@ -1089,14 +1097,16 @@ const playGame = async (hostTeamId, visitingTeamId, gameType, gameId) => {
         teamScoresModelName.english,
         { teamId: visitingTeam.id },
         {
-          totalEqualCount: visitingTeamUpdatedData.totalEqualCount,
+          ...(gameType === "league" && {
+            scoreInLeague: visitingTeamUpdatedData.scoreInLeague,
+            winCountInLeague: visitingTeamUpdatedData.winCountInLeague,
+            loseCountInLeague: visitingTeamUpdatedData.loseCountInLeague,
+            equalCountInLeague: visitingTeamUpdatedData.equalCountInLeague,
+          }),
           totalScore: visitingTeamUpdatedData.totalScore,
-          scoreInLeague: visitingTeamUpdatedData.scoreInLeague,
-          equalCountInLeague: visitingTeamUpdatedData.equalCountInLeague,
+          totalEqualCount: visitingTeamUpdatedData.totalEqualCount,
           totalLoseCount: visitingTeamUpdatedData.totalLoseCount,
           totalWinCount: visitingTeamUpdatedData.totalWinCount,
-          winCountInLeague: visitingTeamUpdatedData.winCountInLeague,
-          loseCountInLeague: visitingTeamUpdatedData.loseCountInLeague,
           scoreInTournament: visitingTeamUpdatedData.scoreInTournament,
         }
       )
@@ -1111,7 +1121,30 @@ const playGame = async (hostTeamId, visitingTeamId, gameType, gameId) => {
       addPrismaQueryToPool(
         prismaQueriesPlayGamePoolIndex,
         playingLeagueGame(gameId, {
-          gameId,
+          result,
+          resultDescription,
+          winerTeamGoalCount:
+            result === "hostTeam" ? hostTeamGoalCount : visitingTeamGoalCount,
+          loserGoalCount:
+            result === "hostTeam" ? visitingTeamGoalCount : hostTeamGoalCount,
+          playerHasReceivedRedCartId,
+          playerOneHasReceivedYellowCartId,
+          playerTwoHasReceivedYellowCartId,
+          injuredPlayerId,
+          bestPlayerId,
+        })
+      )
+    }
+
+    if (gameType === "championsCup") {
+      addPrismaQueryToPool(
+        prismaQueriesPlayGamePoolIndex,
+        connectScorerPlayerToChampionsCupGame(gameId, scorerPlayersId)
+      )
+
+      addPrismaQueryToPool(
+        prismaQueriesPlayGamePoolIndex,
+        playingChampionsCupGame(gameId, {
           result,
           resultDescription,
           winerTeamGoalCount:
@@ -1129,6 +1162,9 @@ const playGame = async (hostTeamId, visitingTeamId, gameType, gameId) => {
 
     await prismaTransaction(prismaQueriesPlayGamePoolIndex)
     await increaseGameCount()
+    return result === "hostTeam"
+      ? { winnerTeamId: hostTeam.id, loserTeamId: visitingTeam.id }
+      : { winnerTeamId: visitingTeam.id, loserTeamId: hostTeam.id }
   } catch (error) {
     throw error
   }
