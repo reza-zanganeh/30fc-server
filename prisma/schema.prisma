@@ -198,7 +198,7 @@ model TeamScores {
   hasBestTeamCup             Boolean @default(false)
   // cups
   championsCupCount          Int     @default(0)
-  goldCupCount               Int     @default(0)
+  goldenCupCount             Int     @default(0)
   // tournament
   scoreInTournament          Int     @default(0)
 }
@@ -398,12 +398,12 @@ model Player {
   // yellow
   yellowCartInLeagueGameCount                    String                         @default("0") @db.VarChar(1)
   yellowCartInFriendlyGameCount                  String                         @default("0") @db.VarChar(1)
-  yellowCartInGoldCupGameCount                   String                         @default("0") @db.VarChar(1)
+  yellowCartInGoldenCupGameCount                 String                         @default("0") @db.VarChar(1)
   yellowCartInChampionsCupGameCount              String                         @default("0") @db.VarChar(1)
   // red
   hasRedCartInLeagueGame                         Boolean                        @default(false)
   hasRedCartInFriendlyGame                       Boolean                        @default(false)
-  hasRedCartInGoldCupGame                        Boolean                        @default(false)
+  hasRedCartInGoldenCupGame                      Boolean                        @default(false)
   hasRedCartInChampionsCupGame                   Boolean                        @default(false)
 }
 
@@ -489,28 +489,34 @@ model RequestToCreatePlayer {
 // competition
 //  golden cup
 model GoldenCup {
-  id                     Int             @id @default(autoincrement())
-  step                   Int
-  teamCount              Int
-  // gameCountToPlay = teamCount / 2
-  gameCountToPlay        Int
-  registerCostInToman    Int
-  startRegisterTimeStamp DateTime
-  endRegisterTimeStamp   DateTime
-  silver                 Boolean
-  golden                 Boolean
-  diamond                Boolean
-  teams                  Team[]
+  id                  Int             @id @default(autoincrement())
+  teamCount           Int
+  registeredTeamCount Int             @default(0)
+  registerCostInToman Int
+  status              GoldenCupStatus @default(NotStarted)
+  silver              Boolean
+  golden              Boolean
+  diamond             Boolean
+  teams               Team[]
   // top teams
-  firstTeam              Team?           @relation(name: "firstTeam", fields: [firstTeamId], references: [id])
-  firstTeamId            Int?            @unique
-  secondTeam             Team?           @relation(name: "secondTeam", fields: [secondTeamId], references: [id])
-  secondTeamId           Int?            @unique
-  games                  GoldenCupGame[]
+  firstTeam           Team?           @relation(name: "firstTeam", fields: [firstTeamId], references: [id])
+  firstTeamId         Int?            @unique
+  secondTeam          Team?           @relation(name: "secondTeam", fields: [secondTeamId], references: [id])
+  secondTeamId        Int?            @unique
+  games               GoldenCupGame[]
+}
+
+enum GoldenCupStatus {
+  NotStarted
+  Registering
+  EndOfRegisteration
+  Running
+  Ended
 }
 
 model GoldenCupGame {
   id                               Int                         @id @default(autoincrement())
+  step                             Int
   goldenCup                        GoldenCup                   @relation(fields: [goldenCupId], references: [id])
   goldenCupId                      Int
   hostTeam                         Team                        @relation(name: "hostTeam", fields: [hostTeamId], references: [id])
@@ -632,8 +638,7 @@ enum GameTimeName {
   FriendlyGameOne
   FriendlyGameTwo
   FriendlyGameThree
-  GoldenCupOne
-  GoldenCupTwo
+  GoldenCup
 }
 
 model LeagueGame {
@@ -725,8 +730,8 @@ model Tournament {
   firstTeamInLeaguePoints        Int
   secondTeamInLeagePoints        Int
   thirdTeamInLeaguePoints        Int
-  firstTeamInGoldCupPoints       Int
-  secondTeamInGoldCupPoints      Int
+  firstTeamInGoldenCupPoints     Int
+  secondTeamInGoldenCupPoints    Int
   firstTeamInChampionsCupPoints  Int
   secondTeamInChampionsCupPoints Int
   playGamePoints                 Int
@@ -764,7 +769,7 @@ model Sponser {
   secondInLeagueCoinCount       Int
   thirdInLeagueCoinCount        Int
   championsCupChampionCoinCount Int
-  goldCupChampionCoinCount      Int
+  goldenCupChampionCoinCount    Int
   winOfficialGameCoinCount      Int
   topScorerCoinCount            Int
   teams                         Team[]

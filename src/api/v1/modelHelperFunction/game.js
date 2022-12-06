@@ -19,6 +19,8 @@ const {
   connectScorerPlayerToLeagueGame,
   connectScorerPlayerToChampionsCupGame,
   playingChampionsCupGame,
+  connectScorerPlayerToGoldenCupGame,
+  playingGoldenCupGame,
 } = require("../prismaQuery/game")
 const {
   getGameCount,
@@ -55,8 +57,8 @@ const playerIsNotAllowedToPlayInChmapionsCupGame = (
 
 const playerIsNotAllowedToPlayInGoldenCup = (
   gameType,
-  hasRedCartInGoldCupGame
-) => gameType === "goldCup" && hasRedCartInGoldCupGame
+  hasRedCartInGoldenCupGame
+) => gameType === "goldenCup" && hasRedCartInGoldenCupGame
 
 const removePlayerRedCartOrYellowCartInLeaguGame = (
   playerId,
@@ -120,7 +122,7 @@ const removePlayerRedCartInGoldenCup = (playerId) => {
       playerModelName.english,
       { id: playerId },
       {
-        hasRedCartInGoldCupGame: false,
+        hasRedCartInGoldenCupGame: false,
       }
     )
   } catch (error) {
@@ -238,7 +240,7 @@ const replacePlayersNotAallowedToPlay = async (
       } else if (
         playerIsNotAllowedToPlayInGoldenCup(
           gameType,
-          players[i].hasRedCartInGoldCupGame
+          players[i].hasRedCartInGoldenCupGame
         )
       ) {
         addPrismaQueryToPool(
@@ -329,7 +331,7 @@ const givingRedCartToPlayer = (playerId, gameType) => {
         ...(gameType === "championsCup" && {
           hasRedCartInChampionsCupGame: true,
         }),
-        ...(gameType === "goldCup" && { hasRedCartInGoldCupGame: true }),
+        ...(gameType === "goldenCup" && { hasRedCartInGoldenCupGame: true }),
       }
     )
   } catch (error) {
@@ -423,15 +425,15 @@ const givingYellowCartToPlayer = (
           }
         )
       )
-    } else if (gameType === "goldCup") {
-      newYellowCartCount = +player.yellowCartInGoldCupGameCount + 1
+    } else if (gameType === "goldenCup") {
+      newYellowCartCount = +player.yellowCartInGoldenCupGameCount + 1
       addPrismaQueryToPool(
         prismaQueriesPlayGamePoolIndex,
         updateWithoutExecute(
           playerModelName.english,
           { id: playerReceivedYellowCartId },
           {
-            yellowCartInGoldCupGameCount: newYellowCartCount,
+            yellowCartInGoldenCupGameCount: `${newYellowCartCount}`,
           }
         )
       )
@@ -1134,9 +1136,7 @@ const playGame = async (hostTeamId, visitingTeamId, gameType, gameId) => {
           bestPlayerId,
         })
       )
-    }
-
-    if (gameType === "championsCup") {
+    } else if (gameType === "championsCup") {
       addPrismaQueryToPool(
         prismaQueriesPlayGamePoolIndex,
         connectScorerPlayerToChampionsCupGame(gameId, scorerPlayersId)
@@ -1145,6 +1145,28 @@ const playGame = async (hostTeamId, visitingTeamId, gameType, gameId) => {
       addPrismaQueryToPool(
         prismaQueriesPlayGamePoolIndex,
         playingChampionsCupGame(gameId, {
+          result,
+          resultDescription,
+          winerTeamGoalCount:
+            result === "hostTeam" ? hostTeamGoalCount : visitingTeamGoalCount,
+          loserGoalCount:
+            result === "hostTeam" ? visitingTeamGoalCount : hostTeamGoalCount,
+          playerHasReceivedRedCartId,
+          playerOneHasReceivedYellowCartId,
+          playerTwoHasReceivedYellowCartId,
+          injuredPlayerId,
+          bestPlayerId,
+        })
+      )
+    } else if (gameType === "goldenCup") {
+      addPrismaQueryToPool(
+        prismaQueriesPlayGamePoolIndex,
+        connectScorerPlayerToGoldenCupGame(gameId, scorerPlayersId)
+      )
+
+      addPrismaQueryToPool(
+        prismaQueriesPlayGamePoolIndex,
+        playingGoldenCupGame(gameId, {
           result,
           resultDescription,
           winerTeamGoalCount:

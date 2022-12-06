@@ -1,3 +1,4 @@
+const axios = require("axios").default
 const { axiosInstance } = require("./axios")
 // athentication
 const requestToLoginOrRegister = async (phonenumber) => {
@@ -39,7 +40,7 @@ const loginRezaAdmin = async () => {
     {
       headers: {
         otptoken:
-          "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwaG9uZW51bWJlciI6IjA5MjEzMjYzMzI1IiwiaWF0IjoxNjY0ODcwODI5LCJleHAiOjE2NjQ4NzExMjl9.lQ2SHrKjAnzLX_J0ueARHMkvg-G75faHJkuukjLEWG4",
+          "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwaG9uZW51bWJlciI6IjA5MjEzMjYzMzI1IiwiaXNVc2VyRXhpc3RzIjp0cnVlLCJpYXQiOjE2Njg5Njc1NzUsImV4cCI6MTY2ODk2Nzg3NX0._p3czGdhA45EAVJHfai0nhaEg1oF_BRSstv5Ybyf3rU",
       },
     }
   )
@@ -72,6 +73,22 @@ const register = async (
     {
       headers: {
         otptoken,
+      },
+    }
+  )
+}
+
+const login = async (password) => {
+  // const otptoken = (await requestToLoginOrRegister(phonenumber)).data.data.token
+  await axiosInstance.post(
+    "/authentication/login",
+    {
+      password,
+    },
+    {
+      headers: {
+        otptoken:
+          "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwaG9uZW51bWJlciI6IjA5MzM3MzExMzU0IiwiaXNVc2VyRXhpc3RzIjp0cnVlLCJpYXQiOjE2Njg5NzA1NzUsImV4cCI6MTY2ODk3MDg3NX0.O6cAUNOchF4DBqi9izM4xfkCIX6_sAmCqp4vWqrQOk4",
       },
     }
   )
@@ -352,4 +369,7 @@ const main = async () => {
   await register("دپو", "09337311354", "یبلی", "123456")
 }
 
-main()
+// loginRezaAdmin()
+
+login("123456")
+// requestToLoginOrRegister("09337311354")

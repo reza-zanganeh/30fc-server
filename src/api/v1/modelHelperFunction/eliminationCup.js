@@ -1,10 +1,15 @@
-const { createRandomNumber, headsOrTails } = require("../helpers/Functions")
+const { headsOrTails } = require("../helpers/Functions")
 const { readOne } = require("../helpers/prisma")
 const { modelName } = require("../../../config/Constant")
 const { gameTimeModelName } = modelName
 const persianDate = require("persian-date").toLocale("fa")
 
-const planningChampionsCupGames = (teamIds, firstTimeInDay, step) => {
+const planningEliminationCupGames = (
+  teamIds,
+  firstTimeInDay,
+  interval,
+  step
+) => {
   try {
     const { hour, minute } = firstTimeInDay
     let gameTime = new persianDate()
@@ -13,33 +18,33 @@ const planningChampionsCupGames = (teamIds, firstTimeInDay, step) => {
       .add("m", minute)
       .add("d", 1)
     for (let i = 1; i < step; i++) {
-      gameTime = gameTime.add("h", 24)
+      gameTime = gameTime.add("h", interval)
     }
-    const championsCupGameTimePlan = new Date(
+    const eliminationCupGameTimePlan = new Date(
       +`${gameTime.format("X")}000`
     ).toISOString()
     const games = []
     const teamCount = teamIds.length
     let headOrTailResult
     for (
-      let championsCupGameCounter = 0;
-      championsCupGameCounter < teamCount;
-      championsCupGameCounter += 2
+      let eliminationGameCounter = 0;
+      eliminationGameCounter < teamCount;
+      eliminationGameCounter += 2
     ) {
       const moreChance = headOrTailResult ? (headOrTailResult === 1 ? 2 : 1) : 1
       headOrTailResult = headsOrTails(moreChance)
       if (headOrTailResult === 1) {
         games.push({
-          hostTeamId: teamIds[championsCupGameCounter],
-          visitingTeamId: teamIds[championsCupGameCounter + 1],
-          startTime: championsCupGameTimePlan,
+          hostTeamId: teamIds[eliminationGameCounter],
+          visitingTeamId: teamIds[eliminationGameCounter + 1],
+          startTime: eliminationCupGameTimePlan,
           step,
         })
       } else {
         games.push({
-          hostTeamId: teamIds[championsCupGameCounter + 1],
-          visitingTeamId: teamIds[championsCupGameCounter],
-          startTime: championsCupGameTimePlan,
+          hostTeamId: teamIds[eliminationGameCounter + 1],
+          visitingTeamId: teamIds[eliminationGameCounter],
+          startTime: eliminationCupGameTimePlan,
           step,
         })
       }
@@ -62,7 +67,19 @@ const getChampionsCupGameTime = async () => {
   }
 }
 
+const getGoldenCupGameTime = async () => {
+  try {
+    const championsCupTime = await readOne(gameTimeModelName.english, {
+      name: { equals: "GoldenCup" },
+    })
+    return championsCupTime
+  } catch (error) {
+    throw error
+  }
+}
+
 module.exports = {
-  planningChampionsCupGames,
+  planningEliminationCupGames,
   getChampionsCupGameTime,
+  getGoldenCupGameTime,
 }

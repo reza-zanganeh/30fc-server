@@ -1,0 +1,175 @@
+
+ ================== ۱۴۰۱-۰۸-۲۹ ۲۲:۴۴:۴۱ ب ظ ================== 
+Cannot read properties of undefined (reading 'update')
+ ================== ۱۴۰۱-۰۹-۱۶ ۰۰:۱۰:۳۷ ق ظ ================== 
+
+Invalid `prisma[modelName].update()` invocation in
+G:\FootballManager\football-manager-server\src\api\v1\helpers\prisma.js:80:30
+
+  77 
+  78 module.exports.updateWithoutExecute = (modelName, where, data) => {
+  79   try {
+→ 80     return prisma[modelName].update({
+           where: {
+             id: 36
+           },
+           data: {
+             yellowCartInGoldenCupGameCount: NaN
+             ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+           }
+         })
+
+Unknown arg `yellowCartInGoldenCupGameCount` in data.yellowCartInGoldenCupGameCount for type PlayerUpdateInput. Did you mean `yellowCartInGoldCupGameCount`? Available args:
+type PlayerUpdateInput {
+  team?: TeamUpdateOneWithoutPlayersNestedInput
+  name?: String | StringFieldUpdateOperationsInput
+  tShirtNumber?: Int | IntFieldUpdateOperationsInput
+  facePicture?: PlayerFacePictureUpdateOneRequiredWithoutPlayersNestedInput
+  age?: Int | IntFieldUpdateOperationsInput
+  goalCountInLeague?: Int | IntFieldUpdateOperationsInput
+  position?: PlayerPositionUpdateOneRequiredWithoutPlayerPositionNestedInput
+  positionInMainComposition?: PlayerPositionUpdateOneWithoutPlayerPositionInMainCompositionNestedInput
+  inTeamMainComposition?: Boolean | BoolFieldUpdateOperationsInput
+  nationality?: String | StringFieldUpdateOperationsInput
+  energy?: Int | IntFieldUpdateOperationsInput
+  injury?: Int | IntFieldUpdateOperationsInput
+  isPracticed?: Boolean | BoolFieldUpdateOperationsInput
+  spead?: Int | IntFieldUpdateOperationsInput
+  controll?: Int | IntFieldUpdateOperationsInput
+  pass?: Int | IntFieldUpdateOperationsInput
+  flexibility?: Int | IntFieldUpdateOperationsInput
+  stamina?: Int | IntFieldUpdateOperationsInput
+  technique?: Int | IntFieldUpdateOperationsInput
+  shoot?: Int | IntFieldUpdateOperationsInput
+  drible?: Int | IntFieldUpdateOperationsInput
+  focus?: Int | IntFieldUpdateOperationsInput
+  experience?: Int | IntFieldUpdateOperationsInput
+  totalPower?: Int | IntFieldUpdateOperationsInput
+  status?: PlayerStatus | EnumPlayerStatusFieldUpdateOperationsInput
+  salary?: Int | IntFieldUpdateOperationsInput
+  RequestToCreatePlayer?: RequestToCreatePlayerUpdateOneWithoutPlayerNestedInput
+  goldenCupGameBestPlayer?: GoldenCupGameUpdateManyWithoutBestPlayerNestedInput
+  goldenCupGameInjuredPlayer?: GoldenCupGameUpdateManyWithoutInjuredPlayerNestedInput
+  goldenCupGameplayerOneHasReceivedYellowCart?: GoldenCupGameUpdateManyWithoutPlayerOneHasReceivedYellowCartNestedInput
+  goldenCupGamePlayerTwoHasReceivedYellowCart?: GoldenCupGameUpdateManyWithoutPlayerTwoHasReceivedYellowCartNestedInput
+  goldenCupGamePlayerHasReceivedRedCart?: GoldenCupGameUpdateManyWithoutPlayerHasReceivedRedCartNestedInput
+  goldenCupGameGoals?: goldenCupGameScorerPlayerUpdateManyWithoutPlayerNestedInput
+  championsCupGameBestPlayer?: ChampionsCupGameUpdateManyWithoutBestPlayerNestedInput
+  championsCupGameInjuredPlayer?: ChampionsCupGameUpdateManyWithoutInjuredPlayerNestedInput
+  championsCupGameplayerOneHasReceivedYellowCart?: ChampionsCupGameUpdateManyWithoutPlayerOneHasReceivedYellowCartNestedInput
+  championsCupGamePlayerTwoHasReceivedYellowCart?: ChampionsCupGameUpdateManyWithoutPlayerTwoHasReceivedYellowCartNestedInput
+  championsCupGamePlayerHasReceivedRedCart?: ChampionsCupGameUpdateManyWithoutPlayerHasReceivedRedCartNestedInput
+  championsCupGameGoals?: ChampionsCupGameScorerPlayerUpdateManyWithoutPlayerNestedInput
+  leagueGameBestPlayer?: LeagueGameUpdateManyWithoutBestPlayerNestedInput
+  leagueGameInjuredPlayer?: LeagueGameUpdateManyWithoutInjuredPlayerNestedInput
+  leagueGameplayerOneHasReceivedYellowCart?: LeagueGameUpdateManyWithoutPlayerOneHasReceivedYellowCartNestedInput
+  leagueGamePlayerTwoHasReceivedYellowCart?: LeagueGameUpdateManyWithoutPlayerTwoHasReceivedYellowCartNestedInput
+  leagueGamePlayerHasReceivedRedCart?: LeagueGameUpdateManyWithoutPlayerHasReceivedRedCartNestedInput
+  leagueGameGoals?: LeagueGameScorerPlayerUpdateManyWithoutPlayerNestedInput
+  friendlyGameBestPlayer?: FriendlyGameUpdateManyWithoutBestPlayerNestedInput
+  friendlyGameInjuredPlayer?: FriendlyGameUpdateManyWithoutInjuredPlayerNestedInput
+  friendlyGameplayerOneHasReceivedYellowCart?: FriendlyGameUpdateManyWithoutPlayerOneHasReceivedYellowCartNestedInput
+  friendlyGamePlayerTwoHasReceivedYellowCart?: FriendlyGameUpdateManyWithoutPlayerTwoHasReceivedYellowCartNestedInput
+  friendlyGamePlayerHasReceivedRedCart?: FriendlyGameUpdateManyWithoutPlayerHasReceivedRedCartNestedInput
+  friendlyGameGoals?: FriendlyGameScorerPlayerUpdateManyWithoutPlayerNestedInput
+  adminPlayerSalesContract?: AdminSellablePlayerUpdateOneWithoutPlayerNestedInput
+  playerSalesContract?: playerTransfersUpdateOneWithoutPlayerNestedInput
+  yellowCartInLeagueGameCount?: String | StringFieldUpdateOperationsInput
+  yellowCartInFriendlyGameCount?: String | StringFieldUpdateOperationsInput
+  yellowCartInGoldCupGameCount?: String | StringFieldUpdateOperationsInput
+  yellowCartInChampionsCupGameCount?: String | StringFieldUpdateOperationsInput
+  hasRedCartInLeagueGame?: Boolean | BoolFieldUpdateOperationsInput
+  hasRedCartInFriendlyGame?: Boolean | BoolFieldUpdateOperationsInput
+  hasRedCartInGoldCupGame?: Boolean | BoolFieldUpdateOperationsInput
+  hasRedCartInChampionsCupGame?: Boolean | BoolFieldUpdateOperationsInput
+}
+
+
+ ================== ۱۴۰۱-۰۹-۱۶ ۰۰:۱۲:۲۵ ق ظ ================== 
+
+Invalid `prisma[modelName].update()` invocation in
+G:\FootballManager\football-manager-server\src\api\v1\helpers\prisma.js:80:30
+
+  77 
+  78 module.exports.updateWithoutExecute = (modelName, where, data) => {
+  79   try {
+→ 80     return prisma[modelName].update({
+           where: {
+             id: 28
+           },
+           data: {
+             yellowCartInGoldenCupGameCount: 'NaN'
+             ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+           }
+         })
+
+Unknown arg `yellowCartInGoldenCupGameCount` in data.yellowCartInGoldenCupGameCount for type PlayerUpdateInput. Did you mean `yellowCartInGoldCupGameCount`? Available args:
+type PlayerUpdateInput {
+  team?: TeamUpdateOneWithoutPlayersNestedInput
+  name?: String | StringFieldUpdateOperationsInput
+  tShirtNumber?: Int | IntFieldUpdateOperationsInput
+  facePicture?: PlayerFacePictureUpdateOneRequiredWithoutPlayersNestedInput
+  age?: Int | IntFieldUpdateOperationsInput
+  goalCountInLeague?: Int | IntFieldUpdateOperationsInput
+  position?: PlayerPositionUpdateOneRequiredWithoutPlayerPositionNestedInput
+  positionInMainComposition?: PlayerPositionUpdateOneWithoutPlayerPositionInMainCompositionNestedInput
+  inTeamMainComposition?: Boolean | BoolFieldUpdateOperationsInput
+  nationality?: String | StringFieldUpdateOperationsInput
+  energy?: Int | IntFieldUpdateOperationsInput
+  injury?: Int | IntFieldUpdateOperationsInput
+  isPracticed?: Boolean | BoolFieldUpdateOperationsInput
+  spead?: Int | IntFieldUpdateOperationsInput
+  controll?: Int | IntFieldUpdateOperationsInput
+  pass?: Int | IntFieldUpdateOperationsInput
+  flexibility?: Int | IntFieldUpdateOperationsInput
+  stamina?: Int | IntFieldUpdateOperationsInput
+  technique?: Int | IntFieldUpdateOperationsInput
+  shoot?: Int | IntFieldUpdateOperationsInput
+  drible?: Int | IntFieldUpdateOperationsInput
+  focus?: Int | IntFieldUpdateOperationsInput
+  experience?: Int | IntFieldUpdateOperationsInput
+  totalPower?: Int | IntFieldUpdateOperationsInput
+  status?: PlayerStatus | EnumPlayerStatusFieldUpdateOperationsInput
+  salary?: Int | IntFieldUpdateOperationsInput
+  RequestToCreatePlayer?: RequestToCreatePlayerUpdateOneWithoutPlayerNestedInput
+  goldenCupGameBestPlayer?: GoldenCupGameUpdateManyWithoutBestPlayerNestedInput
+  goldenCupGameInjuredPlayer?: GoldenCupGameUpdateManyWithoutInjuredPlayerNestedInput
+  goldenCupGameplayerOneHasReceivedYellowCart?: GoldenCupGameUpdateManyWithoutPlayerOneHasReceivedYellowCartNestedInput
+  goldenCupGamePlayerTwoHasReceivedYellowCart?: GoldenCupGameUpdateManyWithoutPlayerTwoHasReceivedYellowCartNestedInput
+  goldenCupGamePlayerHasReceivedRedCart?: GoldenCupGameUpdateManyWithoutPlayerHasReceivedRedCartNestedInput
+  goldenCupGameGoals?: goldenCupGameScorerPlayerUpdateManyWithoutPlayerNestedInput
+  championsCupGameBestPlayer?: ChampionsCupGameUpdateManyWithoutBestPlayerNestedInput
+  championsCupGameInjuredPlayer?: ChampionsCupGameUpdateManyWithoutInjuredPlayerNestedInput
+  championsCupGameplayerOneHasReceivedYellowCart?: ChampionsCupGameUpdateManyWithoutPlayerOneHasReceivedYellowCartNestedInput
+  championsCupGamePlayerTwoHasReceivedYellowCart?: ChampionsCupGameUpdateManyWithoutPlayerTwoHasReceivedYellowCartNestedInput
+  championsCupGamePlayerHasReceivedRedCart?: ChampionsCupGameUpdateManyWithoutPlayerHasReceivedRedCartNestedInput
+  championsCupGameGoals?: ChampionsCupGameScorerPlayerUpdateManyWithoutPlayerNestedInput
+  leagueGameBestPlayer?: LeagueGameUpdateManyWithoutBestPlayerNestedInput
+  leagueGameInjuredPlayer?: LeagueGameUpdateManyWithoutInjuredPlayerNestedInput
+  leagueGameplayerOneHasReceivedYellowCart?: LeagueGameUpdateManyWithoutPlayerOneHasReceivedYellowCartNestedInput
+  leagueGamePlayerTwoHasReceivedYellowCart?: LeagueGameUpdateManyWithoutPlayerTwoHasReceivedYellowCartNestedInput
+  leagueGamePlayerHasReceivedRedCart?: LeagueGameUpdateManyWithoutPlayerHasReceivedRedCartNestedInput
+  leagueGameGoals?: LeagueGameScorerPlayerUpdateManyWithoutPlayerNestedInput
+  friendlyGameBestPlayer?: FriendlyGameUpdateManyWithoutBestPlayerNestedInput
+  friendlyGameInjuredPlayer?: FriendlyGameUpdateManyWithoutInjuredPlayerNestedInput
+  friendlyGameplayerOneHasReceivedYellowCart?: FriendlyGameUpdateManyWithoutPlayerOneHasReceivedYellowCartNestedInput
+  friendlyGamePlayerTwoHasReceivedYellowCart?: FriendlyGameUpdateManyWithoutPlayerTwoHasReceivedYellowCartNestedInput
+  friendlyGamePlayerHasReceivedRedCart?: FriendlyGameUpdateManyWithoutPlayerHasReceivedRedCartNestedInput
+  friendlyGameGoals?: FriendlyGameScorerPlayerUpdateManyWithoutPlayerNestedInput
+  adminPlayerSalesContract?: AdminSellablePlayerUpdateOneWithoutPlayerNestedInput
+  playerSalesContract?: playerTransfersUpdateOneWithoutPlayerNestedInput
+  yellowCartInLeagueGameCount?: String | StringFieldUpdateOperationsInput
+  yellowCartInFriendlyGameCount?: String | StringFieldUpdateOperationsInput
+  yellowCartInGoldCupGameCount?: String | StringFieldUpdateOperationsInput
+  yellowCartInChampionsCupGameCount?: String | StringFieldUpdateOperationsInput
+  hasRedCartInLeagueGame?: Boolean | BoolFieldUpdateOperationsInput
+  hasRedCartInFriendlyGame?: Boolean | BoolFieldUpdateOperationsInput
+  hasRedCartInGoldCupGame?: Boolean | BoolFieldUpdateOperationsInput
+  hasRedCartInChampionsCupGame?: Boolean | BoolFieldUpdateOperationsInput
+}
+
+
+ ================== ۱۴۰۱-۰۹-۱۶ ۰۰:۱۷:۵۴ ق ظ ================== 
+Invalid argument type
+ ================== ۱۴۰۱-۰۹-۱۶ ۰۰:۲۲:۰۱ ق ظ ================== 
+Invalid argument type

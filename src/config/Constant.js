@@ -111,6 +111,10 @@ const modelName = {
     english: "championsCupGame",
     persian: "بازی جام قهرمانان",
   },
+  goldenCupModelName: {
+    english: "goldenCup",
+    persian: "جام طلایی",
+  },
 }
 
 module.exports = {

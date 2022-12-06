@@ -1,6 +1,6 @@
 const { PrismaClient } = require("@prisma/client")
 const { addPrismaQueryToPool } = require("../helpers/prisma")
-const { team, teamScores } = new PrismaClient()
+const { team, teamScores, sponser } = new PrismaClient()
 
 module.exports.createTeamPrismaQuery = async (
   name,
@@ -427,6 +427,8 @@ module.exports.updateFirstTeamAndSecondTeamInChampionsCupPrismaQuery = async (
         },
         sponser: {
           select: {
+            id: true,
+            totalCoinCount: true,
             championsCupChampionCoinCount: true,
           },
         },
@@ -479,6 +481,113 @@ module.exports.updateFirstTeamAndSecondTeamInChampionsCupPrismaQuery = async (
               }),
             },
           },
+        },
+      })
+    )
+    addPrismaQueryToPool(
+      prismaQueryPoolIndex,
+      sponser.update({
+        where: {
+          id: firstTeam.sponser.id,
+        },
+        data: {
+          totalCoinCount:
+            firstTeam.sponser.totalCoinCount -
+            firstTeam.sponser.goldCupChampionCoinCount,
+        },
+      })
+    )
+  } catch (error) {
+    throw error
+  }
+}
+
+module.exports.updateFirstTeamAndSecondTeamInGoldenCupPrismaQuery = async (
+  firstTeamId,
+  secondTeamId,
+  prismaQueryPoolIndex
+) => {
+  try {
+    const [firstTeam, secondTeam] = await team.findMany({
+      where: {
+        id: { in: [firstTeamId, secondTeamId] },
+      },
+      select: {
+        coinCount: true,
+        teamScores: {
+          select: {
+            goldCupCount: true,
+            scoreInTournament: true,
+          },
+        },
+        sponser: {
+          select: {
+            id: true,
+            totalCoinCount: true,
+            goldCupChampionCoinCount: true,
+          },
+        },
+        tournament: {
+          select: {
+            firstTeamInGoldCupPoints: true,
+            secondTeamInGoldCupPoints: true,
+          },
+        },
+      },
+    })
+    addPrismaQueryToPool(
+      prismaQueryPoolIndex,
+      team.update({
+        where: {
+          id: firstTeamId,
+        },
+        data: {
+          teamScores: {
+            update: {
+              goldCupCount: firstTeam.teamScores.goldCupCount + 1,
+              ...(firstTeam.tournament && {
+                scoreInTournament:
+                  firstTeam.teamScores.scoreInTournament +
+                  firstTeam.tournament.firstTeamInGoldCupPoints,
+              }),
+            },
+          },
+          ...(firstTeam.sponser && {
+            coinCount:
+              firstTeam.coinCount + firstTeam.sponser.goldCupChampionCoinCount,
+          }),
+        },
+      })
+    )
+    addPrismaQueryToPool(
+      prismaQueryPoolIndex,
+      team.update({
+        where: {
+          id: secondTeamId,
+        },
+        data: {
+          teamScores: {
+            update: {
+              ...(secondTeam.tournament && {
+                scoreInTournament:
+                  secondTeam.teamScores.scoreInTournament +
+                  firstTeam.tournament.secondTeamInGoldCupPoints,
+              }),
+            },
+          },
+        },
+      })
+    )
+    addPrismaQueryToPool(
+      prismaQueryPoolIndex,
+      sponser.update({
+        where: {
+          id: firstTeam.sponser.id,
+        },
+        data: {
+          totalCoinCount:
+            firstTeam.sponser.totalCoinCount -
+            firstTeam.sponser.goldCupChampionCoinCount,
         },
       })
     )

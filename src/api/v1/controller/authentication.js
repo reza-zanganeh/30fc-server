@@ -96,7 +96,7 @@ module.exports.initialAdminUser = async (req, res, next) => {
       Created("کاربر")
     )
   } catch (error) {
-    internalServerErrorHandler()
+    internalServerErrorHandler(next, error)
   }
 }
 
@@ -308,7 +308,7 @@ module.exports.login = async (req, res, next) => {
   try {
     const { password: inputPassword } = req.body
     const { phonenumber } = req.otpData
-
+    console.log(phonenumber)
     const user = await readOne(userModelName.english, {
       phonenumber,
     })

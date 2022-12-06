@@ -32,25 +32,29 @@ module.exports.updateChampionsCupPrismaQuery = (
   teamIds,
   games
 ) => {
-  return championsCup.update({
-    where: {
-      id: championsCupId,
-    },
-    data: {
-      firstTeamId,
-      secondTeamId,
-      ...(teamIds && {
-        teams: { set: teamIds.map((teamId) => ({ id: teamId })) },
-      }),
-      ...(games && {
-        games: {
-          createMany: {
-            data: games,
+  try {
+    return championsCup.update({
+      where: {
+        id: championsCupId,
+      },
+      data: {
+        firstTeamId,
+        secondTeamId,
+        ...(teamIds && {
+          teams: { set: teamIds.map((teamId) => ({ id: teamId })) },
+        }),
+        ...(games && {
+          games: {
+            createMany: {
+              data: games,
+            },
           },
-        },
-      }),
-    },
-  })
+        }),
+      },
+    })
+  } catch (error) {
+    throw error
+  }
 }
 
 module.exports.createChampionsCupPrismaQuery = (teamIds, games) => {

@@ -26,6 +26,7 @@ const {
   requestToCreatePlayerRouter,
 } = require("../router/requestToCreatePlayer")
 const { generalGameSettingRouter } = require("./generalGameSettings")
+const { goldenCupRouter } = require("./goldenCup")
 //#endregion
 module.exports.registerRoutes = (app) => {
   //#region add routes
@@ -81,6 +82,7 @@ module.exports.registerRoutes = (app) => {
     hasAccessToAdminOperation,
     generalGameSettingRouter
   )
+  app.use(`/api/${appVersion}/golden-cup`, isAuthenticate, goldenCupRouter)
   //#endregion
   app.use("*", notFoundResponse)
   app.use(errorHandler)

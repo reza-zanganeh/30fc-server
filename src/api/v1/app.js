@@ -19,6 +19,13 @@ registerRoutes(app)
 const { readGeneralDataAndSaveOnRedis } = require("./helpers/Functions")
 const { internalServerErrorHandler } = require("./helpers/responseHandler")
 const { resetGameCount } = require("./services/redis")
+
+const {
+  startEndOfRegistrationGoldenCup,
+  endComplateGoldenCup,
+  playingRecivedStepGoldenCupGamesAndPlaningNextGame,
+} = require("./controller/goldenCup")
+
 //#endregion
 const PORT = projectConfig.server.httpServer.port
 app.listen(PORT, async () => {
@@ -40,6 +47,7 @@ app.listen(PORT, async () => {
     // )
     await readGeneralDataAndSaveOnRedis()
     await resetGameCount()
+    await playingRecivedStepGoldenCupGamesAndPlaningNextGame()
   } catch (error) {
     console.log(error)
     internalServerErrorHandler(null, error)

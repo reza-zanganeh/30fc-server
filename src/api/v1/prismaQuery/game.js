@@ -1,18 +1,15 @@
 const { PrismaClient } = require("@prisma/client")
-const {
-  createPrismaQueryPool,
-  addPrismaQueryToPool,
-  prismaTransaction,
-} = require("../helpers/prisma")
+const { addPrismaQueryToPool } = require("../helpers/prisma")
 const {
   leagueGame,
   leagueGameScorerPlayer,
   championsCupGame,
   championsCupGameScorerPlayer,
+  goldenCupGame,
+  goldenCupGameScorerPlayer,
 } = new PrismaClient()
 
 // league games
-
 module.exports.deleteAllLeaguGames = (prismaPoolIndex) => {
   try {
     addPrismaQueryToPool(prismaPoolIndex, leagueGameScorerPlayer.deleteMany())
@@ -30,25 +27,6 @@ module.exports.getLeagueGamesThatPassedStartTime = async () => {
           { result: { equals: "undone" } },
           { startTime: { lte: new Date().toISOString() } },
         ],
-      },
-    })
-    return games
-  } catch (error) {
-    throw error
-  }
-}
-
-module.exports.getChampionsCupGamesThatPassedStartTime = async () => {
-  try {
-    const games = await championsCupGame.findMany({
-      where: {
-        AND: [
-          { result: { equals: "undone" } },
-          // { startTime: { lte: new Date().toISOString() } },
-        ],
-      },
-      orderBy: {
-        id: "asc",
       },
     })
     return games
@@ -154,6 +132,90 @@ module.exports.playingChampionsCupGame = (championsCupId, data) => {
     return championsCupGame.update({
       where: {
         id: championsCupId,
+      },
+      data: {
+        result,
+        resultDescription,
+        winerTeamGoalCount,
+        loserGoalCount,
+        playerHasReceivedRedCartId,
+        playerOneHasReceivedYellowCartId,
+        playerTwoHasReceivedYellowCartId,
+        injuredPlayerId,
+        bestPlayerId,
+      },
+    })
+  } catch (error) {
+    throw error
+  }
+}
+
+module.exports.getChampionsCupGamesThatPassedStartTime = async () => {
+  try {
+    const games = await championsCupGame.findMany({
+      where: {
+        AND: [
+          { result: { equals: "undone" } },
+          { startTime: { lte: new Date().toISOString() } },
+        ],
+      },
+      orderBy: {
+        id: "asc",
+      },
+    })
+    return games
+  } catch (error) {
+    throw error
+  }
+}
+
+// champions cup game
+module.exports.deleteGoldenCupGames = (prismaPoolIndex) => {
+  try {
+    addPrismaQueryToPool(
+      prismaPoolIndex,
+      goldenCupGameScorerPlayer.deleteMany()
+    )
+    addPrismaQueryToPool(prismaPoolIndex, championsCupGame.deleteMany())
+  } catch (error) {
+    throw error
+  }
+}
+
+// golden cup
+module.exports.connectScorerPlayerToGoldenCupGame = (
+  goldenCupGameId,
+  scorerPlayersId
+) => {
+  try {
+    return goldenCupGameScorerPlayer.createMany({
+      data: scorerPlayersId.map((playerId) => ({
+        goldenCupGameId,
+        playerId,
+      })),
+    })
+  } catch (error) {
+    throw error
+  }
+}
+
+module.exports.playingGoldenCupGame = (goldenCupId, data) => {
+  try {
+    const {
+      result,
+      resultDescription,
+      winerTeamGoalCount,
+      loserGoalCount,
+      playerHasReceivedRedCartId,
+      playerOneHasReceivedYellowCartId,
+      playerTwoHasReceivedYellowCartId,
+      injuredPlayerId,
+      bestPlayerId,
+    } = data
+
+    return championsCupGame.update({
+      where: {
+        id: goldenCupId,
       },
       data: {
         result,
