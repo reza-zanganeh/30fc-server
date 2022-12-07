@@ -195,7 +195,6 @@ module.exports.register = async (req, res, next) => {
       otpCode,
     } = req.body
     const { phonenumber, isUserExists } = req.otpData
-
     if (isUserExists)
       return next(
         createError(
@@ -299,7 +298,6 @@ module.exports.register = async (req, res, next) => {
       Created("کاربر")
     )
   } catch (error) {
-    console.log(error)
     internalServerErrorHandler(next, error)
   }
 }

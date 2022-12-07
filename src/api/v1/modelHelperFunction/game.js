@@ -29,9 +29,7 @@ const {
 } = require("../services/redis")
 const {
   updateWithoutExecute,
-  prismaTransaction,
   addPrismaQueryToPool,
-  createPrismaQueryPool,
 } = require("../helpers/prisma")
 
 const playerIsNotAllowedToPlayInLeaguGame = (
@@ -245,7 +243,7 @@ const replacePlayersNotAallowedToPlay = async (
       ) {
         addPrismaQueryToPool(
           prismaQueriesPlayGamePoolIndex,
-          removePlayerRedCartInGoldenCup()
+          removePlayerRedCartInGoldenCup(players[i].id)
         )
         const alternativePlayerIndex = findSuitablePlayerIndexWithPosition(
           suitablePlayers,
@@ -694,17 +692,22 @@ const changeTeamScoresAfterPlayGame = (
   return { hostTeamUpdatedData, visitingTeamUpdatedData }
 }
 
-const calculateHostTeamGifts = async (hostTeam, result) => {
+const calculateHostTeamGifts = async (hostTeam, result, gameType) => {
   const gifts = {}
   if (!hostTeam.isBlock) {
     const numberOfStadiumTicketCoins =
       +(await getNumberOfStadiumTicketCoinsFromRedis())
 
     gifts["coinCount"] =
-      hostTeam.coinCount +
-      (hostTeam.fanSatisfaction / 100) *
-        hostTeam.teamAssets.stadium.capacity *
-        numberOfStadiumTicketCoins
+      hostTeam.coinCount + gameType === "friendly"
+        ? ((hostTeam.fanSatisfaction / 100) *
+            hostTeam.teamAssets.stadium.capacity *
+            numberOfStadiumTicketCoins) /
+          10
+        : (hostTeam.fanSatisfaction / 100) *
+          hostTeam.teamAssets.stadium.capacity *
+          numberOfStadiumTicketCoins
+
     if (result === "hostTeam")
       gifts["fanSatisfaction"] =
         hostTeam.fanSatisfaction + hostTeam.teamAssets.stadiumFacilities.win
@@ -719,9 +722,14 @@ const calculateHostTeamGifts = async (hostTeam, result) => {
 }
 
 // in champions cup and golden cup if remove player with to yellow cart remove tow yellow cart from player
-const playGame = async (hostTeamId, visitingTeamId, gameType, gameId) => {
+const playGame = async (
+  hostTeamId,
+  visitingTeamId,
+  gameType,
+  gameId,
+  prismaQueriesPlayGamePoolIndex
+) => {
   try {
-    const prismaQueriesPlayGamePoolIndex = createPrismaQueryPool()
     const DifferenceInPointsForEachGoal =
       +(await getDifferenceInPointsForEachGoalFactorFromRedis())
     const hostTeam = await getInformationTeamNeedForPlayGame(hostTeamId)
@@ -1012,7 +1020,11 @@ const playGame = async (hostTeamId, visitingTeamId, gameType, gameId) => {
     }
 
     // // winner team gifts
-    const hostTeamGifts = await calculateHostTeamGifts(hostTeam, result)
+    const hostTeamGifts = await calculateHostTeamGifts(
+      hostTeam,
+      result,
+      gameType
+    )
 
     const scoreChangesResult = changeTeamScoresAfterPlayGame(
       hostTeam,
@@ -1181,8 +1193,6 @@ const playGame = async (hostTeamId, visitingTeamId, gameType, gameId) => {
         })
       )
     }
-
-    await prismaTransaction(prismaQueriesPlayGamePoolIndex)
     await increaseGameCount()
     return result === "hostTeam"
       ? { winnerTeamId: hostTeam.id, loserTeamId: visitingTeam.id }

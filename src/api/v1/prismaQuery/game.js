@@ -169,20 +169,22 @@ module.exports.getChampionsCupGamesThatPassedStartTime = async () => {
   }
 }
 
-// champions cup game
+// golden cup
 module.exports.deleteGoldenCupGames = (prismaPoolIndex) => {
   try {
     addPrismaQueryToPool(
       prismaPoolIndex,
-      goldenCupGameScorerPlayer.deleteMany()
+      goldenCupGameScorerPlayer.deleteMany({ where: {} })
     )
-    addPrismaQueryToPool(prismaPoolIndex, championsCupGame.deleteMany())
+    addPrismaQueryToPool(
+      prismaPoolIndex,
+      goldenCupGame.deleteMany({ where: {} })
+    )
   } catch (error) {
     throw error
   }
 }
 
-// golden cup
 module.exports.connectScorerPlayerToGoldenCupGame = (
   goldenCupGameId,
   scorerPlayersId
@@ -213,7 +215,7 @@ module.exports.playingGoldenCupGame = (goldenCupId, data) => {
       bestPlayerId,
     } = data
 
-    return championsCupGame.update({
+    return goldenCupGame.update({
       where: {
         id: goldenCupId,
       },

@@ -51,7 +51,7 @@ const createDataTeam = async (teamName) => {
       await readOne(stadiumModelName.english, { level: "1" })
     ).id
     const defaultStadiumFacilitiesId = (
-      await readOne(stadiumFacilitiesModelName.english, { level: "1" })
+      await readOne(stadiumFacilitiesModelName.english, { level: "0" })
     ).id
     // create 20 random player
     // name
@@ -162,12 +162,12 @@ const createDataTeam = async (teamName) => {
       powersArrayLenght--
 
       const salary = await calculatePlayerSalary(totalPower, age)
-
+      console.log(salary)
       const position = playerPositionsOnTeam[counter - 1]
       const positionId = positionsMap[position]
       const tShirtNumber = counter
 
-      const power = totalPower / 10
+      const power = Math.round(totalPower / 10)
 
       players[counter - 1] = {
         name,
@@ -189,7 +189,6 @@ const createDataTeam = async (teamName) => {
         tShirtNumber,
       }
     }
-
     for (const [position, havePlayer] of Object.entries(composition)) {
       if (havePlayer) {
         players[

@@ -62,7 +62,6 @@ module.exports.createGoldenCupByAdmin = async (req, res, next) => {
 
     resposeHandler(res, goldenCup, Ok("ساخت جام طلایی"))
   } catch (error) {
-    console.log(error)
     internalServerErrorHandler(next, error)
   }
 }
@@ -235,12 +234,21 @@ module.exports.playingRecivedStepGoldenCupGamesAndPlaningNextGame =
         const winnerTeamIds = []
         for (let i = 0; i < goldenCupGameThatPassedStartTimeCount; i++) {
           const { winnerTeamId } = await playGame(
-            goldenCupGames[i].visitingTeamId,
             goldenCupGames[i].hostTeamId,
+            goldenCupGames[i].visitingTeamId,
             "goldenCup",
-            goldenCupGames[i].id
+            goldenCupGames[i].id,
+            playingRecivedStepGoldenCupGamesAndPlaningNextGamePrismaPoolIndex
           )
           winnerTeamIds.push(winnerTeamId)
+        }
+        if (winnerTeamIds.length === 1) {
+          addPrismaQueryToPool(
+            playingRecivedStepGoldenCupGamesAndPlaningNextGamePrismaPoolIndex,
+            updateWithoutExecute(goldenCupModelName.english, {
+              status: "Ended",
+            })
+          )
         }
         if (winnerTeamIds.length >= 2) {
           const nextStep = goldenCupGames[0].step + 1
@@ -260,7 +268,6 @@ module.exports.playingRecivedStepGoldenCupGamesAndPlaningNextGame =
         playingRecivedStepGoldenCupGamesAndPlaningNextGamePrismaPoolIndex
       )
     } catch (error) {
-      console.log(error)
       internalServerErrorHandler(null, error)
     }
   }
@@ -275,7 +282,6 @@ module.exports.endComplateGoldenCup = async () => {
       await getGoldenCupAndSortedChampionsGames()
     const goldenCupCount = goldenCupsGamesWithSortedGames.length
     if (goldenCupCount <= 0) return
-
     for (
       let goldenCupIndex = 0;
       goldenCupIndex < goldenCupCount;
@@ -296,6 +302,17 @@ module.exports.endComplateGoldenCup = async () => {
         firstTeamInGoldenCupId,
         secondTeamInGoldenCupId,
         endComplateGoldenCupPoolIndex
+      )
+      addPrismaQueryToPool(
+        endComplateGoldenCupPoolIndex,
+        updateWithoutExecute(
+          goldenCupModelName.english,
+          { id: goldenCupId },
+          {
+            firstTeamId: firstTeamInGoldenCupId,
+            secondTeamId: secondTeamInGoldenCupId,
+          }
+        )
       )
     }
 

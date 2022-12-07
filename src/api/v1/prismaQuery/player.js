@@ -80,10 +80,10 @@ module.exports.getSuitablePlayersToReplacePrismaQuery = async (
       yellowCartInLeagueGameCount: true,
       yellowCartInFriendlyGameCount: true,
       yellowCartInChampionsCupGameCount: true,
-      yellowCartInGoldCupGameCount: true,
+      yellowCartInGoldenCupGameCount: true,
       hasRedCartInChampionsCupGame: true,
       hasRedCartInFriendlyGame: true,
-      hasRedCartInGoldCupGame: true,
+      hasRedCartInGoldenCupGame: true,
       hasRedCartInLeagueGame: true,
     }
     const commonWhereCluse = [
@@ -103,8 +103,8 @@ module.exports.getSuitablePlayersToReplacePrismaQuery = async (
       )
     if (gameType === "championsCup")
       commonWhereCluse.push({ hasRedCartInChampionsCupGame: { equals: false } })
-    if (gameType === "goldCup")
-      commonWhereCluse.push({ hasRedCartInGoldCupGame: { equals: false } })
+    if (gameType === "goldenCup")
+      commonWhereCluse.push({ hasRedCartInGoldenCupGame: { equals: false } })
 
     const suitablePlayers = await player.findMany({
       where: {

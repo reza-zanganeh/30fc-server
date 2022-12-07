@@ -4,7 +4,7 @@
   "description": "football manager nodejs  api server",
   "main": "app.js",
   "scripts": {
-    "dev": "nodemon src/api/v1/app.js"
+    "dev": "nodemon --ignore axios --ignore src/api/v1/log/internalServerError.log src/api/v1/app.js"
   },
   "repository": {
     "type": "git",

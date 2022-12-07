@@ -57,7 +57,7 @@ const addPlayerFacePictures = async () => {
       `${i}.jpeg`,
       path.join(__dirname, "..", "..", "player face picture", `${i}.jpeg`)
     )
-    await stop(1)
+    await stop(2)
   }
 }
 

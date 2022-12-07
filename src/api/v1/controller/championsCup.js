@@ -155,12 +155,15 @@ module.exports.playingRecivedStepChampionsCupGamesAndPlaningNextGame =
         championsCupGameThatPassedStartTime.length
       if (championsCupGameThatPassedStartTimeCount <= 0) return
       const winnerTeamIds = []
+      const playingRecivedStepChampionsCupGamesAndPlaningNextGamePrismaPoolIndex =
+        createPrismaQueryPool()
       for (let i = 0; i < championsCupGameThatPassedStartTimeCount; i++) {
         const { winnerTeamId } = await playGame(
           championsCupGameThatPassedStartTime[i].hostTeamId,
           championsCupGameThatPassedStartTime[i].visitingTeamId,
           "championsCup",
-          championsCupGameThatPassedStartTime[i].id
+          championsCupGameThatPassedStartTime[i].id,
+          playingRecivedStepChampionsCupGamesAndPlaningNextGamePrismaPoolIndex
         )
         winnerTeamIds.push(winnerTeamId)
       }
@@ -176,8 +179,6 @@ module.exports.playingRecivedStepChampionsCupGamesAndPlaningNextGame =
           12,
           nextStep
         )
-        const playingRecivedStepChampionsCupGamesAndPlaningNextGamePrismaPoolIndex =
-          createPrismaQueryPool()
         addPrismaQueryToPool(
           playingRecivedStepChampionsCupGamesAndPlaningNextGamePrismaPoolIndex,
           addChampionsCupGamesPrismaQuery(newChampionsCupGames, championsCupId)

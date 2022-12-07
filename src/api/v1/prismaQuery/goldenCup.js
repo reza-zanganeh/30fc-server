@@ -125,6 +125,7 @@ module.exports.getGoldenCupsWithGamesThatPassedStartTime = async () => {
             id: true,
             visitingTeamId: true,
             hostTeamId: true,
+            step: true,
           },
         },
       },

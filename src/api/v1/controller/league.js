@@ -180,16 +180,21 @@ module.exports.getLeaguTable = async (req, res, next) => {
 
 module.exports.playRecievedTimeLeagueGames = async () => {
   try {
+    const playRecievedTimeLeagueGamesPrismaPoolIndex = createPrismaQueryPool()
     const leagueGameThatPassedStartTime =
       await getLeagueGamesThatPassedStartTime()
-    for (let i = 0; i < leagueGameThatPassedStartTime.length; i++) {
+    const leagueGameThatPassedStartTimeCount =
+      leagueGameThatPassedStartTime.length
+    for (let i = 0; i < leagueGameThatPassedStartTimeCount; i++) {
       await playGame(
         leagueGameThatPassedStartTime[i].hostTeamId,
         leagueGameThatPassedStartTime[i].visitingTeamId,
         "league",
-        leagueGameThatPassedStartTime[i].id
+        leagueGameThatPassedStartTime[i].id,
+        playRecievedTimeLeagueGamesPrismaPoolIndex
       )
     }
+    prismaTransaction(playRecievedTimeLeagueGamesPrismaPoolIndex)
   } catch (error) {
     internalServerErrorHandler(null, error)
   }

@@ -20,12 +20,6 @@ const { readGeneralDataAndSaveOnRedis } = require("./helpers/Functions")
 const { internalServerErrorHandler } = require("./helpers/responseHandler")
 const { resetGameCount } = require("./services/redis")
 
-const {
-  startEndOfRegistrationGoldenCup,
-  endComplateGoldenCup,
-  playingRecivedStepGoldenCupGamesAndPlaningNextGame,
-} = require("./controller/goldenCup")
-
 //#endregion
 const PORT = projectConfig.server.httpServer.port
 app.listen(PORT, async () => {
@@ -43,13 +37,13 @@ app.listen(PORT, async () => {
     //          MinimumPlayerPrice
     //          MaximumPlayerPrice
     //          InviteNewTeamCoinCount
+    //    6 . studiom level 1
+    //    7 . stadiumFacilitiesModelName
     //   `
     // )
     await readGeneralDataAndSaveOnRedis()
     await resetGameCount()
-    await playingRecivedStepGoldenCupGamesAndPlaningNextGame()
   } catch (error) {
-    console.log(error)
     internalServerErrorHandler(null, error)
   }
 })

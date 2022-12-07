@@ -88,6 +88,8 @@ module.exports.readGeneralDataAndSaveOnRedis = async () => {
     gameConstantVariables.forEach((variable) => {
       constantVariableNameMapToAmount[variable.name] = variable.amount
     })
+    if (constantVariableNameMapToAmount["DifferenceInPointsForEachGoal"] <= 0)
+      throw new Error("DifferenceInPointsForEachGoal can not be zero")
     await setDifferenceInPointsForEachGoalFactorOnRedis(
       constantVariableNameMapToAmount["DifferenceInPointsForEachGoal"]
     )

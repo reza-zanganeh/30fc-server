@@ -3,7 +3,7 @@ const FormData = require("form-data")
 const path = require("path")
 const axios = require("axios").default
 const accesstoken =
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Miwicm9sZSI6IkFkbWluIiwiaXNCbG9jayI6ZmFsc2UsImlhdCI6MTY2ODk2NzYwNCwiZXhwIjoxNjY5MDU0MDA0fQ.7fFSIp4nTwIwbacGKZ0WuCrkPeb0GG0GwQvlmL2M9DU"
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6IkFkbWluIiwiaXNCbG9jayI6ZmFsc2UsImlhdCI6MTY3MDQ0MDcyNSwiZXhwIjoxNjcwNTI3MTI1fQ.u1OftuMWxYrOi8OMVl3iaFrI_NCzLMdc4DU9UqdrAOo"
 const axiosInstance = axios.create({
   baseURL: "http://localhost:3000/api/v1",
 })

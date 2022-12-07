@@ -23,12 +23,12 @@ const addReservedName = async (name) => {
   })
 }
 
-// addReservedName("بارسلونا")
-// addReservedName("اتلتیکو مادرید")
-// addReservedName("رئال مادرید")
-// addReservedName("استقلال")
-// addReservedName("پرسپولیس")
-// addReservedName("تراکتور")
-// addReservedName("پدیده")
+addReservedName("بارسلونا")
+addReservedName("اتلتیکو مادرید")
+addReservedName("رئال مادرید")
+addReservedName("استقلال")
+addReservedName("پرسپولیس")
+addReservedName("تراکتور")
+addReservedName("پدیده")
 
-addName()
+// addName()
