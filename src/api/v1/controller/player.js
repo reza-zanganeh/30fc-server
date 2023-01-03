@@ -75,7 +75,11 @@ module.exports.createPlayerByAdmin = async (req, res, next) => {
       tShirtNumber: +tShirtNumber,
     })
 
-    resposeHandler(res, { ...player, url, fields }, Ok("ساخت بازیکن"))
+    resposeHandler(
+      res,
+      { ...player, url, fields },
+      Ok({ operationName: "ساخت بازیکن" })
+    )
   } catch (error) {
     next(createError(InternalServerError()))
   }
@@ -104,7 +108,11 @@ module.exports.chnageTShirtNumber = async (req, res, next) => {
       { tShirtNumber: +tShirtNumber }
     )
 
-    resposeHandler(res, updatedPalyer, Ok("تغییر شماره پیراهن بازیکن"))
+    resposeHandler(
+      res,
+      updatedPalyer,
+      Ok({ operationName: "تغییر شماره پیراهن بازیکن" })
+    )
   } catch (error) {
     next(createError(InternalServerError()))
   }

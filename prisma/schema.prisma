@@ -101,7 +101,12 @@ model Team {
   friendlyGamesHostTeam              FriendlyGame[]                      @relation("hostTeam")
   friendlyGamesVisitingTeam          FriendlyGame[]                      @relation("visitingTeam")
   friendlyGameRequestIsOn            Boolean                             @default(true)
+  // requestFriendlyGameCount           Int                                 @default(0)
+  // change
   friendlyGameCount                  Int                                 @default(0)
+  friendlyGameTimeOneIsEmpty         Boolean                             @default(true)
+  friendlyGameTimeTwoIsEmpty         Boolean                             @default(true)
+  friendlyGameTimeThreeIsEmpty       Boolean                             @default(true)
   // end of team competitions
   teamScores                         TeamScores?
   tournament                         Tournament?                         @relation(fields: [tournamentId], references: [id])
@@ -711,11 +716,18 @@ model FriendlyGameScorerPlayer {
 }
 
 model RequestFriendlyGame {
-  id             Int           @id @default(autoincrement())
-  date           DateTime      @default(now())
-  status         RequestStatus @default(Pending)
+  id             Int              @id @default(autoincrement())
+  date           DateTime         @default(now())
+  status         RequestStatus    @default(Pending)
   senderTeamId   Int
   receiverTeamId Int
+  gameTime       friendlyGameTime
+}
+
+enum friendlyGameTime {
+  One
+  Two
+  Three
 }
 
 model Tournament {

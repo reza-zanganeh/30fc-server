@@ -67,7 +67,11 @@ module.exports.useEnergyProducer = async (req, res, next) => {
       updatedPlayersData
     )
 
-    resposeHandler(res, updatedPlayersData, Ok("افزایش انرژی بازیکنان"))
+    resposeHandler(
+      res,
+      updatedPlayersData,
+      Ok({ operationName: "افزایش انرژی بازیکنان" })
+    )
   } catch (error) {
     next(createError(InternalServerError()))
   }

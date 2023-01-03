@@ -7,6 +7,8 @@ const {
   championsCupGameScorerPlayer,
   goldenCupGame,
   goldenCupGameScorerPlayer,
+  friendlyGame,
+  friendlyGameScorerPlayer,
 } = new PrismaClient()
 
 // league games
@@ -218,6 +220,58 @@ module.exports.playingGoldenCupGame = (goldenCupId, data) => {
     return goldenCupGame.update({
       where: {
         id: goldenCupId,
+      },
+      data: {
+        result,
+        resultDescription,
+        winerTeamGoalCount,
+        loserGoalCount,
+        playerHasReceivedRedCartId,
+        playerOneHasReceivedYellowCartId,
+        playerTwoHasReceivedYellowCartId,
+        injuredPlayerId,
+        bestPlayerId,
+      },
+    })
+  } catch (error) {
+    throw error
+  }
+}
+
+// friendly game
+module.exports.connectScorerPlayerToFriendlyGame = (
+  friendlyGameId,
+  scorerPlayersId
+) => {
+  try {
+    return friendlyGameScorerPlayer.createMany({
+      data: scorerPlayersId.map((playerId) => ({
+        friendlyGameId,
+        playerId,
+      })),
+    })
+  } catch (error) {
+    throw error
+  }
+}
+
+module.exports.playingFriendlyGame = (friendlyGameId, data) => {
+  try {
+    const {
+      result,
+      resultDescription,
+      winerTeamGoalCount,
+      loserGoalCount,
+      playerHasReceivedRedCartId,
+      playerOneHasReceivedYellowCartId,
+      playerTwoHasReceivedYellowCartId,
+      injuredPlayerId,
+      bestPlayerId,
+    } = data
+
+    return friendlyGame.update({
+      where: {
+        id: friendlyGameId,
       },
       data: {
         result,

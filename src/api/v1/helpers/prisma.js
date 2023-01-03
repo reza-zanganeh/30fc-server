@@ -12,6 +12,16 @@ module.exports.create = async (modelName, data) => {
   }
 }
 
+module.exports.createWithoutExecute = (modelName, data) => {
+  try {
+    return prisma[modelName].create({
+      data,
+    })
+  } catch (error) {
+    throw error
+  }
+}
+
 module.exports.readWithPaginationOrId = async (modelName, id, page = 1) => {
   try {
     let result
@@ -100,6 +110,14 @@ module.exports.remove = async (modelName, where, select) => {
       })
     }
     return deletedRecord
+  } catch (error) {
+    throw error
+  }
+}
+
+module.exports.removeAllWithoutExecution = (modelName, whereCluse) => {
+  try {
+    return prisma[modelName].deleteMany({ where: whereCluse ? whereCluse : {} })
   } catch (error) {
     throw error
   }

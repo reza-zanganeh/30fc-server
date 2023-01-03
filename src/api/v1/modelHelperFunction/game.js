@@ -21,6 +21,8 @@ const {
   playingChampionsCupGame,
   connectScorerPlayerToGoldenCupGame,
   playingGoldenCupGame,
+  connectScorerPlayerToFriendlyGame,
+  playingFriendlyGame,
 } = require("../prismaQuery/game")
 const {
   getGameCount,
@@ -1056,12 +1058,7 @@ const playGame = async (
         )
       }
     }
-    // // update host team
-    // totalLoseCount
-    // totalWinCount
-    // winCountInLeague
-    // loseCountInLeague
-    // scoreInTournament
+
     addPrismaQueryToPool(
       prismaQueriesPlayGamePoolIndex,
       updateWithoutExecute(
@@ -1192,7 +1189,30 @@ const playGame = async (
           bestPlayerId,
         })
       )
+    } else if (gameType === "friendly") {
+      addPrismaQueryToPool(
+        prismaQueriesPlayGamePoolIndex,
+        connectScorerPlayerToFriendlyGame(gameId, scorerPlayersId)
+      )
+
+      addPrismaQueryToPool(
+        prismaQueriesPlayGamePoolIndex,
+        playingFriendlyGame(gameId, {
+          result,
+          resultDescription,
+          winerTeamGoalCount:
+            result === "hostTeam" ? hostTeamGoalCount : visitingTeamGoalCount,
+          loserGoalCount:
+            result === "hostTeam" ? visitingTeamGoalCount : hostTeamGoalCount,
+          playerHasReceivedRedCartId,
+          playerOneHasReceivedYellowCartId,
+          playerTwoHasReceivedYellowCartId,
+          injuredPlayerId,
+          bestPlayerId,
+        })
+      )
     }
+
     await increaseGameCount()
     return result === "hostTeam"
       ? { winnerTeamId: hostTeam.id, loserTeamId: visitingTeam.id }

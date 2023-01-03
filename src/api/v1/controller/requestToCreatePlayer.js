@@ -118,9 +118,10 @@ module.exports.createRequestToCreatePlayer = async (req, res, next) => {
     resposeHandler(
       res,
       { ...newRequest, url, fields },
-      Ok(
-        "درخواست شما برای ساخت بازیکن با موفقیت ثبت شد . در اسرع وقت به درخواست شما پاسخ می دهیم"
-      )
+      Ok({
+        operationName:
+          "درخواست شما برای ساخت بازیکن با موفقیت ثبت شد . در اسرع وقت به درخواست شما پاسخ می دهیم",
+      })
     )
   } catch (error) {
     next(createError(InternalServerError()))
@@ -144,7 +145,11 @@ module.exports.confirmRequestToCreatePlayer = async (req, res, next) => {
       adminResponse
     )
 
-    resposeHandler(res, confirmedRequest, Ok("تایید ساخت بازیکن"))
+    resposeHandler(
+      res,
+      confirmedRequest,
+      Ok({ operationName: "تایید ساخت بازیکن" })
+    )
   } catch (error) {
     next(createError(InternalServerError()))
   }
@@ -165,7 +170,11 @@ module.exports.rejectRequestToCreatePlayer = async (req, res, next) => {
       adminResponse
     )
 
-    resposeHandler(res, rejectedRequest, Ok("رد ساخت بازیکن"))
+    resposeHandler(
+      res,
+      rejectedRequest,
+      Ok({ operationName: "رد ساخت بازیکن" })
+    )
   } catch (error) {
     next(createError(InternalServerError()))
   }
@@ -197,7 +206,11 @@ module.exports.reactivationRequestToCreatePlayer = async (req, res, next) => {
       requestId
     )
 
-    resposeHandler(res, reactivedRequest, Ok("فعال سازی درخواست ساخت بازیکن"))
+    resposeHandler(
+      res,
+      reactivedRequest,
+      Ok({ operationName: "فعال سازی درخواست ساخت بازیکن" })
+    )
   } catch (error) {
     next(createError(InternalServerError()))
   }
@@ -247,7 +260,11 @@ module.exports.deleteRequestToCreatePlayer = async (req, res, next) => {
       id: +id,
     })
 
-    resposeHandler(res, removeRequest, Ok("حذف درخواست ساخت بازیکن"))
+    resposeHandler(
+      res,
+      removeRequest,
+      Ok({ operationName: "حذف درخواست ساخت بازیکن" })
+    )
   } catch (error) {
     next(createError(InternalServerError()))
   }
@@ -267,7 +284,11 @@ module.exports.getRequestToCreatePlayer = async (req, res, next) => {
       })
     }
 
-    resposeHandler(res, requests, Ok("خواندن درخواست های ساخت بازیکن"))
+    resposeHandler(
+      res,
+      requests,
+      Ok({ operationName: "خواندن درخواست های ساخت بازیکن" })
+    )
   } catch (error) {
     next(createError(InternalServerError()))
   }

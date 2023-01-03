@@ -30,7 +30,9 @@ module.exports.internalServerErrorHandler = (next, error) => {
 }
 
 module.exports.resposeHandler = (res, data, { statusCode, message }) => {
-  const { message: okMessage, statusCode: okStatusCode } = Ok()
+  const { message: okMessage, statusCode: okStatusCode } = Ok({
+    operationName: "عملیات مورد نظر",
+  })
   res.status(statusCode || okStatusCode).json({
     data: data || {},
     message: message || okMessage,

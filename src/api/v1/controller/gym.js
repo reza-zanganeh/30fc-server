@@ -88,7 +88,11 @@ module.exports.useGym = async (req, res, next) => {
       updatedPlayerData
     )
 
-    resposeHandler(res, updatedPlayer, Ok(`تمرین ${player.name}`))
+    resposeHandler(
+      res,
+      updatedPlayer,
+      Ok({ operationName: `تمرین ${player.name}` })
+    )
   } catch (error) {
     next(createError(InternalServerError()))
   }

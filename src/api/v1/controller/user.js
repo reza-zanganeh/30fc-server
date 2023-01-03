@@ -17,7 +17,7 @@ module.exports.getUserInformationWithToken = async (req, res, next) => {
     const userId = req.user.id
     const user = await readOne(userModelName.english, { id: +userId })
     delete user.password
-    resposeHandler(res, user, Ok("دریافت اطلاعات کاربر"))
+    resposeHandler(res, user, Ok({ operationName: "دریافت اطلاعات کاربر" }))
   } catch (error) {
     next(createError(InternalServerError()))
   }
@@ -46,7 +46,7 @@ module.exports.blockUser = async (req, res, next) => {
     resposeHandler(
       res,
       blockedUser,
-      Ok(`ادمین محترم مسدودیت کاربر ${blockedUser.fullname}`)
+      Ok({ operationName: `ادمین محترم مسدودیت کاربر ${blockedUser.fullname}` })
     )
   } catch (error) {
     next(createError(InternalServerError()))
@@ -76,7 +76,9 @@ module.exports.unBlockUser = async (req, res, next) => {
     resposeHandler(
       res,
       unBlockedUser,
-      Ok(`ادمین محترم خروج از مسدودیت کاربر ${unBlockedUser.fullname}`)
+      Ok({
+        operationName: `ادمین محترم خروج از مسدودیت کاربر ${unBlockedUser.fullname}`,
+      })
     )
   } catch (error) {
     next(createError(InternalServerError()))

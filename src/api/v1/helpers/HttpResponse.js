@@ -1,7 +1,7 @@
 const HttpStatusCode = {
-  Ok: (operationName) => ({
+  Ok: ({ operationName, message }) => ({
     statusCode: 200,
-    message: `${operationName} با موفقیت انجام شد`,
+    message: message ? message : `${operationName} با موفقیت انجام شد`,
   }),
   Created: (recordName) => ({
     statusCode: 201,

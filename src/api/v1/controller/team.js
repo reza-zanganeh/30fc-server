@@ -87,7 +87,7 @@ module.exports.getPlayers = async (req, res, next) => {
 
     const players = await getPlayersPrismaQuery(+teamId)
 
-    resposeHandler(res, players, Ok("خواندن بازیکنان تیم"))
+    resposeHandler(res, players, Ok({ operationName: "خواندن بازیکنان تیم" }))
   } catch (error) {
     next(createError(InternalServerError()))
   }
@@ -166,7 +166,7 @@ module.exports.changeComposition = async (req, res, next) => {
       updatedPlayer
     )
 
-    resposeHandler(res, updatedTeam, Ok("تغییر ترکیب"))
+    resposeHandler(res, updatedTeam, Ok({ operationName: "تغییر ترکیب" }))
   } catch (error) {
     next(createError(InternalServerError()))
   }
@@ -216,7 +216,7 @@ module.exports.changeTwoPlayerPosition = async (req, res, next) => {
     resposeHandler(
       res,
       result,
-      Ok(`تعویض ${playerOne.name} با ${playerTwo.name}`)
+      Ok({ operationName: `تعویض ${playerOne.name} با ${playerTwo.name}` })
     )
   } catch (error) {
     next(createError(InternalServerError()))

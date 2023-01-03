@@ -60,7 +60,11 @@ module.exports.useDoctor = async (req, res, next) => {
       updatedPlayersData
     )
 
-    resposeHandler(res, updatedPlayersData, Ok("مداوا بازیکنان تیم"))
+    resposeHandler(
+      res,
+      updatedPlayersData,
+      Ok({ operationName: "مداوا بازیکنان تیم" })
+    )
   } catch (error) {
     next(createError(InternalServerError()))
   }

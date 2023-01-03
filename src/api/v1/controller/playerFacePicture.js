@@ -57,7 +57,7 @@ module.exports.readPlayerFacePicture = async (req, res, next) => {
         baseUrl,
         playerFacePicture,
       },
-      Ok("خواندن تصاویر بازیکنان")
+      Ok({ operationName: "خواندن تصاویر بازیکنان" })
     )
   } catch (error) {
     next(createError(InternalServerError()))

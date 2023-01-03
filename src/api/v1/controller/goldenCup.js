@@ -60,7 +60,7 @@ module.exports.createGoldenCupByAdmin = async (req, res, next) => {
         createError(BadRequest("تعداد تیم های شرکت کننده باید توانی از 2 باشد"))
       )
 
-    resposeHandler(res, goldenCup, Ok("ساخت جام طلایی"))
+    resposeHandler(res, goldenCup, Ok({ operationName: "ساخت جام طلایی" }))
   } catch (error) {
     internalServerErrorHandler(next, error)
   }
@@ -74,7 +74,7 @@ module.exports.startGoldenCupByAdmin = async (req, res, next) => {
       { id: +goldenCupId },
       { status: "Registering" }
     )
-    resposeHandler(res, {}, Ok("باز شدن ثبت نام جام طلایی"))
+    resposeHandler(res, {}, Ok({ operationName: "باز شدن ثبت نام جام طلایی" }))
   } catch (error) {
     internalServerErrorHandler(next, error)
   }
@@ -165,7 +165,7 @@ module.exports.registerAtGoldenCup = async (req, res, next) => {
       addTeamToGoldenCupPrismaQuery(+goldenCupId, +teamId)
     )
 
-    resposeHandler(res, {}, Ok("شرکت در جام طلایی"))
+    resposeHandler(res, {}, Ok({ operationName: "شرکت در جام طلایی" }))
   } catch (error) {
     internalServerErrorHandler(next, error)
   }

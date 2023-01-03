@@ -7,7 +7,7 @@ const {
 module.exports.updateRedisData = async (req, res, next) => {
   try {
     await readGeneralDataAndSaveOnRedis()
-    resposeHandler(res, {}, Ok("بروزرسانی"))
+    resposeHandler(res, {}, Ok({ operationName: "بروزرسانی" }))
   } catch (error) {
     internalServerErrorHandler(next, error)
   }

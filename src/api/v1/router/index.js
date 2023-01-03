@@ -27,6 +27,7 @@ const {
 } = require("../router/requestToCreatePlayer")
 const { generalGameSettingRouter } = require("./generalGameSettings")
 const { goldenCupRouter } = require("./goldenCup")
+const { friendlyGameRouter } = require("./friendlyGame")
 //#endregion
 module.exports.registerRoutes = (app) => {
   //#region add routes
@@ -83,6 +84,11 @@ module.exports.registerRoutes = (app) => {
     generalGameSettingRouter
   )
   app.use(`/api/${appVersion}/golden-cup`, isAuthenticate, goldenCupRouter)
+  app.use(
+    `/api/${appVersion}/friendly-game`,
+    isAuthenticate,
+    friendlyGameRouter
+  )
   //#endregion
   app.use("*", notFoundResponse)
   app.use(errorHandler)

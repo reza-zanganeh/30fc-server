@@ -45,7 +45,11 @@ const readWithIdController = async (MODELNAME, req, res, next) => {
   try {
     const { id } = req.params
     const records = await readOne(MODELNAME.english, { id: +id })
-    resposeHandler(res, records, Ok(`خواندن ${MODELNAME.persian}`))
+    resposeHandler(
+      res,
+      records,
+      Ok({ operationName: `خواندن ${MODELNAME.persian}` })
+    )
   } catch (error) {
     next(createError(InternalServerError()))
   }
@@ -55,7 +59,11 @@ const readController = async (MODELNAME, req, res, next) => {
   try {
     const { id, page } = req.query
     const records = await readWithPaginationOrId(MODELNAME.english, +id, page)
-    resposeHandler(res, records, Ok(`خواندن ${MODELNAME.persian}`))
+    resposeHandler(
+      res,
+      records,
+      Ok({ operationName: `خواندن ${MODELNAME.persian}` })
+    )
   } catch (error) {
     next(createError(InternalServerError()))
   }
@@ -124,7 +132,11 @@ const getTeamAssetsWithPriceForUpgrade = async (MODELNAME, req, res, next) => {
       })
     }
 
-    resposeHandler(res, correctedRecords, Ok(`خواندن ${MODELNAME.persian}`))
+    resposeHandler(
+      res,
+      correctedRecords,
+      Ok({ operationName: `خواندن ${MODELNAME.persian}` })
+    )
   } catch (error) {
     next(createError(InternalServerError()))
   }
@@ -211,7 +223,11 @@ const buyTeamAsset = async (MODELNAME, req, res, next) => {
 
     const resposeData = { coinCountToPay }
     resposeData[`${MODELNAME.english}Id`] = newAssetId
-    resposeHandler(res, resposeData, Ok(`خرید ${MODELNAME.persian} جدید`))
+    resposeHandler(
+      res,
+      resposeData,
+      Ok({ operationName: `خرید ${MODELNAME.persian} جدید` })
+    )
   } catch (error) {
     next(createError(InternalServerError()))
   }

@@ -44,7 +44,7 @@ module.exports.usePsychologist = async (req, res, next) => {
       { spirit: newSpirit > 100 ? 100 : newSpirit }
     )
 
-    resposeHandler(res, updatedTeam, Ok("افزایش روحیه تیم"))
+    resposeHandler(res, updatedTeam, Ok({ operationName: "افزایش روحیه تیم" }))
   } catch (error) {
     next(createError(InternalServerError()))
   }

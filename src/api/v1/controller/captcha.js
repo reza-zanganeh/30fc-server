@@ -12,7 +12,7 @@ module.exports.getCaptcha = async (req, res, next) => {
 
     const token = createCaptchaToken(text)
 
-    resposeHandler(res, { image, token }, Ok("ایجاد کپچا"))
+    resposeHandler(res, { image, token }, Ok({ operationName: "ایجاد کپچا" }))
   } catch (error) {
     internalServerErrorHandler(next, error)
   }

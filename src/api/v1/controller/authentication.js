@@ -373,7 +373,7 @@ module.exports.login = async (req, res, next) => {
           projectConfig.authentication
             .authenticationTokenExpiresTimeInMilisecond,
       },
-      Ok("ورود")
+      Ok({ operationName: "ورود" })
     )
   } catch (error) {
     next(createError(InternalServerError()))
@@ -414,7 +414,7 @@ module.exports.requestToResetPassword = async (req, res, next) => {
       return next(createError(InternalServerError()))
 
     sendResetPasswordHash(user.email, userId, hash, redirectUrl)
-    resposeHandler(res, {}, Ok("درخواست بازیابی رمز عبور"))
+    resposeHandler(res, {}, Ok({ operationName: "درخواست بازیابی رمز عبور" }))
   } catch (error) {
     // send email to admin to check for this error
     return next(createError(InternalServerError()))
@@ -458,7 +458,7 @@ module.exports.resetPassword = async (req, res, next) => {
 
     deleteResetPasswordHashFromRedis(email)
 
-    resposeHandler(res, {}, Ok("بازیابی رمز عبور"))
+    resposeHandler(res, {}, Ok({ operationName: "بازیابی رمز عبور" }))
   } catch (error) {
     next(createError(InternalServerError()))
   }

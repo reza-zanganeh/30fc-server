@@ -176,3 +176,202 @@ type GoldenCupWhereUniqueInput {
 Argument data is missing.
 
 Note: Lines with + are required
+
+ ================== ۱۴۰۱-۱۰-۱۱ ۲۲:۲۴:۰۶ ب ظ ================== 
+Cannot destructure property 'operationName' of 'undefined' as it is undefined.
+ ================== ۱۴۰۱-۱۰-۱۱ ۲۲:۴۶:۴۱ ب ظ ================== 
+
+Invalid `prisma[modelName].findFirst()` invocation in
+G:\FootballManager\football-manager-server\src\api\v1\helpers\prisma.js:33:43
+
+  30 try {
+  31   let result
+  32   if (select) result = await prisma[modelName].findFirst({ where, select })
+→ 33   else result = await prisma[modelName].findFirst({
+         where: {
+           receiverTeamId: '54',
+                           ~~~~
+           senderTeamId: 53
+         }
+       })
+
+Argument receiverTeamId: Got invalid value '54' on prisma.findFirstRequestFriendlyGame. Provided String, expected IntFilter or Int:
+type IntFilter {
+  equals?: Int
+  in?: List<Int>
+  notIn?: List<Int>
+  lt?: Int
+  lte?: Int
+  gt?: Int
+  gte?: Int
+  not?: Int | NestedIntFilter
+}
+type IntFilter {
+  equals?: Int
+  in?: List<Int>
+  notIn?: List<Int>
+  lt?: Int
+  lte?: Int
+  gt?: Int
+  gte?: Int
+  not?: Int | NestedIntFilter
+}
+
+
+ ================== ۱۴۰۱-۱۰-۱۱ ۲۳:۲۴:۳۳ ب ظ ================== 
+request is not defined
+ ================== ۱۴۰۱-۱۰-۱۱ ۲۳:۲۵:۱۲ ب ظ ================== 
+
+Invalid `prisma[modelName].update()` invocation in
+G:\FootballManager\football-manager-server\src\api\v1\helpers\prisma.js:90:30
+
+  87 
+  88 module.exports.updateWithoutExecute = (modelName, where, data) => {
+  89   try {
+→ 90     return prisma[modelName].update({
+           where: {
+             teamId: 53
+             ~~~~~~
+           },
+           data: {
+             friendlyGameCount: 0,
+             friendlyGameTimeOneIsEmpty: false
+           }
+         })
+
+Unknown arg `teamId` in where.teamId for type TeamWhereUniqueInput. Did you mean `name`? Available args:
+type TeamWhereUniqueInput {
+  id?: Int
+  name?: String
+}
+
+
+ ================== ۱۴۰۱-۱۰-۱۱ ۲۳:۲۶:۰۴ ب ظ ================== 
+request is not defined
+ ================== ۱۴۰۱-۱۰-۱۳ ۰۱:۰۸:۲۹ ق ظ ================== 
+
+Invalid `prisma[modelName].findMany()` invocation in
+G:\FootballManager\football-manager-server\src\api\v1\helpers\prisma.js:56:54
+
+  53 let result
+  54 if (where && select)
+  55   result = await prisma[modelName].findMany({ where, select })
+→ 56 else if (where) result = await prisma[modelName].findMany({
+       where: {
+         status: 'Confirm'
+         ~~~~~~
+       }
+     })
+
+Unknown arg `status` in where.status for type TeamWhereInput. Did you mean `strategy`? Available args:
+type TeamWhereInput {
+  AND?: TeamWhereInput | List<TeamWhereInput>
+  OR?: List<TeamWhereInput>
+  NOT?: TeamWhereInput | List<TeamWhereInput>
+  id?: IntFilter | Int
+  owner?: UserRelationFilter | UserWhereInput | Null
+  ownerId?: IntNullableFilter | Int | Null
+  name?: StringFilter | String
+  coinCount?: IntFilter | Int
+  logoUrl?: StringNullableFilter | String | Null
+  profilePictureUrl?: StringNullableFilter | String | Null
+  fanSatisfaction?: IntFilter | Int
+  isOnline?: BoolFilter | Boolean
+  lastTimeSeen?: DateTimeFilter | DateTime
+  dateOfStablishment?: DateTimeFilter | DateTime
+  spirit?: IntFilter | Int
+  isBlock?: BoolFilter | Boolean
+  technique?: EnumTechniqueFilter | Technique
+  strategy?: EnumStrategyFilter | Strategy
+  AdminTeamSalesContract?: AdminSellableTeamRelationFilter | AdminSellableTeamWhereInput | Null
+  composition?: CompositionRelationFilter | CompositionWhereInput
+  compositionId?: IntFilter | Int
+  players?: PlayerListRelationFilter
+  playerCount?: IntFilter | Int
+  teamMembershipType?: EnumTeamMembershipTypeNameFilter | TeamMembershipTypeName
+  endOfTeamMemberShipType?: DateTimeFilter | DateTime
+  dateOfEstablishment?: DateTimeFilter | DateTime
+  leauge?: LeagueRelationFilter | LeagueWhereInput | Null
+  leagueId?: IntNullableFilter | Int | Null
+  leagueThatRankedFirst?: LeagueRelationFilter | LeagueWhereInput | Null
+  leagueThatRankedSecond?: LeagueRelationFilter | LeagueWhereInput | Null
+  leagueThatRankedThird?: LeagueRelationFilter | LeagueWhereInput | Null
+  leagueGamesHostTeam?: LeagueGameListRelationFilter
+  leagueGamesVisitingTeam?: LeagueGameListRelationFilter
+  goldenCup?: GoldenCupRelationFilter | GoldenCupWhereInput | Null
+  goldenCupId?: IntNullableFilter | Int | Null
+  goldenCupThatRankedFirst?: GoldenCupRelationFilter | GoldenCupWhereInput | Null
+  goldenCupThatRankedSecond?: GoldenCupRelationFilter | GoldenCupWhereInput | Null
+  goldenCupGamesHostTeam?: GoldenCupGameListRelationFilter
+  goldenCupGamesVisitingTeam?: GoldenCupGameListRelationFilter
+  championsCup?: ChampionsCupRelationFilter | ChampionsCupWhereInput | Null
+  championsCupId?: IntNullableFilter | Int | Null
+  championsCupThatRankedFirst?: ChampionsCupRelationFilter | ChampionsCupWhereInput | Null
+  championsCupThatRankedSecond?: ChampionsCupRelationFilter | ChampionsCupWhereInput | Null
+  championsCupGamesHostTeam?: ChampionsCupGameListRelationFilter
+  championsCupGamesVisitingTeam?: ChampionsCupGameListRelationFilter
+  friendlyGamesHostTeam?: FriendlyGameListRelationFilter
+  friendlyGamesVisitingTeam?: FriendlyGameListRelationFilter
+  friendlyGameRequestIsOn?: BoolFilter | Boolean
+  friendlyGameCount?: IntFilter | Int
+  friendlyGameTimeOneIsEmpty?: BoolFilter | Boolean
+  friendlyGameTimeTwoIsEmpty?: BoolFilter | Boolean
+  friendlyGameTimeThreeIsEmpty?: BoolFilter | Boolean
+  teamScores?: TeamScoresRelationFilter | TeamScoresWhereInput | Null
+  tournament?: TournamentRelationFilter | TournamentWhereInput | Null
+  tournamentId?: IntNullableFilter | Int | Null
+  TournamentsThatWonFirstPlace?: TournamentListRelationFilter
+  TournamentsThatWonSecondPlace?: TournamentListRelationFilter
+  TournamentsThatWonThirdPlace?: TournamentListRelationFilter
+  RequestToCreatePlayer?: RequestToCreatePlayerListRelationFilter
+  sponser?: SponserRelationFilter | SponserWhereInput | Null
+  sponserId?: IntNullableFilter | Int | Null
+  teamAssets?: TeamAssetsRelationFilter | TeamAssetsWhereInput | Null
+  privateChatIsOn?: BoolFilter | Boolean
+  privateChatsTeamOne?: PrivateChatListRelationFilter
+  privateChatsTeamTwo?: PrivateChatListRelationFilter
+  tickets?: TicketListRelationFilter
+  publicAdminMessages?: PublicAdminMessagesOfTeamsListRelationFilter
+  groups?: GroupMemberListRelationFilter
+  groupPostComments?: GroupPostCommentListRelationFilter
+  groupPostLikes?: GroupPostListRelationFilter
+  groupPostDisLikes?: GroupPostListRelationFilter
+  chatRooms?: ChatRoomMemberListRelationFilter
+  coinPurchaseInvoice?: CoinPurchaseInvoiceListRelationFilter
+  TeamMembershipTypePurchaseInvoices?: TeamMembershipTypePurchaseInvoiceListRelationFilter
+  followingIsOn?: BoolFilter | Boolean
+  fallowers?: FollowerFallowingListRelationFilter
+  fallowing?: FollowerFallowingListRelationFilter
+  purchasedAdminPlayersCount?: IntFilter | Int
+  purchasedAdminPlayer?: AdminSellablePlayerListRelationFilter
+  purchasedPlayesrCount?: IntFilter | Int
+  purchasedPlayer?: PlayerTransfersListRelationFilter
+  soldPlayersCount?: IntFilter | Int
+  PlayersOnSale?: PlayerTransfersListRelationFilter
+}
+
+
+ ================== ۱۴۰۱-۱۰-۱۳ ۰۱:۳۰:۲۸ ق ظ ================== 
+readOne is not defined
+ ================== ۱۴۰۱-۱۰-۱۳ ۰۱:۳۰:۴۳ ق ظ ================== 
+gameTimeModelName is not defined
+ ================== ۱۴۰۱-۱۰-۱۳ ۱۳:۵۵:۳۵ ب ظ ================== 
+next is not defined
+ ================== ۱۴۰۱-۱۰-۱۳ ۱۳:۵۸:۲۴ ب ظ ================== 
+next is not defined
+ ================== ۱۴۰۱-۱۰-۱۳ ۱۴:۱۳:۰۱ ب ظ ================== 
+next is not defined
+ ================== ۱۴۰۱-۱۰-۱۳ ۱۴:۱۸:۴۷ ب ظ ================== 
+next is not defined
+ ================== ۱۴۰۱-۱۰-۱۳ ۱۴:۱۹:۲۷ ب ظ ================== 
+next is not defined
+ ================== ۱۴۰۱-۱۰-۱۳ ۱۴:۱۹:۴۳ ب ظ ================== 
+next is not defined
+ ================== ۱۴۰۱-۱۰-۱۳ ۱۴:۲۰:۰۱ ب ظ ================== 
+next is not defined
+ ================== ۱۴۰۱-۱۰-۱۳ ۱۴:۲۰:۳۷ ب ظ ================== 
+next is not defined
+ ================== ۱۴۰۱-۱۰-۱۳ ۱۴:۲۴:۵۳ ب ظ ================== 
+next is not defined
+ ================== ۱۴۰۱-۱۰-۱۳ ۱۴:۲۷:۴۵ ب ظ ================== 
+next is not defined

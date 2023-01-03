@@ -172,7 +172,7 @@ module.exports.getLeaguTable = async (req, res, next) => {
   try {
     const { id: leagueId } = req.params
     const leagueTable = await getLeagueTablePrismaQuery(+leagueId)
-    resposeHandler(res, leagueTable, Ok("خواندن جدول لیگ"))
+    resposeHandler(res, leagueTable, Ok({ operationName: "خواندن جدول لیگ" }))
   } catch (error) {
     internalServerErrorHandler(next, error)
   }

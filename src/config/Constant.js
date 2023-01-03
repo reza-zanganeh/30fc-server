@@ -115,6 +115,18 @@ const modelName = {
     english: "goldenCup",
     persian: "جام طلایی",
   },
+  requestFriendlyGameModelName: {
+    english: "requestFriendlyGame",
+    persian: "درخواست بازی دوستانه",
+  },
+  friendlyGameScorerPlayer: {
+    english: "friendlyGameScorerPlayer",
+    persian: "بازیکنان زننده گل در بازی های دوستانه",
+  },
+  friendlyGame: {
+    english: "friendlyGame",
+    persian: "بازی دوستانه",
+  },
 }
 
 module.exports = {
