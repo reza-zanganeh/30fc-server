@@ -119,13 +119,17 @@ const modelName = {
     english: "requestFriendlyGame",
     persian: "درخواست بازی دوستانه",
   },
-  friendlyGameScorerPlayer: {
+  friendlyGameScorerPlayerModelName: {
     english: "friendlyGameScorerPlayer",
     persian: "بازیکنان زننده گل در بازی های دوستانه",
   },
   friendlyGame: {
     english: "friendlyGame",
     persian: "بازی دوستانه",
+  },
+  motivationalSentenceModelName: {
+    english: "motivationalSentence",
+    persian: "جملات انگیزشی",
   },
 }
 

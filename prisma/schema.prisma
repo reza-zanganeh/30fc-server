@@ -1048,6 +1048,12 @@ enum ProductStatus {
   SoldOut
 }
 
+model motivationalSentence {
+  id       Int    @id @default(autoincrement())
+  sentence String
+  author   String
+}
+
 // general eunms
 enum RequestStatus {
   Pending

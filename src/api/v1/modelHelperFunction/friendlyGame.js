@@ -10,7 +10,7 @@ const {
   requestFriendlyGameModelName,
   teamModelName,
   gameTimeModelName,
-  friendlyGameScorerPlayer,
+  friendlyGameScorerPlayerModelName,
   friendlyGame,
 } = modelName
 const persianDate = require("persian-date").toLocale("fa")
@@ -112,7 +112,7 @@ const removeAditionalFriendlyGameData = (prismaPoolIndex) => {
   try {
     addPrismaQueryToPool(
       prismaPoolIndex,
-      removeAllWithoutExecution(friendlyGameScorerPlayer.english)
+      removeAllWithoutExecution(friendlyGameScorerPlayerModelName.english)
     )
     addPrismaQueryToPool(
       prismaPoolIndex,

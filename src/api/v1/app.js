@@ -18,7 +18,10 @@ registerRoutes(app)
 //#region functions that run on running server
 const { readGeneralDataAndSaveOnRedis } = require("./helpers/Functions")
 const { internalServerErrorHandler } = require("./helpers/responseHandler")
-const { resetGameCount } = require("./services/redis")
+const {
+  resetGameCount,
+  resetMotivationalSenteceCounter,
+} = require("./services/redis")
 
 //#endregion
 const PORT = projectConfig.server.httpServer.port
@@ -43,6 +46,7 @@ app.listen(PORT, async () => {
     // )
     await readGeneralDataAndSaveOnRedis()
     await resetGameCount()
+    await resetMotivationalSenteceCounter()
   } catch (error) {
     internalServerErrorHandler(null, error)
   }

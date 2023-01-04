@@ -18,6 +18,7 @@ const RESETPASSWORD = "RESETPASSWORD"
 const NEEDLOGINAGAIN = "NEEDLOGINAGAIN"
 const INVALIDPASSWORD = "INVALIPASSWORD"
 const GAMECOUNT = "GAMECOUNT"
+const MOTIVATIONALSETENCECOUNTER = "MOTIVATIONALSETENCECOUNTER"
 
 const setOnRedis = async (key, value, expiresIn) => {
   return await client.set(key, value, expiresIn ? { EX: expiresIn * 60 } : {})
@@ -193,4 +194,24 @@ module.exports.increaseGameCount = async () => {
 
 module.exports.resetGameCount = async () => {
   await setOnRedis(GAMECOUNT, 0)
+}
+
+module.exports.getMotivationalSenteceCounter = async () => {
+  return +(await getFromRedis(MOTIVATIONALSETENCECOUNTER)) || 1
+}
+
+module.exports.increaseMotivationalSenteceCounter = async () => {
+  const MotivationalSenteceCounter = await getFromRedis(
+    MOTIVATIONALSETENCECOUNTER
+  )
+  if (MotivationalSenteceCounter)
+    await setOnRedis(
+      MOTIVATIONALSETENCECOUNTER,
+      +MotivationalSenteceCounter + 1
+    )
+  else await setOnRedis(MOTIVATIONALSETENCECOUNTER, 1)
+}
+
+module.exports.resetMotivationalSenteceCounter = async () => {
+  await setOnRedis(MOTIVATIONALSETENCECOUNTER, 0)
 }

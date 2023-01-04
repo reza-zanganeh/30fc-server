@@ -28,6 +28,7 @@ const {
 const { generalGameSettingRouter } = require("./generalGameSettings")
 const { goldenCupRouter } = require("./goldenCup")
 const { friendlyGameRouter } = require("./friendlyGame")
+const { motivationalSentenceRouter } = require("./motivationalSentence")
 //#endregion
 module.exports.registerRoutes = (app) => {
   //#region add routes
@@ -88,6 +89,11 @@ module.exports.registerRoutes = (app) => {
     `/api/${appVersion}/friendly-game`,
     isAuthenticate,
     friendlyGameRouter
+  )
+  app.use(
+    `/api/${appVersion}/motivational-sentence`,
+    isAuthenticate,
+    motivationalSentenceRouter
   )
   //#endregion
   app.use("*", notFoundResponse)
