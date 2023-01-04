@@ -55,6 +55,21 @@ const deleteObjectFromCloud = async (Bucket, Key) => {
   }
 }
 
+module.exports.getPresignedUrlToUploadUserProfilePiture = async (fileName) => {
+  try {
+    const uuid = uuidV4()
+    const Key = `${uuid}_${fileName}`
+    const result = await getPresignedUrlToUpload(
+      uuid,
+      Key,
+      projectConfig.cloud.bucket.userProfilePicture
+    )
+    return { ...result, Key }
+  } catch (error) {
+    throw error
+  }
+}
+
 module.exports.getPresignedUrlToUploadPlayerFacePiture = async (fileName) => {
   try {
     const uuid = uuidV4()

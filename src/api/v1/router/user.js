@@ -6,12 +6,19 @@ const {
   getUserInformationWithToken,
   blockUser,
   unBlockUser,
+  completionInformation,
+  getInviteCode,
 } = require("../controller/user")
-const { blockAndUnBlockUserSchemaValidation } = require("../validations/user")
+const {
+  blockAndUnBlockUserSchemaValidation,
+  completionInformationSchemaValidation,
+} = require("../validations/user")
 const { hasAccessToAdminOperation } = require("../middleware/accessControl")
 const userRouter = express.Router()
 
 userRouter.get("/", getUserInformationWithToken)
+
+userRouter.get("/invite-code", getInviteCode)
 
 userRouter.patch(
   "/admin/block",
@@ -26,6 +33,13 @@ userRouter.patch(
   checkSchema(blockAndUnBlockUserSchemaValidation),
   expressValidationResultHandler,
   unBlockUser
+)
+
+userRouter.patch(
+  "/completion-information",
+  checkSchema(completionInformationSchemaValidation),
+  expressValidationResultHandler,
+  completionInformation
 )
 
 module.exports.userRouter = userRouter

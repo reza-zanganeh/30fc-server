@@ -26,6 +26,7 @@ model User {
   city                        String?
   state                       String?
   country                     String?
+  bio                         String?
   // user level
   role                        UserRole              @default(Normal)
   teams                       Team[]
@@ -799,6 +800,9 @@ enum AdminNewsType {
   Interview
   SpecialNews
   Learning
+  GuideGame
+  SpecialGuideGame
+  RulesGame
 }
 
 // general model
@@ -830,6 +834,7 @@ enum GameConstantVariableName {
   InviteNewTeamCoinCount
   NumberOfStadiumTicketCoins
   CostOfCreatingThirdTeam
+  CompletionInformationCoinCount
 }
 
 model GameTimestamp {

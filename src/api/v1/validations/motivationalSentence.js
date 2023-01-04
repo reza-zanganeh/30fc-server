@@ -1,4 +1,7 @@
-const { required } = require("../helpers/inputValidation")
+const {
+  required,
+  checkExistsObjectWithIdInDb,
+} = require("../helpers/inputValidation")
 const { modelName } = require("../../../config/Constant")
 const { motivationalSentenceModelName } = modelName
 module.exports.createOrUpdateMotivationalSentenceSchemaValidation = {
@@ -7,5 +10,9 @@ module.exports.createOrUpdateMotivationalSentenceSchemaValidation = {
 }
 
 module.exports.deleteMotivationSentenceSchemaValidation = {
-  id: checkAssetInUseWithTeam(motivationalSentenceModelName, "params"),
+  id: checkExistsObjectWithIdInDb(
+    motivationalSentenceModelName,
+    "params",
+    false
+  ),
 }

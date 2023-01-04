@@ -1,5 +1,6 @@
 const { empty, invalid, limitLegth } = require("./validationMessage")
 const { readOne, count } = require("../helpers/prisma")
+
 module.exports.email = (location) => ({
   in: [location],
   exists: {
@@ -174,6 +175,22 @@ module.exports.between = (fieldName, location, min, max) => ({
   },
 })
 
+module.exports.stringLengthBetween = (fieldName, location, min, max) => ({
+  in: [location],
+  exists: {
+    bail: true,
+    options: {
+      checkNull: true,
+    },
+    errorMessage: empty(fieldName),
+    checkNull: true,
+  },
+  custom: {
+    options: (value) => value.length >= min && value.length <= max,
+    errorMessage: `مقدار ${fieldName} باید بین ${min} و ${max} باشد`,
+  },
+})
+
 module.exports.checkExistsObjectWithIdInDb = (
   MODELNAME,
   location,
@@ -223,5 +240,30 @@ module.exports.checkAssetInUseWithTeam = (MODELNAME, location) => ({
           `${MODELNAME.persian} در حال استفاده توسط ${teamCountUseThisAsset} تیم می باشد`
         )
     },
+  },
+})
+
+// TODO
+module.exports.isBirthday = (fieldName, location) => ({
+  in: [location],
+  exists: {
+    bail: true,
+    options: {
+      checkNull: true,
+    },
+    errorMessage: empty(fieldName),
+    checkNull: true,
+  },
+  custom: {
+    options: (date) => {
+      if (isNaN(+date)) {
+        return false
+      }
+      const diffYearsInputDateAndNow =
+        (new Date().getTime() - date) / 31536000000
+      if (diffYearsInputDateAndNow <= 2) return false
+      return true
+    },
+    errorMessage: `timestamp وارد شده برای ${fieldName} معتبر نمی باشد`,
   },
 })

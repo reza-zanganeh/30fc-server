@@ -1,7 +1,7 @@
 const crypto = require("crypto")
 const { readOne, update, readAll, create } = require("../helpers/prisma")
 const { modelName } = require("../../../config/Constant")
-const { userModelName, reservedTeamNameModelName, teamModelName } = modelName
+const { userModelName } = modelName
 const {
   createError,
   createRandomNumber,
@@ -306,7 +306,6 @@ module.exports.login = async (req, res, next) => {
   try {
     const { password: inputPassword } = req.body
     const { phonenumber } = req.otpData
-    console.log(phonenumber)
     const user = await readOne(userModelName.english, {
       phonenumber,
     })
