@@ -1,7 +1,7 @@
 const crypto = require("crypto")
 const { readOne, update, readAll, create } = require("../helpers/prisma")
 const { modelName } = require("../../../config/Constant")
-const { userModelName } = modelName
+const { userModelName, teamModelName } = modelName
 const {
   createError,
   createRandomNumber,
@@ -229,19 +229,19 @@ module.exports.register = async (req, res, next) => {
     if (!isValidTeamName)
       return next(createError(BadRequest(invalidTeamNameErrorMessage)))
 
-    let introducingUser
+    let introducingTeam
     if (introductionCode) {
-      introducingUser = await readOne(
-        userModelName.english,
+      introducingTeam = await readOne(
+        teamModelName.english,
         {
           id: +introductionCode,
         },
         { id: true, coinCount: true }
       )
-      if (!introducingUser)
+      if (!introducingTeam)
         return next(
           createError(
-            BadRequest("کاربری که بعنوان معرف معرفی کرده اید وجود ندارد")
+            BadRequest("تیمی که بعنوان معرف معرفی کرده اید وجود ندارد")
           )
         )
     }
@@ -256,6 +256,7 @@ module.exports.register = async (req, res, next) => {
       technique,
     } = await createDataTeam(teamName)
     const hashedPass = await hashUserPassword(password)
+    // TODO : user prisma transaction
     const createdTeam = await createTeamWithOwnerPrismaQuery(
       teamName,
       compositionId,
@@ -270,13 +271,13 @@ module.exports.register = async (req, res, next) => {
         password: hashedPass,
       }
     )
-    // add gift coin to introducingUser
-    if (introducingUser) {
+    // add gift coin to introducingTeam
+    if (introducingTeam) {
       const inviteNewTeamCoinCount = await getInviteNewTeamCoinCountFromRedis()
       await update(
-        userModelName.english,
-        { id: +introducingUser },
-        { coinCount: introducingUser.coinCount + inviteNewTeamCoinCount }
+        teamModelName.english,
+        { id: +introducingTeam },
+        { coinCount: introducingTeam.coinCount + inviteNewTeamCoinCount }
       )
     }
     // create token
@@ -375,7 +376,7 @@ module.exports.login = async (req, res, next) => {
       Ok({ operationName: "ورود" })
     )
   } catch (error) {
-    next(createError(InternalServerError()))
+    internalServerErrorHandler(next, error)
   }
 }
 
@@ -415,8 +416,8 @@ module.exports.requestToResetPassword = async (req, res, next) => {
     sendResetPasswordHash(user.email, userId, hash, redirectUrl)
     resposeHandler(res, {}, Ok({ operationName: "درخواست بازیابی رمز عبور" }))
   } catch (error) {
-    // send email to admin to check for this error
-    return next(createError(InternalServerError()))
+    // TODO :  send email to admin to check for this error
+    internalServerErrorHandler(next, error)
   }
 }
 
@@ -459,6 +460,6 @@ module.exports.resetPassword = async (req, res, next) => {
 
     resposeHandler(res, {}, Ok({ operationName: "بازیابی رمز عبور" }))
   } catch (error) {
-    next(createError(InternalServerError()))
+    internalServerErrorHandler(next, error)
   }
 }

@@ -13,7 +13,10 @@ const {
 } = modelName
 const { requestToPay, verifyPayment } = require("../services/payment")
 const { readOne, create } = require("../helpers/prisma")
-const { resposeHandler } = require("../helpers/responseHandler")
+const {
+  resposeHandler,
+  internalServerErrorHandler,
+} = require("../helpers/responseHandler")
 
 module.exports.buyCoin = async (req, res, next) => {
   try {
@@ -60,7 +63,7 @@ module.exports.buyCoin = async (req, res, next) => {
       )
     }
   } catch (error) {
-    next(createError(InternalServerError()))
+    internalServerErrorHandler(next, error)
   }
 }
 
@@ -92,6 +95,6 @@ module.exports.completeBuy = async (req, res, next) => {
     // isPay = true
     //
   } catch (error) {
-    next(createError(InternalServerError()))
+    internalServerErrorHandler(next, error)
   }
 }

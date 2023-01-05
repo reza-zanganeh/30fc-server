@@ -962,6 +962,7 @@ model GroupPost {
   dateOfEstablishment DateTime
   group               Group              @relation(fields: [groupId], references: [id])
   groupId             Int
+  commentsCount Int @default(0)
   comments            GroupPostComment[]
 }
 

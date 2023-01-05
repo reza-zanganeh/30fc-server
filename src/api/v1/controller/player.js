@@ -7,7 +7,10 @@ const {
   BadRequest,
 } = require("../helpers/HttpResponse")
 const { createPlayerPrismaQuery } = require("../prismaQuery/player")
-const { resposeHandler } = require("../helpers/responseHandler")
+const {
+  resposeHandler,
+  internalServerErrorHandler,
+} = require("../helpers/responseHandler")
 const { getPresignedUrlToUploadPlayerFacePiture } = require("../services/cloud")
 const { update } = require("../helpers/prisma")
 const { calculatePlayerSalary } = require("../helpers/formula")
@@ -81,7 +84,7 @@ module.exports.createPlayerByAdmin = async (req, res, next) => {
       Ok({ operationName: "ساخت بازیکن" })
     )
   } catch (error) {
-    next(createError(InternalServerError()))
+    internalServerErrorHandler(next, error)
   }
 }
 
@@ -114,6 +117,6 @@ module.exports.chnageTShirtNumber = async (req, res, next) => {
       Ok({ operationName: "تغییر شماره پیراهن بازیکن" })
     )
   } catch (error) {
-    next(createError(InternalServerError()))
+    internalServerErrorHandler(next, error)
   }
 }

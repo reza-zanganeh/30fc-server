@@ -1,5 +1,8 @@
 const { createError } = require("../helpers/Functions")
-const { resposeHandler } = require("../helpers/responseHandler")
+const {
+  resposeHandler,
+  internalServerErrorHandler,
+} = require("../helpers/responseHandler")
 const {
   InternalServerError,
   Created,
@@ -89,6 +92,6 @@ module.exports.createComposition = async (req, res, next) => {
 
     resposeHandler(res, newComposition, Created("ترکیب"))
   } catch (error) {
-    next(createError(InternalServerError()))
+    internalServerErrorHandler(next, error)
   }
 }

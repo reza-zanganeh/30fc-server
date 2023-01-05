@@ -4,7 +4,10 @@ const {
   playerModelName,
   playerFacePictureModelName,
 } = modelName
-const { resposeHandler } = require("../helpers/responseHandler")
+const {
+  resposeHandler,
+  internalServerErrorHandler,
+} = require("../helpers/responseHandler")
 const { createError } = require("../helpers/Functions")
 const {
   InternalServerError,
@@ -124,7 +127,7 @@ module.exports.createRequestToCreatePlayer = async (req, res, next) => {
       })
     )
   } catch (error) {
-    next(createError(InternalServerError()))
+    internalServerErrorHandler(next, error)
   }
 }
 
@@ -151,7 +154,7 @@ module.exports.confirmRequestToCreatePlayer = async (req, res, next) => {
       Ok({ operationName: "تایید ساخت بازیکن" })
     )
   } catch (error) {
-    next(createError(InternalServerError()))
+    internalServerErrorHandler(next, error)
   }
 }
 // reject request with admin
@@ -176,7 +179,7 @@ module.exports.rejectRequestToCreatePlayer = async (req, res, next) => {
       Ok({ operationName: "رد ساخت بازیکن" })
     )
   } catch (error) {
-    next(createError(InternalServerError()))
+    internalServerErrorHandler(next, error)
   }
 }
 //
@@ -212,7 +215,7 @@ module.exports.reactivationRequestToCreatePlayer = async (req, res, next) => {
       Ok({ operationName: "فعال سازی درخواست ساخت بازیکن" })
     )
   } catch (error) {
-    next(createError(InternalServerError()))
+    internalServerErrorHandler(next, error)
   }
 }
 // remove request with req owner
@@ -266,7 +269,7 @@ module.exports.deleteRequestToCreatePlayer = async (req, res, next) => {
       Ok({ operationName: "حذف درخواست ساخت بازیکن" })
     )
   } catch (error) {
-    next(createError(InternalServerError()))
+    internalServerErrorHandler(next, error)
   }
 }
 // get own team not confirmed request
@@ -290,6 +293,6 @@ module.exports.getRequestToCreatePlayer = async (req, res, next) => {
       Ok({ operationName: "خواندن درخواست های ساخت بازیکن" })
     )
   } catch (error) {
-    next(createError(InternalServerError()))
+    internalServerErrorHandler(next, error)
   }
 }

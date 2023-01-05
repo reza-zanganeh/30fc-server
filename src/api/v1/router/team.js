@@ -52,4 +52,6 @@ teamRouter.patch(
   changeTwoPlayerPosition
 )
 
+teamRouter.get("/invite-code", hasAccessToTeam, getInviteCode)
+
 module.exports.teamRouter = teamRouter

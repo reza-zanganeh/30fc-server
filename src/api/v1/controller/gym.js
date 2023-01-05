@@ -13,7 +13,10 @@ const {
   teamAssetsModelName,
 } = modelName
 const { readOne, update } = require("../helpers/prisma")
-const { resposeHandler } = require("../helpers/responseHandler")
+const {
+  resposeHandler,
+  internalServerErrorHandler,
+} = require("../helpers/responseHandler")
 
 module.exports.useGym = async (req, res, next) => {
   try {
@@ -94,6 +97,6 @@ module.exports.useGym = async (req, res, next) => {
       Ok({ operationName: `تمرین ${player.name}` })
     )
   } catch (error) {
-    next(createError(InternalServerError()))
+    internalServerErrorHandler(next, error)
   }
 }

@@ -1,7 +1,10 @@
 const { modelName } = require("../../../config/Constant")
 const { teamAssetsModelName } = modelName
 const { createError } = require("./Functions")
-const { resposeHandler } = require("./responseHandler")
+const {
+  resposeHandler,
+  internalServerErrorHandler,
+} = require("./responseHandler")
 const {
   InternalServerError,
   Created,
@@ -37,7 +40,7 @@ const createController = async (MODELNAME, dataSchema, req, res, next) => {
         )
       )
     }
-    next(createError(InternalServerError()))
+    internalServerErrorHandler(next, error)
   }
 }
 
@@ -51,7 +54,7 @@ const readWithIdController = async (MODELNAME, req, res, next) => {
       Ok({ operationName: `خواندن ${MODELNAME.persian}` })
     )
   } catch (error) {
-    next(createError(InternalServerError()))
+    internalServerErrorHandler(next, error)
   }
 }
 
@@ -65,7 +68,7 @@ const readController = async (MODELNAME, req, res, next) => {
       Ok({ operationName: `خواندن ${MODELNAME.persian}` })
     )
   } catch (error) {
-    next(createError(InternalServerError()))
+    internalServerErrorHandler(next, error)
   }
 }
 
@@ -87,7 +90,7 @@ const updateConrtoller = async (MODELNAME, dataSchema, req, res, next) => {
       next(
         createError(BadRequest(`${MODELNAME.persian} با این شناسه وجود ندارد`))
       )
-    else next(createError(InternalServerError()))
+    else internalServerErrorHandler(next, error)
   }
 }
 
@@ -105,7 +108,7 @@ const deleteController = async (MODELNAME, req, res, next) => {
       return next(
         createError(BadRequest(`${MODELNAME.persian} درحال استفاده است`))
       )
-    else next(createError(InternalServerError()))
+    else internalServerErrorHandler(next, error)
   }
 }
 
@@ -138,7 +141,7 @@ const getTeamAssetsWithPriceForUpgrade = async (MODELNAME, req, res, next) => {
       Ok({ operationName: `خواندن ${MODELNAME.persian}` })
     )
   } catch (error) {
-    next(createError(InternalServerError()))
+    internalServerErrorHandler(next, error)
   }
 }
 
@@ -229,7 +232,7 @@ const buyTeamAsset = async (MODELNAME, req, res, next) => {
       Ok({ operationName: `خرید ${MODELNAME.persian} جدید` })
     )
   } catch (error) {
-    next(createError(InternalServerError()))
+    internalServerErrorHandler(next, error)
   }
 }
 

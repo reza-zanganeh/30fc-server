@@ -7,7 +7,10 @@ const {
 const { modelName } = require("../../../config/Constant")
 const { psychologistModelName, teamModelName, teamAssetsModelName } = modelName
 const { readOne, update } = require("../helpers/prisma")
-const { resposeHandler } = require("../helpers/responseHandler")
+const {
+  resposeHandler,
+  internalServerErrorHandler,
+} = require("../helpers/responseHandler")
 
 module.exports.usePsychologist = async (req, res, next) => {
   try {
@@ -46,6 +49,6 @@ module.exports.usePsychologist = async (req, res, next) => {
 
     resposeHandler(res, updatedTeam, Ok({ operationName: "افزایش روحیه تیم" }))
   } catch (error) {
-    next(createError(InternalServerError()))
+    internalServerErrorHandler(next, error)
   }
 }

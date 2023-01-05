@@ -12,7 +12,10 @@ const {
   teamAssetsModelName,
 } = modelName
 const { readAll, readOne } = require("../helpers/prisma")
-const { resposeHandler } = require("../helpers/responseHandler")
+const {
+  resposeHandler,
+  internalServerErrorHandler,
+} = require("../helpers/responseHandler")
 const { updateTeamPlayersPrismaQuery } = require("../prismaQuery/team")
 module.exports.useEnergyProducer = async (req, res, next) => {
   try {
@@ -73,6 +76,6 @@ module.exports.useEnergyProducer = async (req, res, next) => {
       Ok({ operationName: "افزایش انرژی بازیکنان" })
     )
   } catch (error) {
-    next(createError(InternalServerError()))
+    internalServerErrorHandler(next, error)
   }
 }

@@ -1,5 +1,8 @@
 const { createError } = require("../helpers/Functions")
-const { resposeHandler } = require("../helpers/responseHandler")
+const {
+  resposeHandler,
+  internalServerErrorHandler,
+} = require("../helpers/responseHandler")
 const {
   InternalServerError,
   Created,
@@ -35,7 +38,7 @@ module.exports.createPlayerFacePicture = async (req, res, next) => {
       Created("لینک برای اپلود تصویر بازیکن ساخته شد")
     )
   } catch (error) {
-    next(createError(InternalServerError()))
+    internalServerErrorHandler(next, error)
   }
 }
 module.exports.readPlayerFacePicture = async (req, res, next) => {
@@ -60,6 +63,6 @@ module.exports.readPlayerFacePicture = async (req, res, next) => {
       Ok({ operationName: "خواندن تصاویر بازیکنان" })
     )
   } catch (error) {
-    next(createError(InternalServerError()))
+    internalServerErrorHandler(next, error)
   }
 }

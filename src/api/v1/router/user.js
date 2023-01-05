@@ -18,8 +18,6 @@ const userRouter = express.Router()
 
 userRouter.get("/", getUserInformationWithToken)
 
-userRouter.get("/invite-code", getInviteCode)
-
 userRouter.patch(
   "/admin/block",
   hasAccessToAdminOperation,

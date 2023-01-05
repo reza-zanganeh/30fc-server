@@ -20,5 +20,4 @@ module.exports.completionInformationSchemaValidation = {
   country: stringLengthBetween("کشور", "body", 4, 50),
   state: stringLengthBetween("استان", "body", 4, 50),
   city: stringLengthBetween("شهر", "body", 4, 50),
-  bio: stringLengthBetween("بیو", "body", 10, 100),
 }

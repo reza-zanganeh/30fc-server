@@ -8,7 +8,10 @@ const { modelName } = require("../../../config/Constant")
 const { doctorModelName, teamModelName, playerModelName, teamAssetsModelName } =
   modelName
 const { readOne, readAll } = require("../helpers/prisma")
-const { resposeHandler } = require("../helpers/responseHandler")
+const {
+  resposeHandler,
+  internalServerErrorHandler,
+} = require("../helpers/responseHandler")
 const { updateTeamPlayersPrismaQuery } = require("../prismaQuery/team")
 module.exports.useDoctor = async (req, res, next) => {
   try {
@@ -66,6 +69,6 @@ module.exports.useDoctor = async (req, res, next) => {
       Ok({ operationName: "مداوا بازیکنان تیم" })
     )
   } catch (error) {
-    next(createError(InternalServerError()))
+    internalServerErrorHandler(next, error)
   }
 }

@@ -1,5 +1,8 @@
 const { createError } = require("../helpers/Functions")
-const { resposeHandler } = require("../helpers/responseHandler")
+const {
+  resposeHandler,
+  internalServerErrorHandler,
+} = require("../helpers/responseHandler")
 const {
   InternalServerError,
   BadRequest,
@@ -19,7 +22,8 @@ const {
   changeTwoPlayerPositionPrismaQuery,
 } = require("../prismaQuery/team")
 const { modelName } = require("../../../config/Constant")
-const { compositionModelName, userModelName, playerModelName } = modelName
+const { compositionModelName, userModelName, playerModelName, teamModelName } =
+  modelName
 module.exports.createTeam = async (req, res, next) => {
   try {
     const { teamName } = req.body
@@ -77,7 +81,7 @@ module.exports.createTeam = async (req, res, next) => {
 
     resposeHandler(res, createdTeam, Created("تیم"))
   } catch (error) {
-    next(createError(InternalServerError()))
+    internalServerErrorHandler(next, error)
   }
 }
 
@@ -89,7 +93,7 @@ module.exports.getPlayers = async (req, res, next) => {
 
     resposeHandler(res, players, Ok({ operationName: "خواندن بازیکنان تیم" }))
   } catch (error) {
-    next(createError(InternalServerError()))
+    internalServerErrorHandler(next, error)
   }
 }
 
@@ -168,7 +172,7 @@ module.exports.changeComposition = async (req, res, next) => {
 
     resposeHandler(res, updatedTeam, Ok({ operationName: "تغییر ترکیب" }))
   } catch (error) {
-    next(createError(InternalServerError()))
+    internalServerErrorHandler(next, error)
   }
 }
 
@@ -219,6 +223,19 @@ module.exports.changeTwoPlayerPosition = async (req, res, next) => {
       Ok({ operationName: `تعویض ${playerOne.name} با ${playerTwo.name}` })
     )
   } catch (error) {
-    next(createError(InternalServerError()))
+    internalServerErrorHandler(next, error)
+  }
+}
+
+module.exports.getInviteCode = (req, res, next) => {
+  try {
+    const teamId = req[teamModelName.english].id
+    resposeHandler(
+      res,
+      { inviteCode: teamId },
+      Ok("دریافت کد دعوت دوستان به بازی")
+    )
+  } catch (error) {
+    internalServerErrorHandler(next, error)
   }
 }
