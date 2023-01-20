@@ -7,7 +7,6 @@ const {
   blockUser,
   unBlockUser,
   completionInformation,
-  getInviteCode,
 } = require("../controller/user")
 const {
   blockAndUnBlockUserSchemaValidation,

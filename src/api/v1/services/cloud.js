@@ -70,6 +70,38 @@ module.exports.getPresignedUrlToUploadUserProfilePiture = async (fileName) => {
   }
 }
 
+module.exports.getPresignedUrlToUploadGroupPostPicture = async (fileName) => {
+  try {
+    const uuid = uuidV4()
+    const Key = `${uuid}_${fileName}`
+    const result = await getPresignedUrlToUpload(
+      uuid,
+      Key,
+      projectConfig.cloud.bucket.footballManagerGroupPostPicture
+    )
+    return { ...result, Key }
+  } catch (error) {
+    throw error
+  }
+}
+
+module.exports.getPresignedUrlToUploadGroupAndChannelProfilePicture = async (
+  fileName
+) => {
+  try {
+    const uuid = uuidV4()
+    const Key = `${uuid}_${fileName}`
+    const result = await getPresignedUrlToUpload(
+      uuid,
+      Key,
+      projectConfig.cloud.bucket.groupAndChennelProfilePicture
+    )
+    return { ...result, Key }
+  } catch (error) {
+    throw error
+  }
+}
+
 module.exports.getPresignedUrlToUploadPlayerFacePiture = async (fileName) => {
   try {
     const uuid = uuidV4()

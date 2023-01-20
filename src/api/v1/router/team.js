@@ -17,6 +17,7 @@ const {
   getPlayers,
   changeComposition,
   changeTwoPlayerPosition,
+  getInviteCode,
 } = require("../controller/team")
 const { readWithIdController: getTeam } =
   require("../helpers/controllerCRUDoperation")(teamModelName)

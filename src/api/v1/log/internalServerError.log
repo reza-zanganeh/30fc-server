@@ -1,377 +1,357 @@
 
- ================== ۱۴۰۱-۰۹-۱۷ ۰۱:۰۰:۲۶ ق ظ ================== 
+ ================== ۱۴۰۱-۱۰-۲۲ ۱۷:۳۸:۴۳ ب ظ ================== 
+Cannot destructure property 'id' of 'req[groupModelName]' as it is undefined.
+ ================== ۱۴۰۱-۱۰-۲۲ ۱۷:۳۹:۰۳ ب ظ ================== 
 
-Invalid `goldenCupGameScorerPlayer.createMany()` invocation in
-G:\FootballManager\football-manager-server\src\api\v1\prismaQuery\game.js:191:38
+Invalid `prisma[modelName].delete()` invocation in
+G:\FootballManager\football-manager-server\src\api\v1\helpers\prisma.js:108:53
 
-  188   scorerPlayersId
-  189 ) => {
-  190   try {
-→ 191     return goldenCupGameScorerPlayer.createMany(
-An operation failed because it depends on one or more records that were required but not found. Record to update not found.
- ================== ۱۴۰۱-۰۹-۱۷ ۰۱:۰۲:۴۶ ق ظ ================== 
+  105     select,
+  106   })
+  107 } else {
+→ 108   deletedRecord = await prisma[modelName].delete({
+          where: {
+            teamId: 53,
+            ~~~~~~
+            groupId: 1
+            ~~~~~~~
+          }
+          ~~~~~~~~~~~~~
+        })
 
-Invalid `goldenCupGameScorerPlayer.createMany()` invocation in
-G:\FootballManager\football-manager-server\src\api\v1\prismaQuery\game.js:191:38
-
-  188   scorerPlayersId
-  189 ) => {
-  190   try {
-→ 191     return goldenCupGameScorerPlayer.createMany(
-An operation failed because it depends on one or more records that were required but not found. Record to update not found.
- ================== ۱۴۰۱-۰۹-۱۷ ۰۱:۱۴:۰۳ ق ظ ================== 
-
-Invalid `goldenCupGameScorerPlayer.createMany()` invocation in
-G:\FootballManager\football-manager-server\src\api\v1\prismaQuery\game.js:191:38
-
-  188   scorerPlayersId
-  189 ) => {
-  190   try {
-→ 191     return goldenCupGameScorerPlayer.createMany(
-An operation failed because it depends on one or more records that were required but not found. Record to update not found.
- ================== ۱۴۰۱-۰۹-۱۷ ۰۱:۱۴:۲۹ ق ظ ================== 
-
-Invalid `championsCupGame.update()` invocation in
-G:\FootballManager\football-manager-server\src\api\v1\prismaQuery\game.js:216:29
-
-  213   bestPlayerId,
-  214 } = data
-  215 
-→ 216 return championsCupGame.update(
-An operation failed because it depends on one or more records that were required but not found. Record to update not found.
- ================== ۱۴۰۱-۰۹-۱۷ ۰۱:۴۵:۵۸ ق ظ ================== 
-
-Invalid `team.findMany()` invocation in
-G:\FootballManager\football-manager-server\src\api\v1\prismaQuery\team.js:511:48
-
-  508   prismaQueryPoolIndex
-  509 ) => {
-  510   try {
-→ 511     const [firstTeam, secondTeam] = await team.findMany({
-            where: {
-              id: {
-                in: [
-                  84,
-                  54
-                ]
-              }
-            },
-            select: {
-              coinCount: true,
-              teamScores: {
-                select: {
-                  goldCupCount: true,
-                  ~~~~~~~~~~~~
-          ?       scoreInTournament?: true,
-          ?       id?: true,
-          ?       team?: true,
-          ?       teamId?: true,
-          ?       scoreInLeague?: true,
-          ?       winCountInLeague?: true,
-          ?       loseCountInLeague?: true,
-          ?       equalCountInLeague?: true,
-          ?       firstTeamInLeagueCupCount?: true,
-          ?       secondTeamInLeagueCupCount?: true,
-          ?       thirdTeamInLeagueCupCount?: true,
-          ?       totalScore?: true,
-          ?       totalWinCount?: true,
-          ?       totalLoseCount?: true,
-          ?       totalEqualCount?: true,
-          ?       hasBestTeamCup?: true,
-          ?       championsCupCount?: true,
-          ?       goldenCupCount?: true
-                }
-              },
-              sponser: {
-                select: {
-          ?       id?: true,
-          ?       totalCoinCount?: true,
-                  goldCupChampionCoinCount: true,
-                  ~~~~~~~~~~~~~~~~~~~~~~~~
-          ?       name?: true,
-          ?       description?: true,
-          ?       instagramPageLink?: true,
-          ?       telegramChanelLink?: true,
-          ?       websiteLink?: true,
-          ?       minmumTeamScore?: true,
-          ?       firstInLeagueCoinCount?: true,
-          ?       secondInLeagueCoinCount?: true,
-          ?       thirdInLeagueCoinCount?: true,
-          ?       championsCupChampionCoinCount?: true,
-          ?       goldenCupChampionCoinCount?: true,
-          ?       winOfficialGameCoinCount?: true,
-          ?       topScorerCoinCount?: true,
-          ?       teams?: true,
-          ?       _count?: true
-                }
-              },
-              tournament: {
-                select: {
-                  firstTeamInGoldCupPoints: true,
-                  ~~~~~~~~~~~~~~~~~~~~~~~~
-                  secondTeamInGoldCupPoints: true,
-                  ~~~~~~~~~~~~~~~~~~~~~~~~~
-          ?       id?: true,
-          ?       name?: true,
-          ?       startDate?: true,
-          ?       endDate?: true,
-          ?       winOfficialGamePoints?: true,
-          ?       equalOfficialGamePoints?: true,
-          ?       winFriendlyGamePoints?: true,
-          ?       equalFriendlyGamePoints?: true,
-          ?       firstTeamInLeaguePoints?: true,
-          ?       secondTeamInLeagePoints?: true,
-          ?       thirdTeamInLeaguePoints?: true,
-          ?       firstTeamInGoldenCupPoints?: true,
-          ?       secondTeamInGoldenCupPoints?: true,
-          ?       firstTeamInChampionsCupPoints?: true,
-          ?       secondTeamInChampionsCupPoints?: true,
-          ?       playGamePoints?: true,
-          ?       buyCoinPoints?: true,
-          ?       buySilverMembershipPoints?: true,
-          ?       buyGoldenMembershipPoints?: true,
-          ?       buyDiamondMembershipPoints?: true,
-          ?       firstTeam?: true,
-          ?       firstTeamId?: true,
-          ?       secondTeam?: true,
-          ?       secondTeamId?: true,
-          ?       thirdTeam?: true,
-          ?       thirdTeamId?: true,
-          ?       teams?: true,
-          ?       _count?: true
-                }
-              }
-            }
-          })
-
-
-Unknown field `goldCupCount` for select statement on model TeamScores. Available options are listed in green. Did you mean `goldenCupCount`?
-Unknown field `goldCupChampionCoinCount` for select statement on model Sponser. Available options are listed in green. Did you mean `goldenCupChampionCoinCount`?
-Unknown field `firstTeamInGoldCupPoints` for select statement on model Tournament. Available options are listed in green. Did you mean `firstTeamInGoldenCupPoints`?
-Unknown field `secondTeamInGoldCupPoints` for select statement on model Tournament. Available options are listed in green. Did you mean `secondTeamInGoldenCupPoints`?
-
- ================== ۱۴۰۱-۰۹-۱۷ ۰۱:۵۹:۳۰ ق ظ ================== 
-
-Invalid `prisma[modelName].update()` invocation in
-G:\FootballManager\football-manager-server\src\api\v1\helpers\prisma.js:80:30
-
-  77 
-  78 module.exports.updateWithoutExecute = (modelName, where, data) => {
-  79   try {
-→ 80     return prisma[modelName].update({
-           where: {
-             firstTeamId: 84,
-             secondTeamId: 54
-           },
-           ~~~~~~~~~~~~~~~~~~
-         + data: GoldenCupUpdateInput | GoldenCupUncheckedUpdateInput
-         })
-
-Argument where of type GoldenCupWhereUniqueInput needs exactly one argument, but you provided firstTeamId and secondTeamId. Please choose one. Available args: 
-type GoldenCupWhereUniqueInput {
+Argument where of type GroupMemberWhereUniqueInput needs exactly one argument, but you provided teamId and groupId. Please choose one. Available args: 
+type GroupMemberWhereUniqueInput {
   id?: Int
-  firstTeamId?: Int
-  secondTeamId?: Int
 }
-Argument data is missing.
-
-Note: Lines with + are required
-
- ================== ۱۴۰۱-۱۰-۱۱ ۲۲:۲۴:۰۶ ب ظ ================== 
-Cannot destructure property 'operationName' of 'undefined' as it is undefined.
- ================== ۱۴۰۱-۱۰-۱۱ ۲۲:۴۶:۴۱ ب ظ ================== 
-
-Invalid `prisma[modelName].findFirst()` invocation in
-G:\FootballManager\football-manager-server\src\api\v1\helpers\prisma.js:33:43
-
-  30 try {
-  31   let result
-  32   if (select) result = await prisma[modelName].findFirst({ where, select })
-→ 33   else result = await prisma[modelName].findFirst({
-         where: {
-           receiverTeamId: '54',
-                           ~~~~
-           senderTeamId: 53
-         }
-       })
-
-Argument receiverTeamId: Got invalid value '54' on prisma.findFirstRequestFriendlyGame. Provided String, expected IntFilter or Int:
-type IntFilter {
-  equals?: Int
-  in?: List<Int>
-  notIn?: List<Int>
-  lt?: Int
-  lte?: Int
-  gt?: Int
-  gte?: Int
-  not?: Int | NestedIntFilter
+Unknown arg `teamId` in where.teamId for type GroupMemberWhereUniqueInput. Did you mean `id`? Available args:
+type GroupMemberWhereUniqueInput {
+  id?: Int
 }
-type IntFilter {
-  equals?: Int
-  in?: List<Int>
-  notIn?: List<Int>
-  lt?: Int
-  lte?: Int
-  gt?: Int
-  gte?: Int
-  not?: Int | NestedIntFilter
+Unknown arg `groupId` in where.groupId for type GroupMemberWhereUniqueInput. Available args:
+
+type GroupMemberWhereUniqueInput {
+  id?: Int
 }
 
 
- ================== ۱۴۰۱-۱۰-۱۱ ۲۳:۲۴:۳۳ ب ظ ================== 
-request is not defined
- ================== ۱۴۰۱-۱۰-۱۱ ۲۳:۲۵:۱۲ ب ظ ================== 
+ ================== ۱۴۰۱-۱۰-۲۲ ۱۷:۳۹:۵۰ ب ظ ================== 
 
-Invalid `prisma[modelName].update()` invocation in
-G:\FootballManager\football-manager-server\src\api\v1\helpers\prisma.js:90:30
+Invalid `prisma[modelName].delete()` invocation in
+G:\FootballManager\football-manager-server\src\api\v1\helpers\prisma.js:108:53
+
+  105     select,
+  106   })
+  107 } else {
+→ 108   deletedRecord = await prisma[modelName].delete({
+          where: {
+            teamId: 53,
+            ~~~~~~
+            groupId: 1
+            ~~~~~~~
+          }
+          ~~~~~~~~~~~~~
+        })
+
+Argument where of type GroupMemberWhereUniqueInput needs exactly one argument, but you provided teamId and groupId. Please choose one. Available args: 
+type GroupMemberWhereUniqueInput {
+  id?: Int
+}
+Unknown arg `teamId` in where.teamId for type GroupMemberWhereUniqueInput. Did you mean `id`? Available args:
+type GroupMemberWhereUniqueInput {
+  id?: Int
+}
+Unknown arg `groupId` in where.groupId for type GroupMemberWhereUniqueInput. Available args:
+
+type GroupMemberWhereUniqueInput {
+  id?: Int
+}
+
+
+ ================== ۱۴۰۱-۱۰-۲۲ ۱۷:۵۱:۵۱ ب ظ ================== 
+Cannot read properties of null (reading 'isDeported')
+ ================== ۱۴۰۱-۱۰-۲۲ ۱۷:۵۲:۱۷ ب ظ ================== 
+Cannot read properties of null (reading 'isDeported')
+ ================== ۱۴۰۱-۱۰-۲۲ ۱۷:۵۲:۴۲ ب ظ ================== 
+
+Invalid `groupMember.create()` invocation in
+G:\FootballManager\football-manager-server\src\api\v1\prismaQuery\group.js:90:38
 
   87 
-  88 module.exports.updateWithoutExecute = (modelName, where, data) => {
+  88 module.exports.joinToTheGroup = async (groupId, teamId) => {
   89   try {
-→ 90     return prisma[modelName].update({
-           where: {
-             teamId: 53
-             ~~~~~~
-           },
+→ 90     const result = await groupMember.create({
            data: {
-             friendlyGameCount: 0,
-             friendlyGameTimeOneIsEmpty: false
+             groupId: 1,
+             teamId: 53,
+         +   role: Admin | Deputy | Normal,
+         ?   id?: Int,
+         ?   isDeported?: Boolean
            }
          })
 
-Unknown arg `teamId` in where.teamId for type TeamWhereUniqueInput. Did you mean `name`? Available args:
-type TeamWhereUniqueInput {
+Argument role for data.role is missing.
+
+Note: Lines with + are required, lines with ? are optional.
+
+ ================== ۱۴۰۱-۱۰-۲۲ ۱۷:۵۲:۴۷ ب ظ ================== 
+
+Invalid `groupMember.create()` invocation in
+G:\FootballManager\football-manager-server\src\api\v1\prismaQuery\group.js:90:38
+
+  87 
+  88 module.exports.joinToTheGroup = async (groupId, teamId) => {
+  89   try {
+→ 90     const result = await groupMember.create({
+           data: {
+             groupId: 1,
+             teamId: 53,
+         +   role: Admin | Deputy | Normal,
+         ?   id?: Int,
+         ?   isDeported?: Boolean
+           }
+         })
+
+Argument role for data.role is missing.
+
+Note: Lines with + are required, lines with ? are optional.
+
+ ================== ۱۴۰۱-۱۰-۲۲ ۱۷:۵۲:۵۸ ب ظ ================== 
+
+Invalid `groupMember.create()` invocation in
+G:\FootballManager\football-manager-server\src\api\v1\prismaQuery\group.js:90:38
+
+  87 
+  88 module.exports.joinToTheGroup = async (groupId, teamId) => {
+  89   try {
+→ 90     const result = await groupMember.create({
+           data: {
+             groupId: 1,
+             teamId: 53,
+         +   role: Admin | Deputy | Normal,
+         ?   id?: Int,
+         ?   isDeported?: Boolean
+           }
+         })
+
+Argument role for data.role is missing.
+
+Note: Lines with + are required, lines with ? are optional.
+
+ ================== ۱۴۰۱-۱۰-۲۲ ۱۸:۰۹:۳۳ ب ظ ================== 
+
+Invalid `group.update()` invocation in
+G:\FootballManager\football-manager-server\src\api\v1\prismaQuery\group.js:47:17
+
+  44 
+  45 module.exports.givingDeputyPosition = async (groupId, memberId) => {
+  46   try {
+→ 47     await group.update(
+An operation failed because it depends on one or more records that were required but not found. No 'GroupMember' record was found for a nested update on relation 'GroupToGroupMember'.
+ ================== ۱۴۰۱-۱۰-۲۲ ۱۸:۰۹:۵۵ ب ظ ================== 
+
+Invalid `group.update()` invocation in
+G:\FootballManager\football-manager-server\src\api\v1\prismaQuery\group.js:47:17
+
+  44 
+  45 module.exports.givingDeputyPosition = async (groupId, memberId) => {
+  46   try {
+→ 47     await group.update(
+An operation failed because it depends on one or more records that were required but not found. No 'GroupMember' record was found for a nested update on relation 'GroupToGroupMember'.
+ ================== ۱۴۰۱-۱۰-۲۲ ۱۸:۴۲:۱۷ ب ظ ================== 
+Cannot read properties of undefined (reading 'id')
+ ================== ۱۴۰۱-۱۰-۲۲ ۱۸:۴۲:۳۲ ب ظ ================== 
+Cannot read properties of undefined (reading 'id')
+ ================== ۱۴۰۱-۱۰-۲۲ ۱۸:۴۳:۱۱ ب ظ ================== 
+Cannot read properties of undefined (reading 'id')
+ ================== ۱۴۰۱-۱۰-۲۲ ۱۸:۴۳:۴۵ ب ظ ================== 
+Cannot read properties of undefined (reading 'id')
+ ================== ۱۴۰۱-۱۰-۲۲ ۱۸:۴۳:۵۵ ب ظ ================== 
+Cannot read properties of undefined (reading 'id')
+ ================== ۱۴۰۱-۱۰-۲۲ ۲۱:۴۹:۲۳ ب ظ ================== 
+
+Invalid `prisma[modelName].findFirst()` invocation in
+G:\FootballManager\football-manager-server\src\api\v1\helpers\prisma.js:43:43
+
+  40 try {
+  41   let result
+  42   if (select) result = await prisma[modelName].findFirst({ where, select })
+→ 43   else result = await prisma[modelName].findFirst({
+         where: {
+           groupId: '1',
+                    ~~~
+           teamId: 53
+         }
+       })
+
+Argument groupId: Got invalid value '1' on prisma.findFirstGroupMember. Provided String, expected IntFilter or Int:
+type IntFilter {
+  equals?: Int
+  in?: List<Int>
+  notIn?: List<Int>
+  lt?: Int
+  lte?: Int
+  gt?: Int
+  gte?: Int
+  not?: Int | NestedIntFilter
+}
+type IntFilter {
+  equals?: Int
+  in?: List<Int>
+  notIn?: List<Int>
+  lt?: Int
+  lte?: Int
+  gt?: Int
+  gte?: Int
+  not?: Int | NestedIntFilter
+}
+
+
+ ================== ۱۴۰۱-۱۰-۲۲ ۲۱:۴۹:۴۴ ب ظ ================== 
+
+Invalid `prisma[modelName].findFirst()` invocation in
+G:\FootballManager\football-manager-server\src\api\v1\helpers\prisma.js:43:43
+
+  40 try {
+  41   let result
+  42   if (select) result = await prisma[modelName].findFirst({ where, select })
+→ 43   else result = await prisma[modelName].findFirst({
+         where: {
+           groupId: '1',
+                    ~~~
+           teamId: 53
+         }
+       })
+
+Argument groupId: Got invalid value '1' on prisma.findFirstGroupMember. Provided String, expected IntFilter or Int:
+type IntFilter {
+  equals?: Int
+  in?: List<Int>
+  notIn?: List<Int>
+  lt?: Int
+  lte?: Int
+  gt?: Int
+  gte?: Int
+  not?: Int | NestedIntFilter
+}
+type IntFilter {
+  equals?: Int
+  in?: List<Int>
+  notIn?: List<Int>
+  lt?: Int
+  lte?: Int
+  gt?: Int
+  gte?: Int
+  not?: Int | NestedIntFilter
+}
+
+
+ ================== ۱۴۰۱-۱۰-۲۲ ۲۱:۵۰:۰۹ ب ظ ================== 
+
+Invalid `prisma[modelName].findFirst()` invocation in
+G:\FootballManager\football-manager-server\src\api\v1\helpers\prisma.js:43:43
+
+  40 try {
+  41   let result
+  42   if (select) result = await prisma[modelName].findFirst({ where, select })
+→ 43   else result = await prisma[modelName].findFirst({
+         where: {
+           groupId: '1',
+                    ~~~
+           teamId: 53
+         }
+       })
+
+Argument groupId: Got invalid value '1' on prisma.findFirstGroupMember. Provided String, expected IntFilter or Int:
+type IntFilter {
+  equals?: Int
+  in?: List<Int>
+  notIn?: List<Int>
+  lt?: Int
+  lte?: Int
+  gt?: Int
+  gte?: Int
+  not?: Int | NestedIntFilter
+}
+type IntFilter {
+  equals?: Int
+  in?: List<Int>
+  notIn?: List<Int>
+  lt?: Int
+  lte?: Int
+  gt?: Int
+  gte?: Int
+  not?: Int | NestedIntFilter
+}
+
+
+ ================== ۱۴۰۱-۱۰-۲۲ ۲۱:۵۱:۰۹ ب ظ ================== 
+
+Invalid `prisma[modelName].update()` invocation in
+G:\FootballManager\football-manager-server\src\api\v1\helpers\prisma.js:78:51
+
+  75 
+  76 module.exports.update = async (modelName, where, data) => {
+  77   try {
+→ 78     const updatedRecord = await prisma[modelName].update({
+           where: {
+             groupId: 1,
+             ~~~~~~~
+             teamId: NaN
+             ~~~~~~
+           },
+           ~~~~~~~~~~~~~
+           data: {
+             isDeported: true
+           }
+         })
+
+Argument where of type GroupMemberWhereUniqueInput needs exactly one argument, but you provided groupId and teamId. Please choose one. Available args: 
+type GroupMemberWhereUniqueInput {
   id?: Int
-  name?: String
+}
+Unknown arg `groupId` in where.groupId for type GroupMemberWhereUniqueInput. Available args:
+
+type GroupMemberWhereUniqueInput {
+  id?: Int
+}
+Unknown arg `teamId` in where.teamId for type GroupMemberWhereUniqueInput. Did you mean `id`? Available args:
+type GroupMemberWhereUniqueInput {
+  id?: Int
 }
 
 
- ================== ۱۴۰۱-۱۰-۱۱ ۲۳:۲۶:۰۴ ب ظ ================== 
-request is not defined
- ================== ۱۴۰۱-۱۰-۱۳ ۰۱:۰۸:۲۹ ق ظ ================== 
+ ================== ۱۴۰۱-۱۰-۲۲ ۲۱:۵۲:۰۸ ب ظ ================== 
 
-Invalid `prisma[modelName].findMany()` invocation in
-G:\FootballManager\football-manager-server\src\api\v1\helpers\prisma.js:56:54
+Invalid `prisma[modelName].update()` invocation in
+G:\FootballManager\football-manager-server\src\api\v1\helpers\prisma.js:78:51
 
-  53 let result
-  54 if (where && select)
-  55   result = await prisma[modelName].findMany({ where, select })
-→ 56 else if (where) result = await prisma[modelName].findMany({
-       where: {
-         status: 'Confirm'
-         ~~~~~~
-       }
-     })
+  75 
+  76 module.exports.update = async (modelName, where, data) => {
+  77   try {
+→ 78     const updatedRecord = await prisma[modelName].update({
+           where: {
+             groupId: 1,
+             ~~~~~~~
+             teamId: 58
+             ~~~~~~
+           },
+           ~~~~~~~~~~~~~
+           data: {
+             isDeported: true
+           }
+         })
 
-Unknown arg `status` in where.status for type TeamWhereInput. Did you mean `strategy`? Available args:
-type TeamWhereInput {
-  AND?: TeamWhereInput | List<TeamWhereInput>
-  OR?: List<TeamWhereInput>
-  NOT?: TeamWhereInput | List<TeamWhereInput>
-  id?: IntFilter | Int
-  owner?: UserRelationFilter | UserWhereInput | Null
-  ownerId?: IntNullableFilter | Int | Null
-  name?: StringFilter | String
-  coinCount?: IntFilter | Int
-  logoUrl?: StringNullableFilter | String | Null
-  profilePictureUrl?: StringNullableFilter | String | Null
-  fanSatisfaction?: IntFilter | Int
-  isOnline?: BoolFilter | Boolean
-  lastTimeSeen?: DateTimeFilter | DateTime
-  dateOfStablishment?: DateTimeFilter | DateTime
-  spirit?: IntFilter | Int
-  isBlock?: BoolFilter | Boolean
-  technique?: EnumTechniqueFilter | Technique
-  strategy?: EnumStrategyFilter | Strategy
-  AdminTeamSalesContract?: AdminSellableTeamRelationFilter | AdminSellableTeamWhereInput | Null
-  composition?: CompositionRelationFilter | CompositionWhereInput
-  compositionId?: IntFilter | Int
-  players?: PlayerListRelationFilter
-  playerCount?: IntFilter | Int
-  teamMembershipType?: EnumTeamMembershipTypeNameFilter | TeamMembershipTypeName
-  endOfTeamMemberShipType?: DateTimeFilter | DateTime
-  dateOfEstablishment?: DateTimeFilter | DateTime
-  leauge?: LeagueRelationFilter | LeagueWhereInput | Null
-  leagueId?: IntNullableFilter | Int | Null
-  leagueThatRankedFirst?: LeagueRelationFilter | LeagueWhereInput | Null
-  leagueThatRankedSecond?: LeagueRelationFilter | LeagueWhereInput | Null
-  leagueThatRankedThird?: LeagueRelationFilter | LeagueWhereInput | Null
-  leagueGamesHostTeam?: LeagueGameListRelationFilter
-  leagueGamesVisitingTeam?: LeagueGameListRelationFilter
-  goldenCup?: GoldenCupRelationFilter | GoldenCupWhereInput | Null
-  goldenCupId?: IntNullableFilter | Int | Null
-  goldenCupThatRankedFirst?: GoldenCupRelationFilter | GoldenCupWhereInput | Null
-  goldenCupThatRankedSecond?: GoldenCupRelationFilter | GoldenCupWhereInput | Null
-  goldenCupGamesHostTeam?: GoldenCupGameListRelationFilter
-  goldenCupGamesVisitingTeam?: GoldenCupGameListRelationFilter
-  championsCup?: ChampionsCupRelationFilter | ChampionsCupWhereInput | Null
-  championsCupId?: IntNullableFilter | Int | Null
-  championsCupThatRankedFirst?: ChampionsCupRelationFilter | ChampionsCupWhereInput | Null
-  championsCupThatRankedSecond?: ChampionsCupRelationFilter | ChampionsCupWhereInput | Null
-  championsCupGamesHostTeam?: ChampionsCupGameListRelationFilter
-  championsCupGamesVisitingTeam?: ChampionsCupGameListRelationFilter
-  friendlyGamesHostTeam?: FriendlyGameListRelationFilter
-  friendlyGamesVisitingTeam?: FriendlyGameListRelationFilter
-  friendlyGameRequestIsOn?: BoolFilter | Boolean
-  friendlyGameCount?: IntFilter | Int
-  friendlyGameTimeOneIsEmpty?: BoolFilter | Boolean
-  friendlyGameTimeTwoIsEmpty?: BoolFilter | Boolean
-  friendlyGameTimeThreeIsEmpty?: BoolFilter | Boolean
-  teamScores?: TeamScoresRelationFilter | TeamScoresWhereInput | Null
-  tournament?: TournamentRelationFilter | TournamentWhereInput | Null
-  tournamentId?: IntNullableFilter | Int | Null
-  TournamentsThatWonFirstPlace?: TournamentListRelationFilter
-  TournamentsThatWonSecondPlace?: TournamentListRelationFilter
-  TournamentsThatWonThirdPlace?: TournamentListRelationFilter
-  RequestToCreatePlayer?: RequestToCreatePlayerListRelationFilter
-  sponser?: SponserRelationFilter | SponserWhereInput | Null
-  sponserId?: IntNullableFilter | Int | Null
-  teamAssets?: TeamAssetsRelationFilter | TeamAssetsWhereInput | Null
-  privateChatIsOn?: BoolFilter | Boolean
-  privateChatsTeamOne?: PrivateChatListRelationFilter
-  privateChatsTeamTwo?: PrivateChatListRelationFilter
-  tickets?: TicketListRelationFilter
-  publicAdminMessages?: PublicAdminMessagesOfTeamsListRelationFilter
-  groups?: GroupMemberListRelationFilter
-  groupPostComments?: GroupPostCommentListRelationFilter
-  groupPostLikes?: GroupPostListRelationFilter
-  groupPostDisLikes?: GroupPostListRelationFilter
-  chatRooms?: ChatRoomMemberListRelationFilter
-  coinPurchaseInvoice?: CoinPurchaseInvoiceListRelationFilter
-  TeamMembershipTypePurchaseInvoices?: TeamMembershipTypePurchaseInvoiceListRelationFilter
-  followingIsOn?: BoolFilter | Boolean
-  fallowers?: FollowerFallowingListRelationFilter
-  fallowing?: FollowerFallowingListRelationFilter
-  purchasedAdminPlayersCount?: IntFilter | Int
-  purchasedAdminPlayer?: AdminSellablePlayerListRelationFilter
-  purchasedPlayesrCount?: IntFilter | Int
-  purchasedPlayer?: PlayerTransfersListRelationFilter
-  soldPlayersCount?: IntFilter | Int
-  PlayersOnSale?: PlayerTransfersListRelationFilter
+Argument where of type GroupMemberWhereUniqueInput needs exactly one argument, but you provided groupId and teamId. Please choose one. Available args: 
+type GroupMemberWhereUniqueInput {
+  id?: Int
+}
+Unknown arg `groupId` in where.groupId for type GroupMemberWhereUniqueInput. Available args:
+
+type GroupMemberWhereUniqueInput {
+  id?: Int
+}
+Unknown arg `teamId` in where.teamId for type GroupMemberWhereUniqueInput. Did you mean `id`? Available args:
+type GroupMemberWhereUniqueInput {
+  id?: Int
 }
 
-
- ================== ۱۴۰۱-۱۰-۱۳ ۰۱:۳۰:۲۸ ق ظ ================== 
-readOne is not defined
- ================== ۱۴۰۱-۱۰-۱۳ ۰۱:۳۰:۴۳ ق ظ ================== 
-gameTimeModelName is not defined
- ================== ۱۴۰۱-۱۰-۱۳ ۱۳:۵۵:۳۵ ب ظ ================== 
-next is not defined
- ================== ۱۴۰۱-۱۰-۱۳ ۱۳:۵۸:۲۴ ب ظ ================== 
-next is not defined
- ================== ۱۴۰۱-۱۰-۱۳ ۱۴:۱۳:۰۱ ب ظ ================== 
-next is not defined
- ================== ۱۴۰۱-۱۰-۱۳ ۱۴:۱۸:۴۷ ب ظ ================== 
-next is not defined
- ================== ۱۴۰۱-۱۰-۱۳ ۱۴:۱۹:۲۷ ب ظ ================== 
-next is not defined
- ================== ۱۴۰۱-۱۰-۱۳ ۱۴:۱۹:۴۳ ب ظ ================== 
-next is not defined
- ================== ۱۴۰۱-۱۰-۱۳ ۱۴:۲۰:۰۱ ب ظ ================== 
-next is not defined
- ================== ۱۴۰۱-۱۰-۱۳ ۱۴:۲۰:۳۷ ب ظ ================== 
-next is not defined
- ================== ۱۴۰۱-۱۰-۱۳ ۱۴:۲۴:۵۳ ب ظ ================== 
-next is not defined
- ================== ۱۴۰۱-۱۰-۱۳ ۱۴:۲۷:۴۵ ب ظ ================== 
-next is not defined

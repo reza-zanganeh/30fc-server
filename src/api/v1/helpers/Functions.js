@@ -9,6 +9,7 @@ const {
   setSalaryFactorOnRedis,
   setInviteNewTeamCoinCountOnRedis,
   setNumberOfStadiumTicketCoinsOnRedis,
+  setCostOfCreatingGroupOnRedis,
 } = require("../services/redis")
 
 module.exports.createRandomNumber = (min, max) => {
@@ -101,6 +102,9 @@ module.exports.readGeneralDataAndSaveOnRedis = async () => {
     )
     await setNumberOfStadiumTicketCoinsOnRedis(
       constantVariableNameMapToAmount["NumberOfStadiumTicketCoins"]
+    )
+    await setCostOfCreatingGroupOnRedis(
+      constantVariableNameMapToAmount["CostOfCreatingGroup"]
     )
   } catch (error) {
     throw error

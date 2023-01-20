@@ -131,6 +131,26 @@ const modelName = {
     english: "motivationalSentence",
     persian: "جملات انگیزشی",
   },
+  groupModelName: {
+    english: "group",
+    persian: "گروه",
+  },
+  groupMemberModelName: {
+    english: "groupMember",
+    persian: "اعضا گروه",
+  },
+  groupPostModelName: {
+    english: "groupPost",
+    persian: "پست های گروه",
+  },
+  groupPostCommentModelName: {
+    english: "groupPostComment",
+    persian: "کامنت پست گروه",
+  },
+  groupPostModelName: {
+    english: "groupPost",
+    persian: "پست",
+  },
 }
 
 module.exports = {

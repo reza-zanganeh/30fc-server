@@ -157,6 +157,14 @@ module.exports.getNumberOfStadiumTicketCoinsFromRedis = async () => {
   return await getFromRedis("NumberOfStadiumTicketCoins")
 }
 
+module.exports.setCostOfCreatingGroupOnRedis = async (factorValue) => {
+  return await setOnRedis("CostOfCreatingGroup", factorValue)
+}
+
+module.exports.getCostOfCreatingGroupFromRedis = async () => {
+  return await getFromRedis("CostOfCreatingGroup")
+}
+
 module.exports.addUserToNeedLoginAgainInRedis = async (id) => {
   const needLoginAgain = await getFromRedis(NEEDLOGINAGAIN)
   if (!needLoginAgain.includes(id)) {

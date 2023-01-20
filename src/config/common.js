@@ -55,6 +55,9 @@ const cloud = {
   bucket: {
     playerFacePicture: "football-manager-player-face-picture",
     userProfilePicture: "football-manager-user-profile-picture",
+    groupAndChennelProfilePicture:
+      "football-manager-group-and-channel-profile-picture",
+    footballManagerGroupPostPicture: "football-manager-group-post-picture",
   },
   expiresTime: 240, //second
   maximumFileSize: 128000,

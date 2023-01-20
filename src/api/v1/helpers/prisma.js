@@ -36,6 +36,20 @@ module.exports.readWithPaginationOrId = async (modelName, id, page = 1) => {
   }
 }
 
+module.exports.readWithPagination = async (modelName, page = 1, orderBy) => {
+  try {
+    let result
+    if (orderBy) result = await prisma[modelName].findMany({ skip, take })
+    else {
+      const skip = (page - 1) * 10
+      result = await prisma[modelName].findMany({ skip, take, orderBy })
+    }
+    return result
+  } catch (error) {
+    throw error
+  }
+}
+
 module.exports.readOne = async (modelName, where, select) => {
   try {
     let result
@@ -106,6 +120,25 @@ module.exports.remove = async (modelName, where, select) => {
       })
     } else {
       deletedRecord = await prisma[modelName].delete({
+        where,
+      })
+    }
+    return deletedRecord
+  } catch (error) {
+    throw error
+  }
+}
+
+module.exports.removeAll = async (modelName, where, select) => {
+  try {
+    let deletedRecord
+    if (select) {
+      deletedRecord = await prisma[modelName].deleteMany({
+        where,
+        select,
+      })
+    } else {
+      deletedRecord = await prisma[modelName].deleteMany({
         where,
       })
     }

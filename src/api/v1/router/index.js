@@ -29,6 +29,7 @@ const { generalGameSettingRouter } = require("./generalGameSettings")
 const { goldenCupRouter } = require("./goldenCup")
 const { friendlyGameRouter } = require("./friendlyGame")
 const { motivationalSentenceRouter } = require("./motivationalSentence")
+const { groupRouter } = require("./group")
 //#endregion
 module.exports.registerRoutes = (app) => {
   //#region add routes
@@ -95,6 +96,7 @@ module.exports.registerRoutes = (app) => {
     isAuthenticate,
     motivationalSentenceRouter
   )
+  app.use(`/api/${appVersion}/group`, isAuthenticate, groupRouter)
   //#endregion
   app.use("*", notFoundResponse)
   app.use(errorHandler)
