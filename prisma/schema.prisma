@@ -852,12 +852,12 @@ enum GameTimestampName {
 }
 
 model ContactUs {
-  id             Int    @id @default(autoincrement())
+  id             Int     @id @default(autoincrement())
   fullname       String
-  phonenumber    String @unique @db.VarChar(11)
+  phonenumber    String  @unique @db.VarChar(11)
   messageContext String
   messageTitle   String
-  adminResponse  String
+  adminResponse  String?
 }
 
 // comminiucation
@@ -883,23 +883,25 @@ model PrivateChatMessage {
 model Ticket {
   id       Int             @id @default(autoincrement())
   title    String
+  turn     TicketSide      @default(Team)
+  date     DateTime        @default(now())
   messages TicketMessage[]
   team     Team            @relation(fields: [teamId], references: [id])
   teamId   Int
 }
 
 model TicketMessage {
-  id       Int                 @id @default(autoincrement())
-  date     DateTime
+  id       Int        @id @default(autoincrement())
+  date     DateTime   @default(now())
   message  String
-  status   TicketMessageStatus @default(WaitingToAnswerByAdmin)
-  ticket   Ticket              @relation(fields: [ticketId], references: [id])
+  writer   TicketSide
+  ticket   Ticket     @relation(fields: [ticketId], references: [id])
   ticketId Int
 }
 
-enum TicketMessageStatus {
-  WaitingToAnswerByAdmin
-  WaitingToAnswerByTeam
+enum TicketSide {
+  Admin
+  Team
 }
 
 model PublicAdminMessage {

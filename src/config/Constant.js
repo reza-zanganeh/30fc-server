@@ -159,6 +159,18 @@ const modelName = {
     english: "privateChatMessage",
     persian: "پیام های چت خصوصی",
   },
+  contactUsModelName: {
+    english: "contactUs",
+    persian: "ارتباط با ما",
+  },
+  ticketModelName: {
+    english: "ticket",
+    persian: "تیکت",
+  },
+  ticketMessageModelName: {
+    english: "ticketMessage",
+    persian: "پیام های تیکت",
+  },
 }
 
 module.exports = {

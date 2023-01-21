@@ -65,3 +65,5 @@ privateChatRouter.delete(
   accessToPrivateChat,
   deletePrivateChat
 )
+
+module.exports.privateChatRouter = privateChatRouter

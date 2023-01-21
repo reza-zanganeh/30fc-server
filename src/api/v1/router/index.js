@@ -30,6 +30,8 @@ const { goldenCupRouter } = require("./goldenCup")
 const { friendlyGameRouter } = require("./friendlyGame")
 const { motivationalSentenceRouter } = require("./motivationalSentence")
 const { groupRouter } = require("./group")
+const { privateChatRouter } = require("./privateChat")
+const { contactAdminRouter } = require("./contactAdmin")
 //#endregion
 module.exports.registerRoutes = (app) => {
   //#region add routes
@@ -97,6 +99,8 @@ module.exports.registerRoutes = (app) => {
     motivationalSentenceRouter
   )
   app.use(`/api/${appVersion}/group`, isAuthenticate, groupRouter)
+  app.use(`/api/${appVersion}/private-chat`, isAuthenticate, privateChatRouter)
+  app.use(`/api/${appVersion}/contact-admin`, contactAdminRouter)
   //#endregion
   app.use("*", notFoundResponse)
   app.use(errorHandler)
