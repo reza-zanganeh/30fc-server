@@ -14,6 +14,8 @@ const {
   blockMemberByAdmin,
   commentOnGroupPost,
   getMemberOfGroup,
+  likePostOnGroup,
+  disLikePostOnGroup,
 } = require("../controller/group")
 const { updateConrtoller } = require("../helpers/controllerCRUDoperation")(
   groupModelName
@@ -34,7 +36,6 @@ const {
   hasAccessToTeam,
 } = require("../middleware/accessControl")
 const { accessToGroup } = require("../middleware/chatAccessControl/group")
-const { likePostOnGroup, disLikePostOnGroup } = require("../prismaQuery/group")
 const groupRouter = express.Router()
 
 groupRouter.post(

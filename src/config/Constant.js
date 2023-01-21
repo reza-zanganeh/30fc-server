@@ -151,6 +151,14 @@ const modelName = {
     english: "groupPost",
     persian: "پست",
   },
+  privateChatModelName: {
+    english: "privateChat",
+    persian: "چت خصوصی",
+  },
+  privateChatMessageModelName: {
+    english: "privateChatMessage",
+    persian: "پیام های چت خصوصی",
+  },
 }
 
 module.exports = {

@@ -872,10 +872,10 @@ model PrivateChat {
 
 model PrivateChatMessage {
   id                Int         @id @default(autoincrement())
-  date              DateTime
+  date              DateTime    @default(now())
   message           String
-  isReadWithTeamOne Boolean
-  isReadWithTeamTwo Boolean
+  isReadWithTeamOne Boolean     @default(false)
+  isReadWithTeamTwo Boolean     @default(false)
   privateChat       PrivateChat @relation(fields: [privateChatId], references: [id])
   privateChatId     Int
 }

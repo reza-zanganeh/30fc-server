@@ -3,6 +3,10 @@ const HttpStatusCode = {
     statusCode: 200,
     message: message ? message : `${operationName} با موفقیت انجام شد`,
   }),
+  emptyMesssage: () => ({
+    statusCode: 200,
+    message: "",
+  }),
   Created: (recordName) => ({
     statusCode: 201,
     message: `${recordName} با موفقیت ساخته شد`,
