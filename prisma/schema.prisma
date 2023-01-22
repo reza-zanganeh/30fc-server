@@ -852,9 +852,10 @@ enum GameTimestampName {
 }
 
 model ContactUs {
-  id             Int     @id @default(autoincrement())
+  id             Int      @id @default(autoincrement())
+  date           DateTime @default(now())
   fullname       String
-  phonenumber    String  @unique @db.VarChar(11)
+  phonenumber    String   @unique @db.VarChar(11)
   messageContext String
   messageTitle   String
   adminResponse  String?

@@ -11,7 +11,7 @@ const {
   resposeHandler,
 } = require("../helpers/responseHandler")
 const { modelName } = require("../../../config/Constant")
-const { Ok, BadRequest } = require("../helpers/HttpResponse")
+const { Ok, BadRequest, emptyMesssage } = require("../helpers/HttpResponse")
 const { sendTicketMessage } = require("../modelHelperFunction/contactAdmin")
 const { createError } = require("../helpers/Functions")
 const {
@@ -44,9 +44,11 @@ module.exports.contactUs = async (req, res, next) => {
     internalServerErrorHandler(next, error)
   }
 }
+
 // admin response with sms
 // TODO : when give sms panel
 module.exports.responseToContactUsMessage = async (req, res, next) => {}
+
 module.exports.sendTicketMessageByTeam = async (req, res, next) => {
   try {
     const { message } = req.body
@@ -71,6 +73,7 @@ module.exports.sendTicketMessageByTeam = async (req, res, next) => {
     internalServerErrorHandler(next, error)
   }
 }
+
 module.exports.sendTicketMessageByAdmin = async (req, res, next) => {
   try {
     const { message } = req.body
@@ -95,6 +98,7 @@ module.exports.sendTicketMessageByAdmin = async (req, res, next) => {
     internalServerErrorHandler(next, error)
   }
 }
+
 module.exports.getMyTickets = async (req, res, next) => {
   try {
     const { id: teamId } = req[teamModelName.english]
@@ -102,6 +106,18 @@ module.exports.getMyTickets = async (req, res, next) => {
     const tickets = await readAll(ticketModelName.english, { teamId: teamId })
 
     resposeHandler(res, tickets, emptyMesssage())
+  } catch (error) {
+    internalServerErrorHandler(next, error)
+  }
+}
+
+module.exports.getTicketMessages = async (req, res, next) => {
+  try {
+    const { id: ticketId } = req[ticketModelName.english]
+
+    const messages = await readAll(ticketMessageModelName.english, { ticketId })
+
+    resposeHandler(res, messages, emptyMesssage())
   } catch (error) {
     internalServerErrorHandler(next, error)
   }

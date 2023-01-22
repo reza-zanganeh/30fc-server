@@ -36,6 +36,26 @@ module.exports.readWithPaginationOrId = async (modelName, id, page = 1) => {
   }
 }
 
+module.exports.readRecordsSortedByDateWithPagination = async (
+  modelName,
+  take,
+  page = 1
+) => {
+  try {
+    const skip = (page - 1) * take
+    const records = await prisma[modelName].findMany({
+      skip,
+      take,
+      orderBy: {
+        date: "asc",
+      },
+    })
+    return records
+  } catch (error) {
+    throw error
+  }
+}
+
 module.exports.readWithPagination = async (modelName, page = 1, orderBy) => {
   try {
     let result

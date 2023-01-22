@@ -173,7 +173,14 @@ const modelName = {
   },
 }
 
+const paginationTake = {
+  takeLow: 10,
+  takeMedium: 20,
+  takeHigh: 30,
+}
+
 module.exports = {
   gameSettings,
   modelName,
+  paginationTake,
 }

@@ -10,6 +10,7 @@ const {
   Created,
   Ok,
   BadRequest,
+  emptyMesssage,
 } = require("./HttpResponse")
 
 const {
@@ -19,6 +20,7 @@ const {
   remove,
   readOne,
   readAll,
+  readRecordsSortedByDateWithPagination,
 } = require("./prisma")
 
 const createController = async (MODELNAME, dataSchema, req, res, next) => {
@@ -62,11 +64,27 @@ const readController = async (MODELNAME, req, res, next) => {
   try {
     const { id, page } = req.query
     const records = await readWithPaginationOrId(MODELNAME.english, +id, page)
-    resposeHandler(
-      res,
-      records,
-      Ok({ operationName: `خواندن ${MODELNAME.persian}` })
+    resposeHandler(res, records, emptyMesssage())
+  } catch (error) {
+    internalServerErrorHandler(next, error)
+  }
+}
+
+const readRecordsSortedByDateWithPaginationController = async (
+  MODELNAME,
+  take,
+  req,
+  res,
+  next
+) => {
+  try {
+    const page = req.query.page || 1
+    const records = await readRecordsSortedByDateWithPagination(
+      MODELNAME.english,
+      take,
+      page
     )
+    resposeHandler(res, records, emptyMesssage())
   } catch (error) {
     internalServerErrorHandler(next, error)
   }
@@ -239,6 +257,8 @@ const buyTeamAsset = async (MODELNAME, req, res, next) => {
 module.exports = (MODELNAME) => ({
   createController: createController.bind(null, MODELNAME),
   readController: readController.bind(null, MODELNAME),
+  readRecordsSortedByDateWithPaginationController:
+    readRecordsSortedByDateWithPaginationController.bind(null, MODELNAME),
   updateConrtoller: updateConrtoller.bind(null, MODELNAME),
   deleteController: deleteController.bind(null, MODELNAME),
   readWithIdController: readWithIdController.bind(null, MODELNAME),

@@ -1,14 +1,17 @@
 const express = require("express")
 const { checkSchema } = require("express-validator")
 const { expressValidationResultHandler } = require("../helpers/responseHandler")
-const { modelName } = require("../../../config/Constant")
-const { ticketModelName, ticketMessageModelName } = modelName
+const { modelName, paginationTake } = require("../../../config/Constant")
+const { ticketModelName, ticketMessageModelName, contactUsModelName } =
+  modelName
+const { takeMedium } = paginationTake
 const {
   contactUs,
   responseToContactUsMessage,
   sendTicketMessageByTeam,
   sendTicketMessageByAdmin,
   getMyTickets,
+  getTicketMessages,
 } = require("../controller/contactAdmin")
 
 const {
@@ -19,6 +22,10 @@ const {
 
 const { updateConrtoller: updateTicketMessage } =
   require("../helpers/controllerCRUDoperation")(ticketMessageModelName)
+
+const {
+  readRecordsSortedByDateWithPaginationController: getContactUsMessages,
+} = require("../helpers/controllerCRUDoperation")(contactUsModelName)
 
 const { isAuthenticate } = require("../middleware/athentication")
 const {
@@ -55,6 +62,13 @@ contactAdminRouter.post(
   checkSchema(responseToContactUsMessageSchemaValidation),
   expressValidationResultHandler,
   responseToContactUsMessage
+)
+
+contactAdminRouter.get(
+  "/contact-us",
+  isAuthenticate,
+  hasAccessToAdminOperation,
+  getContactUsMessages.bind(null, takeMedium)
 )
 
 // ticket
@@ -95,6 +109,21 @@ contactAdminRouter.get(
 
 contactAdminRouter.get("/ticket", isAuthenticate, hasAccessToTeam, getMyTickets)
 
+contactAdminRouter.get(
+  "/ticket-messages",
+  isAuthenticate,
+  hasAccessToTeam,
+  accessToTicket,
+  getTicketMessages
+)
+
+contactAdminRouter.get(
+  "/admin/ticket-messages",
+  isAuthenticate,
+  hasAccessToAdminOperation,
+  getTicketMessages
+)
+
 contactAdminRouter.delete(
   "/ticket/:id",
   isAuthenticate,
@@ -109,6 +138,15 @@ contactAdminRouter.patch(
   hasAccessToTeam,
   accessToTicket,
   accessToTicketMessage,
+  checkSchema(sendOrEditTicketMessageSchemaValidation),
+  expressValidationResultHandler,
+  updateTicketMessage.bind(null, ["message"])
+)
+
+contactAdminRouter.patch(
+  "/admin/ticket-message:/id",
+  isAuthenticate,
+  hasAccessToAdminOperation,
   checkSchema(sendOrEditTicketMessageSchemaValidation),
   expressValidationResultHandler,
   updateTicketMessage.bind(null, ["message"])
