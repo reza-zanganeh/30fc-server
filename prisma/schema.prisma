@@ -927,7 +927,7 @@ model Group {
   name                String          @unique
   bio                 String
   deputyCount         Int             @default(0)
-  profilePctureUrl    String?
+  profilePictureUrl   String?
   postCountInToDay    Int             @default(0)
   dateOfEstablishment DateTime        @default(now())
   access              GroupAccessType @default(Public)
@@ -984,12 +984,16 @@ model GroupPostComment {
 
 model ChatRoom {
   id                  Int               @id @default(autoincrement())
-  name                String            @unique
-  bio                 String
-  profilePictureUrl   String
-  dateOfEstablishment DateTime
+  name                chatRoomName      @default(Public)
+  isDefaultChatRoom   Boolean           @default(false)
+  dateOfEstablishment DateTime          @default(now())
   members             ChatRoomMember[]
   messages            ChatRoomMessage[]
+}
+
+enum chatRoomName {
+  Public
+  LeagueCoaches
 }
 
 model ChatRoomMessage {
@@ -997,7 +1001,7 @@ model ChatRoomMessage {
   chatRoom   ChatRoom @relation(fields: [chatRoomId], references: [id])
   chatRoomId Int
   message    String
-  date       DateTime
+  date       DateTime @default(now())
 }
 
 model ChatRoomMember {
@@ -1006,8 +1010,8 @@ model ChatRoomMember {
   chatRoomId          Int
   team                Team     @relation(fields: [teamId], references: [id])
   teamId              Int
-  isDeported          Boolean
-  lastTimeSendMessage DateTime
+  isDeported          Boolean  @default(false)
+  lastTimeSendMessage DateTime @default(now())
 }
 
 // end comminiucation
