@@ -2,9 +2,7 @@
 
 # 📁 Collection: authentication
 
-## description : 30fc is a Football team management game
-
-## The project has been stopped for now 🙃🙃🙃
+### description : 30fc is a Football team management game <br/>The project has been stopped for now 🙃🙃🙃
 
 ## End-point: login-or-register
 
